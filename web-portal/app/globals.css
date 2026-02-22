@@ -51,3 +51,24 @@ body {
     @apply bg-white rounded-xl shadow-sm border border-gray-100 p-5;
   }
 }
+
+/* Print Styles — white background, black text, no dark theme */
+@media print {
+  body, html { background: #fff !important; color: #000 !important; }
+  * { color-adjust: exact; -webkit-print-color-adjust: exact; }
+  header, footer, .btn-gold, .btn-primary, .btn-secondary, nav, .print\\:hidden { display: none !important; }
+  main { padding: 0 !important; max-width: 100% !important; }
+  [style*="background"] { background: #fff !important; }
+  h1, h2, h3, h4, p, td, th, span, div, label { color: #000 !important; }
+  .text-white, .text-emerald-400, .text-emerald-600, .font-semibold { color: #000 !important; }
+  .text-red-400, .text-red-600 { color: #dc2626 !important; }
+  td[class*="emerald"], span[class*="emerald"], .text-emerald-400 { color: #16a34a !important; }
+  td[class*="red"], span[class*="red"], .text-red-400 { color: #dc2626 !important; }
+  table { border-collapse: collapse; width: 100%; }
+  th { color: #374151 !important; border-bottom: 2px solid #000 !important; font-size: 12px; }
+  td { border-bottom: 1px solid #e5e7eb !important; font-size: 12px; padding: 6px 8px !important; }
+  tr[style] { background: #f9fafb !important; border-top: 2px solid #000 !important; }
+  .badge, span[class*="badge"] { border: 1px solid #999 !important; background: transparent !important; color: #000 !important; }
+  [style*="rgba"], [style*="linear-gradient"] { background: transparent !important; border-color: #ccc !important; }
+  .rounded-xl { border-radius: 0 !important; border: 1px solid #ddd !important; }
+}
