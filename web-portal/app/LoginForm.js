@@ -36,33 +36,36 @@ export default function LoginForm({ units, demoMode }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="card space-y-4">
+    <form onSubmit={handleSubmit} className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/10 p-6 space-y-4 shadow-2xl">
       {demoMode && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800">
+        <div className="rounded-lg px-4 py-3 text-sm" style={{ background: 'rgba(212,168,83,0.15)', color: '#f0d890', border: '1px solid rgba(212,168,83,0.25)' }}>
           <strong>🎯 Demo Mode</strong> — Select any unit, PIN is not required. Try Admin too!
         </div>
       )}
 
       <div className="flex gap-2 mb-2">
         <button type="button" onClick={() => setIsAdmin(false)}
-          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${!isAdmin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}`}>
+          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${!isAdmin ? 'text-white shadow-lg' : 'text-gray-400 bg-white/5'}`}
+          style={!isAdmin ? { background: 'linear-gradient(135deg, #d4a853, #c49a45)' , color: '#0f1a2e' } : {}}>
           Owner
         </button>
         <button type="button" onClick={() => setIsAdmin(true)}
-          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${isAdmin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}`}>
+          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${isAdmin ? 'text-white shadow-lg' : 'text-gray-400 bg-white/5'}`}
+          style={isAdmin ? { background: 'linear-gradient(135deg, #d4a853, #c49a45)', color: '#0f1a2e' } : {}}>
           Admin
         </button>
       </div>
 
       {!isAdmin && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+          <label className="block text-sm font-medium mb-1" style={{ color: '#94a3b8' }}>Unit</label>
           <select value={selectedUnit} onChange={(e) => setSelectedUnit(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full rounded-lg px-3 py-2.5 focus:ring-2 focus:outline-none"
+            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
             required={!isAdmin}>
-            <option value="">Select your unit...</option>
+            <option value="" style={{ background: '#1a2744' }}>Select your unit...</option>
             {units.map(u => (
-              <option key={u.unit} value={u.unit}>{u.unit} — {u.owner}</option>
+              <option key={u.unit} value={u.unit} style={{ background: '#1a2744' }}>{u.unit} — {u.owner}</option>
             ))}
           </select>
         </div>
@@ -70,17 +73,18 @@ export default function LoginForm({ units, demoMode }) {
 
       {!demoMode && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">PIN</label>
+          <label className="block text-sm font-medium mb-1" style={{ color: '#94a3b8' }}>PIN</label>
           <input type="password" value={pin} onChange={(e) => setPin(e.target.value)}
             placeholder={isAdmin ? 'Admin PIN' : 'Enter PIN'}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full rounded-lg px-3 py-2.5 focus:ring-2 focus:outline-none"
+            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
             maxLength={6} />
         </div>
       )}
 
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-sm" style={{ color: '#f87171' }}>{error}</p>}
 
-      <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
+      <button type="submit" disabled={loading} className="btn-gold w-full disabled:opacity-50 text-center">
         {loading ? 'Signing in...' : demoMode ? 'Explore Demo →' : 'Sign In'}
       </button>
     </form>

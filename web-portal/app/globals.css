@@ -3,8 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --brand-primary: #2563eb;
-  --brand-accent: #059669;
+  --brand-primary: #1a2744;
+  --brand-accent: #d4a853;
+  --brand-dark: #0f1a2e;
+  --brand-gold: #d4a853;
+  --brand-gold-light: #f0d890;
 }
 
 body {
@@ -16,10 +19,25 @@ body {
     @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6;
   }
   .btn-primary {
-    @apply bg-blue-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors;
+    @apply text-white px-6 py-2.5 rounded-lg font-medium transition-all;
+    background: linear-gradient(135deg, #1a2744, #243656);
+    border: 1px solid rgba(212, 168, 83, 0.3);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #243656, #2d4470);
+    box-shadow: 0 4px 20px rgba(212, 168, 83, 0.2);
   }
   .btn-secondary {
     @apply bg-gray-100 text-gray-700 px-6 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition-colors;
+  }
+  .btn-gold {
+    @apply px-6 py-2.5 rounded-lg font-semibold transition-all;
+    background: linear-gradient(135deg, #d4a853, #c49a45);
+    color: #0f1a2e;
+  }
+  .btn-gold:hover {
+    background: linear-gradient(135deg, #e0b862, #d4a853);
+    box-shadow: 0 4px 20px rgba(212, 168, 83, 0.35);
   }
   .badge {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
@@ -27,7 +45,7 @@ body {
   .badge-green { @apply bg-emerald-100 text-emerald-800; }
   .badge-red { @apply bg-red-100 text-red-800; }
   .badge-yellow { @apply bg-yellow-100 text-yellow-800; }
-  .badge-blue { @apply bg-blue-100 text-blue-800; }
+  .badge-blue { background: rgba(26,39,68,0.08); color: #1a2744; }
   .badge-gray { @apply bg-gray-100 text-gray-600; }
   .kpi-card {
     @apply bg-white rounded-xl shadow-sm border border-gray-100 p-5;
