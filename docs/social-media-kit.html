@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condo Manager OS — Social Media Launch Kit</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#f8fafc;color:#1e293b;line-height:1.6}
+.container{max-width:800px;margin:0 auto;padding:24px}
+h1{font-size:32px;font-weight:800;text-align:center;margin:40px 0 8px}
+.subtitle{text-align:center;color:#64748b;margin-bottom:48px}
+h2{font-size:22px;font-weight:700;margin:48px 0 20px;padding-bottom:8px;border-bottom:2px solid #2563eb;display:flex;align-items:center;gap:10px}
+.post{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:16px;position:relative}
+.post-label{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.post-title{font-weight:700;font-size:16px;margin-bottom:8px;color:#1e293b}
+.post-body{font-size:14px;color:#475569;white-space:pre-wrap}
+.char-count{position:absolute;top:16px;right:16px;font-size:11px;color:#94a3b8}
+.copy-btn{display:inline-block;margin-top:12px;background:#2563eb;color:#fff;border:none;padding:6px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
+.copy-btn:hover{background:#1d4ed8}
+.tag{display:inline-block;background:#eff6ff;color:#2563eb;font-size:12px;font-weight:500;padding:2px 10px;border-radius:20px;margin:2px}
+.section-note{background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;font-size:13px;color:#92400e;margin-bottom:20px}
+</style>
+<script>
+function copyText(id){
+  const el=document.getElementById(id);
+  navigator.clipboard.writeText(el.innerText).then(()=>{
+    const btn=el.parentElement.querySelector('.copy-btn');
+    btn.textContent='✓ Copied!';
+    setTimeout(()=>btn.textContent='📋 Copy',1500);
+  });
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<h1>🚀 Social Media Launch Kit</h1>
+<p class="subtitle">Condo Manager OS — Ready-to-post content for every platform</p>
+
+<!-- ===== TWITTER/X ===== -->
+<h2>🐦 Twitter / X Posts</h2>
+<p class="section-note">Post 1-2 per day during launch week. Best times: 9AM, 12PM, 5PM EST. Always include the link.</p>
+
+<div class="post">
+<div class="post-label">Tweet #1 — Launch</div>
+<div class="char-count">274 chars</div>
+<div class="post-body" id="tw1">Just launched Condo Manager OS 🏢
+
+11 Notion databases that replace Buildium ($744/yr) for a one-time $79.
+
+• Owner portal
+• Voting system
+• AI assistant
+• Maintenance tracking
+• Live dashboards
+
+Free demo → https://condo-os.vercel.app
+
+#HOA #Notion #PropTech</div>
+<button class="copy-btn" onclick="copyText('tw1')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Tweet #2 — Cost comparison</div>
+<div class="post-body" id="tw2">Buildium: $744/yr
+Condo Control: $2,400/yr
+Condo Manager OS: $79 once + $1/mo AI
+
+5-year savings: $3,600+
+
+Same features. Runs on Notion. Open source.
+
+https://condo-os.vercel.app
+
+#HOA #CondoManagement</div>
+<button class="copy-btn" onclick="copyText('tw2')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Tweet #3 — Problem hook</div>
+<div class="post-body" id="tw3">If you manage a condo association with spreadsheets, you're one formula error away from disaster.
+
+If you pay $62/month for Buildium, you're overpaying by 97%.
+
+I built something better → https://condo-os.vercel.app</div>
+<button class="copy-btn" onclick="copyText('tw3')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Tweet #4 — Feature spotlight</div>
+<div class="post-body" id="tw4">Condo Manager OS has a voting system that:
+
+✅ Auto-calculates quorum
+✅ Weights votes by ownership %
+✅ Tracks per-unit votes (For/Against/Abstain)
+✅ Generates meeting reports
+
+All from Notion. No coding needed.
+
+https://condo-os.vercel.app #HOA</div>
+<button class="copy-btn" onclick="copyText('tw4')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Tweet #5 — AI angle</div>
+<div class="post-body" id="tw5">"Generate the Q1 fee call"
+"Show me delinquent units"
+"Create a maintenance ticket for unit 3B"
+
+Managing a condo with AI costs $1/month.
+
+Managing it with Buildium costs $62/month.
+
+https://condo-os.vercel.app</div>
+<button class="copy-btn" onclick="copyText('tw5')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Tweet #6 — Owners love it</div>
+<div class="post-body" id="tw6">Condo owners can now:
+
+📊 Check their balance online
+📄 Download statements anytime
+🔧 Submit maintenance requests from their phone
+🗳️ Vote on resolutions
+
+No app download. No login portal fees. Just Notion + a free web portal.
+
+https://condo-os.vercel.app</div>
+<button class="copy-btn" onclick="copyText('tw6')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Tweet #7 — Open source</div>
+<div class="post-body" id="tw7">I open-sourced my entire condo management system.
+
+17 CLI commands. 11 Notion databases. Web portal. Telegram bot.
+
+No vendor lock-in. No monthly fees. Your data stays yours.
+
+GitHub → https://github.com/Djeyff/condo-os
+
+#OpenSource #PropTech</div>
+<button class="copy-btn" onclick="copyText('tw7')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Tweet #8 — Question</div>
+<div class="post-body" id="tw8">Condo/HOA managers — what do you currently use to track:
+
+• Monthly fees & delinquency
+• Maintenance requests
+• Owner communications
+• Annual budgets
+
+Spreadsheets? Buildium? Paper?
+
+I built a Notion-based alternative for $79 → https://condo-os.vercel.app</div>
+<button class="copy-btn" onclick="copyText('tw8')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Tweet #9 — Stats</div>
+<div class="post-body" id="tw9">370K+ condo associations in the US.
+
+30-40% are self-managed.
+
+Most use spreadsheets or pay $744+/yr for software.
+
+There was ZERO Notion template for condo management.
+
+So I built one → https://condo-os.vercel.app
+
+#HOA #Notion</div>
+<button class="copy-btn" onclick="copyText('tw9')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Tweet #10 — Urgency</div>
+<div class="post-body" id="tw10">Q1 fee calls are due.
+
+If you're still chasing owners via WhatsApp and tracking payments in a spreadsheet, there's a better way.
+
+Condo Manager OS: automated fee calls, payment tracking, owner portal.
+
+$79 once. Not $744/yr.
+
+https://condo-os.vercel.app</div>
+<button class="copy-btn" onclick="copyText('tw10')">📋 Copy</button>
+</div>
+
+<!-- ===== REDDIT ===== -->
+<h2>📱 Reddit Posts</h2>
+<p class="section-note">Post ONE per subreddit per week max. Be authentic — Reddit hates obvious marketing. Share your story, provide value first.</p>
+
+<div class="post">
+<div class="post-label">r/HOA</div>
+<div class="post-title" id="r1t">I built a free alternative to Buildium for small HOA/condo associations</div>
+<div class="post-body" id="r1b">I manage a 7-unit condo in the Dominican Republic. Like many of you, I was stuck between:
+
+- Paying $62-400/month for Buildium or Condo Control (insane for 7 units)
+- Managing everything in spreadsheets (error-prone, no transparency)
+- Doing everything manually via WhatsApp groups
+
+So I built Condo Manager OS — a system that runs entirely on Notion (free tier works) with 11 connected databases:
+
+- Owner Ledger with running balances
+- Fee call generation and payment tracking  
+- Maintenance request system with ticket numbers
+- Voting & resolutions with auto-calculated quorum
+- Budget tracking with category breakdowns
+- Cash position monitoring across accounts
+
+There's also an optional web portal where owners can check their balance, view statements, and submit maintenance requests.
+
+The Notion template is $79 one-time (no monthly fees). The code is open-source on GitHub.
+
+Live demo: https://condo-os.vercel.app
+GitHub: https://github.com/Djeyff/condo-os
+
+Happy to answer questions. I know the pain of self-managing a small building — that's exactly why I built this.</div>
+<button class="copy-btn" onclick="copyText('r1t');copyText('r1b')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">r/Notion</div>
+<div class="post-title" id="r2t">I built an 11-database Condo/HOA Management system in Notion — here's what I learned</div>
+<div class="post-body" id="r2b">After months of building, I'm sharing my Condo Manager OS — an 11-database system for managing residential condominiums.
+
+What's inside:
+- 🏠 Units Registry (owners, shares, contact info)
+- 💰 Owner Ledger (debits, credits, running balance via formulas)
+- 📋 Budget (line items with category tracking)
+- 💸 Expenses (linked to budget lines and cash accounts)
+- 🔧 Maintenance (ticket system with priorities)
+- 🏗️ Works & Projects (contractor tracking)
+- 🏦 Cash Position (multi-account balances)
+- 📅 Meetings (with linked resolutions)
+- 🗳️ Resolutions & Votes (per-unit voting with ownership-weighted formulas!)
+- 📨 Communications Log
+- 💳 Account Movements
+
+The cool part: everything is connected with relations, rollups, and formulas. The voting system auto-calculates quorum based on ownership shares — each unit's vote is weighted by their % of the building.
+
+I also built a Next.js web portal on top (owners can log in and see their balance/statements) and a CLI tool with 17 commands.
+
+Demo: https://condo-os.vercel.app
+Template: $79 on Gumroad (link in comments)
+
+What other complex Notion systems have you all built? Would love to see similar multi-DB setups.</div>
+<button class="copy-btn" onclick="copyText('r2t');copyText('r2b')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">r/selfhosted</div>
+<div class="post-title" id="r3t">Open-source condo management: Notion backend + Next.js portal + Telegram bot</div>
+<div class="post-body" id="r3b">I self-manage a 7-unit condo and got tired of paying for SaaS. Built an open-source stack:
+
+**Backend:** Notion API (11 databases — free tier is enough)
+**Web portal:** Next.js 14 + Tailwind, deployed on Vercel (free)
+**Bot:** Telegram bot for owner self-service (grammY)
+**CLI:** Node.js, 17 commands (fee-call, payment, delinquency, vote, export, etc.)
+**Automations:** 7 workflows (payment notifications, overdue alerts, meeting reminders)
+**AI:** Optional OpenClaw integration for natural-language management
+
+Total running cost: ~$1/month for AI tokens (optional). Everything else is free tier.
+
+Features:
+- Owner login portal with balance/statements
+- Maintenance ticket system
+- Voting with weighted quorum calculation
+- Budget tracking with category breakdowns
+- Multi-account cash position
+
+GitHub: https://github.com/Djeyff/condo-os
+Demo: https://condo-os.vercel.app
+
+Self-hosting the portal is just `npm run build && npm start`. Docker coming soon.
+
+Feedback welcome — especially on the Notion-as-database approach. Works surprisingly well for this scale.</div>
+<button class="copy-btn" onclick="copyText('r3t');copyText('r3b')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">r/PropertyManagement</div>
+<div class="post-title" id="r4t">Managing a small condo (7-20 units)? Here's what I use instead of Buildium</div>
+<div class="post-body" id="r4b">For years I managed our 7-unit condo with a mix of spreadsheets, WhatsApp, and prayer. Looked at Buildium ($62/mo minimum) and Condo Control ($200/mo+) — way too expensive for a small building.
+
+I ended up building my own system on Notion. It handles:
+
+- Quarterly fee calls (auto-generated based on ownership shares)
+- Payment tracking with running balances per owner
+- Delinquency reports (color-coded, aging buckets)
+- Maintenance requests (owners submit via web portal or Telegram)
+- Annual budget with expense tracking
+- General assembly voting (quorum auto-calculated)
+- Financial reports and exports
+
+Cost: $79 one-time for the template. No monthly fees. The optional AI assistant costs about $1/month.
+
+I put the code on GitHub and built a demo: https://condo-os.vercel.app
+
+Anyone else self-managing a small building? Curious what tools you use.</div>
+<button class="copy-btn" onclick="copyText('r4t');copyText('r4b')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">r/SideProject</div>
+<div class="post-title" id="r5t">I turned my condo management frustration into a product — $79 Notion template replacing $744/yr SaaS</div>
+<div class="post-body" id="r5b">**The problem:** I manage a 7-unit condo. Buildium wants $744/year. For 7 units. That's $106 per unit per year just for software.
+
+**What I built:** Condo Manager OS — 11 connected Notion databases with a Next.js web portal, Telegram bot, and CLI tool.
+
+**The stack:**
+- Notion (backend/databases) — free
+- Next.js 14 + Tailwind (owner portal) — free on Vercel
+- Node.js CLI (17 commands)
+- Telegram bot (owner self-service)
+- OpenClaw AI assistant (optional, ~$1/mo)
+
+**The business model:**
+- $79: Notion template only
+- $149: Full kit (template + CLI + portal + bot + automations)
+- $299: Done-for-you setup with video call
+
+**Market insight:** There are ZERO condo/HOA management templates on Notion. Every property template I found is for landlords/investors, not shared-ownership associations. This is genuinely a new category.
+
+**Stats:** 370K HOA associations in the US, 30-40% self-managed. If I capture 0.1% of the self-managed market... that's decent side income.
+
+Live demo: https://condo-os.vercel.app
+GitHub: https://github.com/Djeyff/condo-os
+
+Happy to share my launch strategy and learnings. This is my first digital product.</div>
+<button class="copy-btn" onclick="copyText('r5t');copyText('r5b')">📋 Copy</button>
+</div>
+
+<!-- ===== LINKEDIN ===== -->
+<h2>💼 LinkedIn Posts</h2>
+
+<div class="post">
+<div class="post-label">LinkedIn #1 — Launch announcement</div>
+<div class="post-body" id="li1">🏢 I just launched Condo Manager OS — and I'm excited to share why.
+
+Managing a small condo association shouldn't require enterprise software.
+
+Buildium charges $62-400/month. Condo Control starts at $200/month. For a 7-unit building, that math doesn't work.
+
+So I built an alternative:
+→ 11 connected Notion databases
+→ Web portal for owners (balance, statements, maintenance)
+→ CLI with 17 management commands
+→ Voting system with weighted quorum
+→ AI assistant for natural-language management
+
+One-time cost: $79 for the template. No monthly fees.
+
+5-year savings vs Buildium: $3,600+.
+
+The code is open-source, the demo is live, and I'm looking for early adopters who manage small to medium condos.
+
+🔗 Demo: https://condo-os.vercel.app
+🔗 GitHub: https://github.com/Djeyff/condo-os
+
+If you know anyone on an HOA board or managing a condo, I'd appreciate you sharing this.
+
+#PropertyManagement #HOA #Notion #PropTech #OpenSource</div>
+<button class="copy-btn" onclick="copyText('li1')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">LinkedIn #2 — Cost savings story</div>
+<div class="post-body" id="li2">💰 The hidden tax on small condo associations:
+
+A 7-unit building paying for Buildium spends $744/year on management software.
+
+Over 5 years, that's $3,720 — paid by owners through their fees.
+
+For context, that's enough to:
+• Repaint the entire lobby
+• Replace a water heater
+• Fund 6 months of landscaping
+
+I built Condo Manager OS as a one-time $79 alternative. Same features (fee tracking, maintenance, voting, reports), runs on Notion, includes a web portal for owners.
+
+The question every HOA board should ask: "Are we paying monthly for something we could own?"
+
+https://condo-os.vercel.app
+
+#HOA #PropertyManagement #CostSavings</div>
+<button class="copy-btn" onclick="copyText('li2')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">LinkedIn #3 — Open source philosophy</div>
+<div class="post-body" id="li3">🔓 Why I open-sourced my condo management system:
+
+Condo associations are non-profit entities run by volunteers. Charging them $200-800/month for software feels wrong.
+
+So I put the entire system on GitHub:
+→ 17 CLI commands
+→ Next.js owner portal
+→ Telegram bot
+→ 7 automation workflows
+→ Excel import tool
+
+The Notion template is $79 (someone has to pay for development time). But the code? Free forever.
+
+If you're technical and want to set it up yourself: go ahead.
+If you want the polished package with support: that's what the $79-149 is for.
+
+I believe property management software should be accessible to every building, not just the ones that can afford enterprise SaaS.
+
+GitHub: https://github.com/Djeyff/condo-os
+
+#OpenSource #PropTech #CommunityFirst</div>
+<button class="copy-btn" onclick="copyText('li3')">📋 Copy</button>
+</div>
+
+<!-- ===== FACEBOOK ===== -->
+<h2>📘 Facebook Group Posts</h2>
+<p class="section-note">Post in HOA/condo management groups. Lead with value, not sales pitch.</p>
+
+<div class="post">
+<div class="post-label">HOA Management Groups</div>
+<div class="post-body" id="fb1">Hi everyone! I manage a 7-unit condo and spent months building a management system on Notion that I wanted to share with this community.
+
+It handles: fee collection tracking, owner balances, maintenance requests, budget monitoring, voting for assemblies, and financial reports.
+
+There's a web portal where owners can check their balance and submit requests without calling you.
+
+I put together a live demo if anyone wants to try it: https://condo-os.vercel.app
+
+The template is $79 (one-time, no monthly fees). Happy to answer questions about how it works or whether it'd fit your building.
+
+What tools are you all currently using? Curious to hear what works and what doesn't.</div>
+<button class="copy-btn" onclick="copyText('fb1')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Notion Community Groups</div>
+<div class="post-body" id="fb2">I built what might be the most complex Notion template I've seen — 11 databases for managing a condo/HOA:
+
+🏠 Units, 💰 Owner Ledger, 📋 Budget, 💸 Expenses, 🔧 Maintenance, 🏗️ Works, 🏦 Cash Position, 📨 Communications, 📅 Meetings, 🗳️ Resolutions, 💳 Movements
+
+The databases are all connected with relations, rollups, and formulas. The voting system calculates quorum based on ownership percentages — each unit's vote is weighted automatically.
+
+Plus there's a Next.js web portal that reads from the Notion databases in real-time.
+
+Demo: https://condo-os.vercel.app
+
+Would love feedback from the Notion community. What would you add?</div>
+<button class="copy-btn" onclick="copyText('fb2')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Real Estate / Property Groups</div>
+<div class="post-body" id="fb3">Quick question for anyone on a condo board or managing a small building:
+
+What do you use to track monthly fees, maintenance requests, and owner balances?
+
+I ask because I couldn't find anything affordable for our 7-unit building (Buildium starts at $62/mo which felt crazy), so I built my own system. It runs on Notion and costs $79 one-time.
+
+Just wanted to see if others have the same problem or if I'm the only one who thought the existing options were overpriced 😅
+
+Here's what it looks like: https://condo-os.vercel.app</div>
+<button class="copy-btn" onclick="copyText('fb3')">📋 Copy</button>
+</div>
+
+<!-- ===== YOUTUBE ===== -->
+<h2>🎬 YouTube Video Titles & Descriptions</h2>
+
+<div class="post">
+<div class="post-label">Video #1 — Setup Tutorial</div>
+<div class="post-title">Condo Manager OS: Full Setup in 5 Minutes | Notion Template</div>
+<div class="post-body" id="yt1">Description:
+Set up a complete condo/HOA management system in Notion in under 5 minutes. 11 connected databases, automated formulas, and a web portal for owners.
+
+What's covered:
+00:00 - What is Condo Manager OS?
+00:30 - Running setup.js
+01:30 - Database overview (11 DBs)
+02:30 - Adding your first unit
+03:30 - Generating a fee call
+04:30 - Owner portal demo
+
+🔗 Demo: https://condo-os.vercel.app
+🔗 GitHub: https://github.com/Djeyff/condo-os
+🔗 Get it: [Gumroad link]
+
+#HOA #CondoManagement #Notion #Tutorial</div>
+<button class="copy-btn" onclick="copyText('yt1')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Video #2 — Cost Comparison</div>
+<div class="post-title">Stop Overpaying for HOA Software | Free Notion Alternative to Buildium</div>
+<div class="post-body" id="yt2">Description:
+Buildium charges $744/year. Condo Control charges $2,400/year. I built an alternative for $79 one-time. Here's the honest comparison.
+
+00:00 - The problem with HOA software pricing
+01:00 - Buildium vs Condo Control vs Condo Manager OS
+02:30 - Feature-by-feature comparison
+04:00 - 5-year cost breakdown
+05:00 - Live demo walkthrough
+07:00 - Is it right for your building?
+
+🔗 https://condo-os.vercel.app
+
+#HOA #Buildium #PropertyManagement</div>
+<button class="copy-btn" onclick="copyText('yt2')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Video #3 — Owner Portal</div>
+<div class="post-title">Owner Portal Demo: Telegram Bot + Web Dashboard for Condo Managers</div>
+<div class="post-body" id="yt3">Description:
+Give your condo owners transparency with zero effort. This video shows the web portal and Telegram bot in action.
+
+00:00 - Why owners need a portal
+00:45 - Web portal login
+01:30 - Owner dashboard (balance, transactions)
+02:30 - Account statement with running balance
+03:30 - Submitting a maintenance request
+04:30 - Telegram bot walkthrough
+06:00 - Admin dashboard
+
+🔗 https://condo-os.vercel.app</div>
+<button class="copy-btn" onclick="copyText('yt3')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Video #4 — AI Demo</div>
+<div class="post-title">How I Manage a 7-Unit Condo for $1/month with AI</div>
+<div class="post-body" id="yt4">Description:
+Using AI to manage a condo costs $1/month. Using Buildium costs $62/month. Here's what AI-powered condo management looks like.
+
+00:00 - AI cost breakdown ($1/mo vs $62/mo)
+01:00 - Natural language commands
+02:30 - "Generate Q1 fee call" demo
+03:30 - "Show delinquent units" demo
+04:30 - Automated notifications
+05:30 - When AI makes sense vs manual
+
+🔗 https://condo-os.vercel.app</div>
+<button class="copy-btn" onclick="copyText('yt4')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Video #5 — Comparison</div>
+<div class="post-title">Condo Manager OS vs Buildium vs Condo Control | Honest Comparison 2026</div>
+<div class="post-body" id="yt5">Description:
+An honest, side-by-side comparison of three condo management solutions. Pricing, features, ease of use, and who each one is best for.
+
+00:00 - Why this comparison matters
+01:00 - Buildium review (pros/cons)
+03:00 - Condo Control review
+05:00 - Condo Manager OS review
+07:00 - Feature comparison table
+09:00 - Pricing comparison (5-year TCO)
+10:00 - My recommendation
+
+🔗 https://condo-os.vercel.app</div>
+<button class="copy-btn" onclick="copyText('yt5')">📋 Copy</button>
+</div>
+
+<!-- ===== PRODUCT HUNT ===== -->
+<h2>🚀 Product Hunt</h2>
+
+<div class="post">
+<div class="post-label">Tagline (60 chars max)</div>
+<div class="post-body" id="ph1">AI-powered condo management on Notion for $79, not $744/yr</div>
+<button class="copy-btn" onclick="copyText('ph1')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Description (260 chars)</div>
+<div class="post-body" id="ph2">Replace Buildium & Condo Control with 11 Notion databases, a Next.js owner portal, Telegram bot, and AI assistant. Fee tracking, voting, maintenance, dashboards — everything a condo association needs. One-time $79. Open source.</div>
+<button class="copy-btn" onclick="copyText('ph2')">📋 Copy</button>
+</div>
+
+<div class="post">
+<div class="post-label">Maker Comment (first comment)</div>
+<div class="post-body" id="ph3">Hey Product Hunt! 👋
+
+I built Condo Manager OS because I manage a 7-unit condo in the Dominican Republic, and the existing software options were either way too expensive (Buildium at $744/yr) or way too basic (spreadsheets).
+
+After months of building, I ended up with something I'm genuinely proud of:
+
+→ 11 connected Notion databases (ledger, budget, maintenance, voting, etc.)
+→ A Next.js web portal where owners can check their balance and submit requests
+→ A Telegram bot for owner self-service
+→ A CLI tool with 17 commands
+→ An optional AI assistant that costs ~$1/month
+
+The Notion template is $79 one-time. No monthly fees, no per-unit charges. The code is open-source on GitHub.
+
+I'd love your feedback — especially from anyone who's been on an HOA board or managed a building. What features would you add?
+
+Live demo: https://condo-os.vercel.app</div>
+<button class="copy-btn" onclick="copyText('ph3')">📋 Copy</button>
+</div>
+
+<!-- ===== HASHTAGS ===== -->
+<h2>🏷️ Hashtag Reference</h2>
+<div class="post">
+<div class="post-body">
+<strong>Primary:</strong> <span class="tag">#CondoManagement</span> <span class="tag">#HOA</span> <span class="tag">#PropertyManagement</span> <span class="tag">#Notion</span> <span class="tag">#PropTech</span>
+
+<strong>Secondary:</strong> <span class="tag">#OpenSource</span> <span class="tag">#SaaS</span> <span class="tag">#NoCode</span> <span class="tag">#RealEstate</span> <span class="tag">#AI</span>
+
+<strong>Niche:</strong> <span class="tag">#HOAManagement</span> <span class="tag">#CondoAssociation</span> <span class="tag">#BuildingManagement</span> <span class="tag">#NotionTemplate</span> <span class="tag">#SelfHosted</span>
+</div>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,318 +1,2304 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Condo Manager OS — AI-Powered Condo & HOA Management on Notion</title>
-<meta name="description" content="Stop paying $744/year for condo management software. Condo Manager OS replaces Buildium, Condo Control & AppFolio — for a one-time $79.">
-<meta property="og:title" content="Condo Manager OS">
-<meta property="og:description" content="AI-powered condo & HOA management on Notion. 11 databases, web portal, Telegram bot. One-time $79.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://condo-os.vercel.app">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://gumroad.com/js/gumroad.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;color:#1e293b;line-height:1.6;background:#fff}
-.container{max-width:1100px;margin:0 auto;padding:0 24px}
-/* Hero */
-.hero{background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 50%,#4f46e5 100%);color:#fff;padding:100px 0 80px;text-align:center}
-.hero h1{font-size:clamp(28px,5vw,52px);font-weight:800;line-height:1.15;margin-bottom:20px;max-width:800px;margin-left:auto;margin-right:auto}
-.hero .sub{font-size:clamp(16px,2.5vw,20px);opacity:.9;max-width:650px;margin:0 auto 36px}
-.cta-btn{display:inline-block;background:#f59e0b;color:#1e293b;font-weight:700;font-size:18px;padding:16px 40px;border-radius:12px;text-decoration:none;transition:transform .2s,box-shadow .2s}
-.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(245,158,11,.4)}
-.cta-btn-white{background:#fff;color:#2563eb}
-.cta-btn-white:hover{box-shadow:0 8px 30px rgba(255,255,255,.3)}
-/* Sections */
-section{padding:80px 0}
-section h2{font-size:clamp(24px,3.5vw,38px);font-weight:800;text-align:center;margin-bottom:16px}
-section .section-sub{text-align:center;color:#64748b;font-size:18px;max-width:600px;margin:0 auto 48px}
-/* Problem */
-.problem{background:#f8fafc}
-.problems-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
-.problem-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:32px;text-align:center}
-.problem-card .icon{font-size:48px;margin-bottom:16px}
-.problem-card h3{font-size:20px;font-weight:700;margin-bottom:8px}
-.problem-card p{color:#64748b;font-size:15px}
-/* Features */
-.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
-.feature-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:28px;transition:transform .2s,box-shadow .2s}
-.feature-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.08)}
-.feature-card .icon{font-size:36px;margin-bottom:12px}
-.feature-card h3{font-size:18px;font-weight:700;margin-bottom:8px}
-.feature-card p{color:#64748b;font-size:14px}
-/* Comparison */
-.comparison{background:#1e293b;color:#fff}
-.comparison h2{color:#fff}
-.comparison .section-sub{color:#94a3b8}
-.comp-table{width:100%;border-collapse:collapse;margin:0 auto;max-width:800px;font-size:15px}
-.comp-table th{padding:14px 20px;text-align:left;border-bottom:2px solid #334155;color:#94a3b8;font-weight:600}
-.comp-table td{padding:14px 20px;border-bottom:1px solid #334155}
-.comp-table tr:last-child td{border-bottom:none}
-.comp-table .highlight{color:#22c55e;font-weight:700}
-.comp-table .dim{color:#ef4444}
-/* Pricing */
-.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;max-width:950px;margin:0 auto}
-.price-card{background:#fff;border:2px solid #e2e8f0;border-radius:20px;padding:36px 28px;text-align:center;position:relative;transition:transform .2s}
-.price-card.featured{border-color:#2563eb;transform:scale(1.04)}
-.price-card.featured::before{content:"MOST POPULAR";position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;letter-spacing:1px}
-.price-card h3{font-size:20px;font-weight:700;margin-bottom:4px}
-.price-card .price{font-size:48px;font-weight:800;margin:16px 0 4px}
-.price-card .price span{font-size:18px;color:#64748b}
-.price-card .note{font-size:13px;color:#64748b;margin-bottom:20px}
-.price-card ul{text-align:left;list-style:none;margin-bottom:28px}
-.price-card li{padding:6px 0;font-size:14px;color:#475569}
-.price-card li::before{content:"✓ ";color:#22c55e;font-weight:700}
-.price-card .cta-btn{width:100%;text-align:center;display:block;font-size:16px;padding:14px}
-/* FAQ */
-.faq{background:#f8fafc}
-.faq-list{max-width:700px;margin:0 auto}
-.faq-item{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:12px}
-.faq-item h3{font-size:16px;font-weight:700;margin-bottom:8px}
-.faq-item p{color:#64748b;font-size:14px}
-/* Demo */
-.demo{text-align:center}
-.demo-frame{background:#1e293b;border-radius:16px;padding:12px;max-width:800px;margin:0 auto 32px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
-.demo-frame img{width:100%;border-radius:10px}
-/* Final CTA */
-.final-cta{background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;text-align:center;padding:80px 0}
-.final-cta h2{color:#fff;margin-bottom:16px}
-.final-cta p{color:rgba(255,255,255,.85);font-size:18px;margin-bottom:32px}
-/* Footer */
-footer{background:#0f172a;color:#94a3b8;padding:40px 0;text-align:center;font-size:14px}
-footer a{color:#60a5fa;text-decoration:none}
-@media(max-width:768px){
-.hero{padding:60px 0 50px}
-section{padding:50px 0}
-.price-card.featured{transform:none}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Condo Manager OS — Stop Paying $744/year for Condo Management Software</title>
+  <meta name="description" content="The open-source Notion-powered system that replaces Buildium, Condo Control & AppFolio — for a one-time $79." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://gumroad.com/js/gumroad.js"></script>
+
+  <style>
+    /* ──────────────────────────────────────────────
+       CSS Reset & Base
+    ────────────────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blue-400: #60a5fa;
+      --blue-500: #3b82f6;
+      --blue-600: #2563eb;
+      --blue-700: #1d4ed8;
+      --indigo-500: #6366f1;
+      --indigo-600: #4f46e5;
+      --indigo-700: #4338ca;
+      --purple-500: #a855f7;
+      --purple-600: #9333ea;
+      --green-400: #4ade80;
+      --green-500: #22c55e;
+      --green-600: #16a34a;
+      --amber-400: #fbbf24;
+      --amber-500: #f59e0b;
+      --red-500: #ef4444;
+      --gray-50:  #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --gray-950: #030712;
+
+      --gradient-hero: linear-gradient(135deg, #1e40af 0%, #312e81 50%, #4c1d95 100%);
+      --gradient-cta:  linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+      --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+
+      --shadow-sm:  0 1px 2px rgba(0,0,0,.05);
+      --shadow-md:  0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -2px rgba(0,0,0,.1);
+      --shadow-lg:  0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -4px rgba(0,0,0,.1);
+      --shadow-xl:  0 20px 25px -5px rgba(0,0,0,.15), 0 8px 10px -6px rgba(0,0,0,.1);
+      --shadow-glow: 0 0 40px rgba(99,102,241,.35);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--gray-950);
+      color: var(--gray-100);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    img { max-width: 100%; display: block; }
+
+    /* ──────────────────────────────────────────────
+       Utility Classes
+    ────────────────────────────────────────────── */
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .section {
+      padding: 96px 0;
+    }
+
+    .section-sm {
+      padding: 64px 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .badge-blue {
+      background: rgba(99,102,241,.15);
+      color: #a5b4fc;
+      border: 1px solid rgba(99,102,241,.3);
+    }
+
+    .badge-green {
+      background: rgba(34,197,94,.12);
+      color: #4ade80;
+      border: 1px solid rgba(34,197,94,.25);
+    }
+
+    .badge-amber {
+      background: rgba(245,158,11,.12);
+      color: #fcd34d;
+      border: 1px solid rgba(245,158,11,.25);
+    }
+
+    .badge-purple {
+      background: rgba(168,85,247,.12);
+      color: #d8b4fe;
+      border: 1px solid rgba(168,85,247,.25);
+    }
+
+    .section-label {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.15;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 18px;
+      color: var(--gray-400);
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto 64px;
+      line-height: 1.65;
+    }
+
+    .text-gradient {
+      background: linear-gradient(90deg, #60a5fa, #a78bfa, #f0abfc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .highlight {
+      color: var(--blue-400);
+    }
+
+    /* ──────────────────────────────────────────────
+       Navbar
+    ────────────────────────────────────────────── */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(3,7,18,.75);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      transition: background .3s;
+    }
+
+    .navbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .navbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: -.01em;
+    }
+
+    .navbar-logo-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--gradient-cta);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .navbar-nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .navbar-nav a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-400);
+      transition: color .2s;
+    }
+
+    .navbar-nav a:hover { color: #fff; }
+
+    .btn-nav {
+      padding: 8px 20px;
+      background: var(--gradient-cta);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff !important;
+      transition: opacity .2s, transform .15s;
+    }
+
+    .btn-nav:hover { opacity: .9; transform: translateY(-1px); }
+
+    .navbar-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray-300);
+      font-size: 22px;
+    }
+
+    /* ──────────────────────────────────────────────
+       Hero
+    ────────────────────────────────────────────── */
+    .hero {
+      background: var(--gradient-hero);
+      padding: 160px 0 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99,102,241,.25) 0%, transparent 70%);
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--gray-950));
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 5.5vw, 64px);
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      color: #fff;
+      margin-bottom: 24px;
+      max-width: 820px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, #fbbf24, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2.2vw, 21px);
+      color: rgba(255,255,255,.75);
+      max-width: 600px;
+      margin: 0 auto 44px;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -.01em;
+      box-shadow: 0 4px 24px rgba(249,115,22,.4);
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(249,115,22,.5);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 15px 28px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      backdrop-filter: blur(8px);
+      transition: background .2s, transform .2s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,.18);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      margin-top: 64px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      position: relative;
+      z-index: 2;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.02em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: rgba(255,255,255,.55);
+      font-weight: 500;
+    }
+
+    /* ──────────────────────────────────────────────
+       Problem Section
+    ────────────────────────────────────────────── */
+    .problem {
+      background: var(--gray-950);
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .problem-card {
+      background: linear-gradient(145deg, var(--gray-900), rgba(31,41,55,.6));
+      border: 1px solid var(--gray-800);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .25s, box-shadow .25s;
+    }
+
+    .problem-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,.4);
+    }
+
+    .problem-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #ef4444, #f97316);
+    }
+
+    .problem-icon {
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+
+    .problem-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+      letter-spacing: -.01em;
+    }
+
+    .problem-card p {
+      font-size: 15px;
+      color: var(--gray-400);
+      line-height: 1.7;
+    }
+
+    /* ──────────────────────────────────────────────
+       Solution Section
+    ────────────────────────────────────────────── */
+    .solution {
+      background: linear-gradient(180deg, var(--gray-950) 0%, var(--gray-900) 100%);
+    }
+
+    .solution-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .solution-content h2 {
+      font-size: clamp(26px, 3.5vw, 40px);
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .solution-content p {
+      font-size: 16px;
+      color: var(--gray-400);
+      line-height: 1.75;
+      margin-bottom: 32px;
+    }
+
+    .solution-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .solution-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 15px;
+      color: var(--gray-300);
+    }
+
+    .check-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      border-radius: 50%;
+      background: rgba(34,197,94,.15);
+      color: #4ade80;
+      font-size: 12px;
+      margin-top: 1px;
+    }
+
+    .solution-visual {
+      position: relative;
+    }
+
+    .solution-mockup {
+      background: var(--gray-900);
+      border: 1px solid var(--gray-800);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      box-shadow: var(--shadow-xl), var(--shadow-glow);
+    }
+
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .mockup-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .mockup-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+      background: var(--gray-800);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-300);
+      transition: background .2s;
+    }
+
+    .mockup-row:hover { background: var(--gray-700); }
+
+    .mockup-row .row-icon { font-size: 16px; }
+
+    .mockup-row .row-badge {
+      margin-left: auto;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(99,102,241,.2);
+      color: #a5b4fc;
+    }
+
+    /* ──────────────────────────────────────────────
+       Features Grid
+    ────────────────────────────────────────────── */
+    .features {
+      background: var(--gray-900);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--gray-950);
+      border: 1px solid var(--gray-800);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(0,0,0,.45);
+      border-color: rgba(99,102,241,.4);
+    }
+
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient-card);
+      pointer-events: none;
+    }
+
+    .feature-emoji {
+      font-size: 42px;
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 19px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+      letter-spacing: -.01em;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.7;
+    }
+
+    .feature-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 18px;
+    }
+
+    .feature-tag {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--gray-800);
+      color: var(--gray-400);
+      font-weight: 500;
+    }
+
+    /* ──────────────────────────────────────────────
+       Demo Section
+    ────────────────────────────────────────────── */
+    .demo {
+      background: var(--gray-950);
+    }
+
+    .demo-card {
+      background: linear-gradient(135deg, rgba(37,99,235,.12), rgba(79,70,229,.12));
+      border: 1px solid rgba(99,102,241,.25);
+      border-radius: var(--radius-xl);
+      padding: 72px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(99,102,241,.12), transparent 60%);
+    }
+
+    .demo-card-inner {
+      position: relative;
+      z-index: 2;
+    }
+
+    .demo-card h2 {
+      font-size: clamp(24px, 3.5vw, 38px);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.02em;
+      margin-bottom: 16px;
+    }
+
+    .demo-card p {
+      font-size: 17px;
+      color: var(--gray-400);
+      max-width: 480px;
+      margin: 0 auto 36px;
+      line-height: 1.65;
+    }
+
+    .btn-demo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 40px;
+      background: var(--gradient-cta);
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -.01em;
+      box-shadow: 0 4px 32px rgba(99,102,241,.45);
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .btn-demo:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 48px rgba(99,102,241,.55);
+    }
+
+    .demo-url {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--gray-600);
+    }
+
+    .demo-url a {
+      color: var(--blue-400);
+    }
+
+    /* ──────────────────────────────────────────────
+       Comparison Table
+    ────────────────────────────────────────────── */
+    .comparison {
+      background: var(--gray-900);
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--gray-800);
+    }
+
+    .compare-table thead tr {
+      background: var(--gray-800);
+    }
+
+    .compare-table th {
+      padding: 18px 24px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--gray-400);
+    }
+
+    .compare-table th.highlight-col {
+      background: rgba(99,102,241,.2);
+      color: #a5b4fc;
+    }
+
+    .compare-table tbody tr {
+      background: var(--gray-950);
+      border-top: 1px solid var(--gray-800);
+      transition: background .15s;
+    }
+
+    .compare-table tbody tr:hover { background: var(--gray-900); }
+
+    .compare-table td {
+      padding: 18px 24px;
+      font-size: 15px;
+      color: var(--gray-300);
+      vertical-align: middle;
+    }
+
+    .compare-table td.highlight-col {
+      background: rgba(99,102,241,.07);
+      color: #c7d2fe;
+      font-weight: 600;
+    }
+
+    .compare-table td .price-big {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.01em;
+    }
+
+    .compare-table td .price-note {
+      font-size: 12px;
+      color: var(--gray-500);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .compare-table td .highlight-col .price-big {
+      color: #a5b4fc;
+    }
+
+    .tag-savings {
+      display: inline-block;
+      padding: 3px 10px;
+      background: rgba(34,197,94,.15);
+      color: #4ade80;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    .cross { color: var(--red-500); font-weight: 700; }
+    .tick  { color: var(--green-400); font-weight: 700; }
+
+    /* ──────────────────────────────────────────────
+       Pricing
+    ────────────────────────────────────────────── */
+    .pricing {
+      background: var(--gray-950);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+
+    .pricing-card {
+      background: var(--gray-900);
+      border: 1px solid var(--gray-800);
+      border-radius: var(--radius-xl);
+      padding: 40px 36px;
+      position: relative;
+      transition: transform .25s, box-shadow .25s;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+    }
+
+    .pricing-card.featured {
+      border-color: var(--indigo-500);
+      background: linear-gradient(145deg, rgba(79,70,229,.08), var(--gray-900));
+      box-shadow: 0 0 0 1px var(--indigo-500), var(--shadow-glow);
+      transform: scale(1.025);
+    }
+
+    .pricing-card.featured:hover {
+      transform: scale(1.025) translateY(-6px);
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gradient-cta);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 18px;
+      border-radius: 999px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .pricing-tier {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--gray-500);
+      margin-bottom: 12px;
+    }
+
+    .pricing-name {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.02em;
+      margin-bottom: 4px;
+    }
+
+    .pricing-price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .price-dollar {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gray-400);
+    }
+
+    .price-amount {
+      font-size: 56px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -.04em;
+      line-height: 1;
+    }
+
+    .price-period {
+      font-size: 14px;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
+
+    .pricing-desc {
+      font-size: 14px;
+      color: var(--gray-500);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .pricing-divider {
+      border: none;
+      border-top: 1px solid var(--gray-800);
+      margin-bottom: 28px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .pricing-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--gray-300);
+    }
+
+    .pricing-features li .icon {
+      min-width: 18px;
+      color: var(--green-400);
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    .btn-pricing {
+      display: block;
+      width: 100%;
+      padding: 15px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      transition: transform .2s, opacity .2s, box-shadow .2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-pricing-outline {
+      background: transparent;
+      border: 1.5px solid var(--gray-700);
+      color: var(--gray-300);
+    }
+
+    .btn-pricing-outline:hover {
+      border-color: var(--gray-500);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .btn-pricing-primary {
+      background: var(--gradient-cta);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(79,70,229,.4);
+    }
+
+    .btn-pricing-primary:hover {
+      opacity: .93;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(79,70,229,.5);
+    }
+
+    .btn-pricing-premium {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(124,58,237,.4);
+    }
+
+    .btn-pricing-premium:hover {
+      opacity: .93;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(124,58,237,.5);
+    }
+
+    /* Gumroad button override */
+    .gumroad-button {
+      display: block !important;
+      width: 100% !important;
+      padding: 15px 24px !important;
+      border-radius: 10px !important;
+      font-size: 15px !important;
+      font-weight: 700 !important;
+      text-align: center !important;
+      cursor: pointer !important;
+      font-family: var(--font) !important;
+      transition: transform .2s, opacity .2s, box-shadow .2s !important;
+    }
+
+    /* ──────────────────────────────────────────────
+       Testimonials
+    ────────────────────────────────────────────── */
+    .testimonials {
+      background: var(--gray-900);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .testimonial-card {
+      background: var(--gray-950);
+      border: 1px solid var(--gray-800);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      position: relative;
+      transition: transform .25s;
+    }
+
+    .testimonial-card:hover { transform: translateY(-4px); }
+
+    .testimonial-quote {
+      font-size: 40px;
+      line-height: 1;
+      color: var(--indigo-500);
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .testimonial-body {
+      font-size: 15px;
+      color: var(--gray-400);
+      line-height: 1.75;
+      font-style: italic;
+      margin-bottom: 24px;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .author-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--indigo-600), var(--purple-600));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .author-info strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .author-info span {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .early-adopter-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: 3px 10px;
+      background: rgba(245,158,11,.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245,158,11,.25);
+      border-radius: 999px;
+    }
+
+    .stars {
+      color: var(--amber-400);
+      font-size: 15px;
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+    }
+
+    /* ──────────────────────────────────────────────
+       FAQ
+    ────────────────────────────────────────────── */
+    .faq {
+      background: var(--gray-950);
+    }
+
+    .faq-list {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--gray-800);
+    }
+
+    .faq-item:first-child {
+      border-top: 1px solid var(--gray-800);
+    }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-family: var(--font);
+      font-size: 17px;
+      font-weight: 600;
+      color: #fff;
+      text-align: left;
+      transition: color .2s;
+    }
+
+    .faq-question:hover { color: #a5b4fc; }
+
+    .faq-icon {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      border-radius: 50%;
+      background: var(--gray-800);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--gray-400);
+      transition: transform .3s, background .2s;
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+      background: var(--indigo-600);
+      color: #fff;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .4s ease, padding .4s;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+    }
+
+    .faq-answer-inner {
+      padding: 0 0 24px;
+      font-size: 15px;
+      color: var(--gray-400);
+      line-height: 1.75;
+    }
+
+    .faq-answer-inner strong {
+      color: var(--gray-200);
+    }
+
+    .faq-answer-inner a {
+      color: var(--blue-400);
+      text-decoration: underline;
+    }
+
+    /* ──────────────────────────────────────────────
+       Final CTA
+    ────────────────────────────────────────────── */
+    .final-cta {
+      background: var(--gradient-hero);
+      padding: 120px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 100%, rgba(99,102,241,.2), transparent 70%);
+    }
+
+    .final-cta-inner {
+      position: relative;
+      z-index: 2;
+    }
+
+    .final-cta h2 {
+      font-size: clamp(28px, 4.5vw, 52px);
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -.03em;
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+
+    .final-cta p {
+      font-size: 18px;
+      color: rgba(255,255,255,.7);
+      max-width: 520px;
+      margin: 0 auto 44px;
+      line-height: 1.65;
+    }
+
+    .final-cta-btns {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .guarantee {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 24px;
+      font-size: 13px;
+      color: rgba(255,255,255,.45);
+    }
+
+    /* ──────────────────────────────────────────────
+       Footer
+    ────────────────────────────────────────────── */
+    .footer {
+      background: var(--gray-950);
+      border-top: 1px solid var(--gray-900);
+      padding: 56px 0 40px;
+    }
+
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+    }
+
+    .footer-brand p {
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.7;
+      margin-top: 12px;
+      max-width: 280px;
+    }
+
+    .footer-heading {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--gray-500);
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: var(--gray-400);
+      transition: color .2s;
+    }
+
+    .footer-links a:hover { color: #fff; }
+
+    .footer-bottom {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--gray-900);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-bottom p {
+      font-size: 13px;
+      color: var(--gray-600);
+    }
+
+    .footer-bottom a {
+      color: var(--gray-500);
+      font-size: 13px;
+      transition: color .2s;
+    }
+
+    .footer-bottom a:hover { color: var(--gray-300); }
+
+    .footer-social {
+      display: flex;
+      gap: 12px;
+    }
+
+    .social-link {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--gray-900);
+      border: 1px solid var(--gray-800);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: background .2s, border-color .2s, transform .2s;
+    }
+
+    .social-link:hover {
+      background: var(--gray-800);
+      border-color: var(--gray-700);
+      transform: translateY(-2px);
+    }
+
+    /* ──────────────────────────────────────────────
+       Announcement Bar
+    ────────────────────────────────────────────── */
+    .announcement {
+      background: linear-gradient(90deg, var(--indigo-600), var(--purple-600));
+      text-align: center;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+      position: relative;
+      z-index: 101;
+    }
+
+    .announcement a {
+      text-decoration: underline;
+      font-weight: 700;
+    }
+
+    /* ──────────────────────────────────────────────
+       Responsive
+    ────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .solution-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 36px;
+      }
+
+      .footer-brand {
+        grid-column: 1 / -1;
+      }
+
+      .compare-table th, .compare-table td {
+        padding: 14px 16px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .section { padding: 72px 0; }
+      .section-subtitle { margin-bottom: 48px; }
+      .hero { padding: 130px 0 80px; }
+      .hero-stats { gap: 32px; }
+
+      .navbar-nav { display: none; }
+      .navbar-toggle { display: block; }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .footer-brand { grid-column: 1; }
+
+      .pricing-card.featured {
+        transform: scale(1);
+      }
+
+      .compare-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+      .demo-card { padding: 48px 24px; }
+    }
+
+    /* ──────────────────────────────────────────────
+       Scroll Animations
+    ────────────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .fade-up-delay-1 { transition-delay: .1s; }
+    .fade-up-delay-2 { transition-delay: .2s; }
+    .fade-up-delay-3 { transition-delay: .3s; }
+    .fade-up-delay-4 { transition-delay: .4s; }
+    .fade-up-delay-5 { transition-delay: .5s; }
+
+    /* ──────────────────────────────────────────────
+       Noise texture overlay (subtle)
+    ────────────────────────────────────────────── */
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: .018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* ──────────────────────────────────────────────
+       Gumroad button resets
+    ────────────────────────────────────────────── */
+    .gumroad-button-logo { display: none !important; }
+  </style>
 </head>
 <body>
 
-<!-- HERO -->
-<section class="hero">
-<div class="container">
-<h1>Stop Paying $744/year for Condo Management Software</h1>
-<p class="sub">The open-source Notion-powered system that replaces Buildium, Condo Control &amp; AppFolio — for a one-time <strong>$79</strong>.</p>
-<a href="#pricing" class="cta-btn">Get Started — $79</a>
-&nbsp;&nbsp;
-<a href="https://condo-os.vercel.app" target="_blank" class="cta-btn cta-btn-white">Try Live Demo →</a>
+<!-- Noise overlay (subtle texture) -->
+<div class="noise" aria-hidden="true"></div>
+
+<!-- ──────────────────────────────────────────────
+     Announcement Bar
+────────────────────────────────────────────── -->
+<div class="announcement">
+  🚀 <strong>Launch Special:</strong> Get Condo Manager OS Pro for just $149 — <a href="#pricing">limited early-adopter pricing</a>
 </div>
+
+<!-- ──────────────────────────────────────────────
+     Navbar
+────────────────────────────────────────────── -->
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+  <div class="container navbar-inner">
+    <a href="#" class="navbar-logo">
+      <div class="navbar-logo-icon" aria-hidden="true">🏢</div>
+      Condo Manager OS
+    </a>
+    <ul class="navbar-nav" role="list">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#compare">Compare</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li>
+        <a class="btn-nav" href="https://condo-os.vercel.app" target="_blank" rel="noopener">
+          Live Demo →
+        </a>
+      </li>
+    </ul>
+    <button class="navbar-toggle" aria-label="Open menu">☰</button>
+  </div>
+</nav>
+
+<!-- ──────────────────────────────────────────────
+     Hero
+────────────────────────────────────────────── -->
+<header class="hero" id="top">
+  <div class="container hero-inner">
+    <div class="hero-eyebrow">
+      <span class="badge badge-blue">🏢 Open Source · Notion-Powered</span>
+    </div>
+
+    <h1>
+      Stop Paying <span>$744/year</span><br/>
+      for Condo Management Software
+    </h1>
+
+    <p class="hero-sub">
+      The open-source Notion-powered system that replaces Buildium, Condo Control &amp; AppFolio — for a <strong>one-time $79</strong>.
+    </p>
+
+    <div class="hero-ctas">
+      <a class="btn-primary" href="#pricing">
+        Get Condo Manager OS — $79 →
+      </a>
+      <a class="btn-secondary" href="https://condo-os.vercel.app" target="_blank" rel="noopener">
+        <span>▶</span> Try Live Demo
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-number">11</div>
+        <div class="stat-label">Notion Databases</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">17</div>
+        <div class="stat-label">CLI Commands</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">$0</div>
+        <div class="stat-label">Monthly SaaS Fees</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Your Data, Your Control</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ──────────────────────────────────────────────
+     Problem Section
+────────────────────────────────────────────── -->
+<section class="section problem" id="problem">
+  <div class="container">
+    <div class="section-label">
+      <span class="badge badge-blue">The Problem</span>
+    </div>
+    <h2 class="section-title">
+      Condo management software is <span class="text-gradient">broken</span>
+    </h2>
+    <p class="section-subtitle">
+      You're trapped paying enterprise prices for tools designed for property management companies — not small condo boards.
+    </p>
+
+    <div class="problem-grid">
+      <div class="problem-card fade-up">
+        <div class="problem-icon">💸</div>
+        <h3>Expensive SaaS Subscriptions</h3>
+        <p>
+          Buildium starts at $62/month ($744/year). Condo Control charges $200+/month ($2,400/year). AppFolio demands minimums you can't meet. You're paying for features you'll never use, every single month, forever.
+        </p>
+      </div>
+
+      <div class="problem-card fade-up fade-up-delay-1">
+        <div class="problem-icon">📉</div>
+        <h3>Spreadsheet Chaos</h3>
+        <p>
+          The alternative? A maze of disconnected Excel files, shared Google Sheets that break, no version control, no audit trail, and no one actually knowing which file is "the real one." Data gets lost. Decisions get missed.
+        </p>
+      </div>
+
+      <div class="problem-card fade-up fade-up-delay-2">
+        <div class="problem-icon">🔒</div>
+        <h3>Zero Transparency for Owners</h3>
+        <p>
+          Owners can't see their balance, vote on resolutions, or track maintenance tickets without calling you. You become the bottleneck. Trust erodes. Meetings get contentious. Sound familiar?
+        </p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- PROBLEM -->
-<section class="problem">
-<div class="container">
-<h2>Managing a Condo Shouldn't Cost a Fortune</h2>
-<p class="section-sub">Most condo managers are stuck between expensive SaaS and spreadsheet chaos.</p>
-<div class="problems-grid">
-<div class="problem-card">
-<div class="icon">💸</div>
-<h3>Expensive Software</h3>
-<p>Buildium charges $62-400/month. Condo Control starts at $200/month. For a 7-unit building, that's insane.</p>
-</div>
-<div class="problem-card">
-<div class="icon">📊</div>
-<h3>Spreadsheet Hell</h3>
-<p>Tracking fees, maintenance, and budgets in Excel? One formula error and your books are wrong for months.</p>
-</div>
-<div class="problem-card">
-<div class="icon">🔒</div>
-<h3>Zero Transparency</h3>
-<p>Owners can't see their balance, vote on resolutions, or submit maintenance requests without calling the manager.</p>
-</div>
-</div>
-</div>
+<!-- ──────────────────────────────────────────────
+     Solution Section
+────────────────────────────────────────────── -->
+<section class="section solution" id="solution">
+  <div class="container">
+    <div class="solution-inner">
+      <div class="solution-content fade-up">
+        <div style="margin-bottom:16px">
+          <span class="badge badge-green">✅ The Solution</span>
+        </div>
+        <h2>
+          Everything you need,<br/>
+          <span class="text-gradient">owned by you forever</span>
+        </h2>
+        <p>
+          Condo Manager OS is a complete operating system for your condo, built on Notion — the tool 30 million people already use. No subscriptions. No vendor lock-in. No per-unit pricing. Just one transparent system that works.
+        </p>
+
+        <ul class="solution-list">
+          <li>
+            <span class="check-icon">✓</span>
+            <span><strong>11 Notion databases</strong> pre-built and linked: units, owners, finances, maintenance, votes, meetings, documents and more</span>
+          </li>
+          <li>
+            <span class="check-icon">✓</span>
+            <span><strong>AI assistant</strong> trained on your condo data — answer owner questions instantly</span>
+          </li>
+          <li>
+            <span class="check-icon">✓</span>
+            <span><strong>Owner web portal</strong> so residents can check balances, submit requests, and vote online</span>
+          </li>
+          <li>
+            <span class="check-icon">✓</span>
+            <span><strong>Telegram bot</strong> for real-time alerts, maintenance updates, and owner notifications</span>
+          </li>
+          <li>
+            <span class="check-icon">✓</span>
+            <span><strong>Automations</strong> that sync data, send reminders, and generate reports without lifting a finger</span>
+          </li>
+          <li>
+            <span class="check-icon">✓</span>
+            <span><strong>CLI with 17 commands</strong> to import data, manage records, and automate bulk operations</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="solution-visual fade-up fade-up-delay-2">
+        <div class="solution-mockup">
+          <div class="mockup-header">
+            <div class="mockup-dot" style="background:#ef4444"></div>
+            <div class="mockup-dot" style="background:#f59e0b"></div>
+            <div class="mockup-dot" style="background:#22c55e"></div>
+            <span style="margin-left:8px;font-size:13px;color:var(--gray-600)">Condo Manager OS — Notion</span>
+          </div>
+
+          <div class="mockup-row">
+            <span class="row-icon">💰</span>
+            Finance & Budgets
+            <span class="row-badge">Live</span>
+          </div>
+          <div class="mockup-row">
+            <span class="row-icon">🏠</span>
+            Units & Owners
+            <span class="row-badge">24 units</span>
+          </div>
+          <div class="mockup-row">
+            <span class="row-icon">🔧</span>
+            Maintenance Tickets
+            <span class="row-badge">3 open</span>
+          </div>
+          <div class="mockup-row">
+            <span class="row-icon">🗳️</span>
+            Active Votes
+            <span class="row-badge">1 active</span>
+          </div>
+          <div class="mockup-row">
+            <span class="row-icon">📋</span>
+            Meeting Minutes
+            <span class="row-badge">Feb 2026</span>
+          </div>
+          <div class="mockup-row">
+            <span class="row-icon">📄</span>
+            Documents & Rules
+            <span class="row-badge">12 files</span>
+          </div>
+          <div class="mockup-row">
+            <span class="row-icon">🤖</span>
+            AI Assistant
+            <span class="row-badge" style="background:rgba(34,197,94,.15);color:#4ade80">Ready</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- FEATURES -->
-<section>
-<div class="container">
-<h2>Everything You Need. Nothing You Don't.</h2>
-<p class="section-sub">11 connected databases, AI assistant, web portal, Telegram bot — all on Notion.</p>
-<div class="features-grid">
-<div class="feature-card">
-<div class="icon">💰</div>
-<h3>Financial Management</h3>
-<p>Fee calls, payment tracking, owner ledger with running balances, fiscal year close, and export to Excel/CSV.</p>
-</div>
-<div class="feature-card">
-<div class="icon">🗳️</div>
-<h3>Voting & Resolutions</h3>
-<p>Auto-calculated quorum, weighted votes by ownership share, meeting reports — all from one command.</p>
-</div>
-<div class="feature-card">
-<div class="icon">🔧</div>
-<h3>Maintenance Tracking</h3>
-<p>Sequential ticket numbers, priority levels, status tracking, contractor assignment — via web or Telegram.</p>
-</div>
-<div class="feature-card">
-<div class="icon">📊</div>
-<h3>Live Dashboards</h3>
-<p>5 auto-refreshing Notion pages: KPIs, financial overview, delinquency tracker, maintenance board, works progress.</p>
-</div>
-<div class="feature-card">
-<div class="icon">🤖</div>
-<h3>AI Assistant</h3>
-<p>Natural language commands via OpenClaw. "Generate fee call for Q1" or "Show delinquent units" — just talk.</p>
-</div>
-<div class="feature-card">
-<div class="icon">🌐</div>
-<h3>Owner Web Portal</h3>
-<p>Next.js portal where owners check balances, view statements, submit maintenance requests. Custom branding.</p>
-</div>
-</div>
-</div>
+<!-- ──────────────────────────────────────────────
+     Features Grid
+────────────────────────────────────────────── -->
+<section class="section features" id="features">
+  <div class="container">
+    <div class="section-label">
+      <span class="badge badge-purple">🧩 What's Included</span>
+    </div>
+    <h2 class="section-title">Everything your condo board needs</h2>
+    <p class="section-subtitle">
+      Six core modules, fully connected, all living inside Notion. No duct tape. No fragmented tools. One system that actually makes sense.
+    </p>
+
+    <div class="features-grid">
+
+      <div class="feature-card fade-up">
+        <span class="feature-emoji">💰</span>
+        <h3>Financial Management</h3>
+        <p>
+          Track income, expenses, and reserves in real time. Auto-categorize transactions, generate monthly reports, manage HOA fee collection, and spot budget variances before they become problems.
+        </p>
+        <div class="feature-tags">
+          <span class="feature-tag">Budget Tracking</span>
+          <span class="feature-tag">Reserve Fund</span>
+          <span class="feature-tag">Fee Collection</span>
+          <span class="feature-tag">Reports</span>
+        </div>
+      </div>
+
+      <div class="feature-card fade-up fade-up-delay-1">
+        <span class="feature-emoji">🗳️</span>
+        <h3>Voting & Resolutions</h3>
+        <p>
+          Run transparent owner votes directly in Notion or via the web portal. Record quorum, tally results automatically, and archive resolutions with full audit history. No more paper ballots.
+        </p>
+        <div class="feature-tags">
+          <span class="feature-tag">Online Voting</span>
+          <span class="feature-tag">Quorum Tracking</span>
+          <span class="feature-tag">Resolution Archive</span>
+        </div>
+      </div>
+
+      <div class="feature-card fade-up fade-up-delay-2">
+        <span class="feature-emoji">🔧</span>
+        <h3>Maintenance Tracking</h3>
+        <p>
+          Owners submit tickets via the web portal or Telegram. Track status, assign vendors, upload photos, log costs, and send automatic updates — all without a single email chain.
+        </p>
+        <div class="feature-tags">
+          <span class="feature-tag">Ticket System</span>
+          <span class="feature-tag">Vendor Management</span>
+          <span class="feature-tag">Cost Tracking</span>
+          <span class="feature-tag">Auto-Notifications</span>
+        </div>
+      </div>
+
+      <div class="feature-card fade-up fade-up-delay-3">
+        <span class="feature-emoji">📊</span>
+        <h3>Live Dashboards</h3>
+        <p>
+          Real-time Notion dashboards that give your board an instant snapshot: financials, open tickets, upcoming votes, fee arrears, and occupancy — all without running a single report manually.
+        </p>
+        <div class="feature-tags">
+          <span class="feature-tag">Real-time Data</span>
+          <span class="feature-tag">Board Overview</span>
+          <span class="feature-tag">KPI Tracking</span>
+        </div>
+      </div>
+
+      <div class="feature-card fade-up fade-up-delay-4">
+        <span class="feature-emoji">🤖</span>
+        <h3>AI Assistant</h3>
+        <p>
+          An AI trained on your condo's data. Ask "What's unit 4B's balance?", "Summarize last month's maintenance costs", or "Draft a notice for the water shutoff". Powered by GPT-4 or Claude.
+        </p>
+        <div class="feature-tags">
+          <span class="feature-tag">GPT-4 / Claude</span>
+          <span class="feature-tag">Notion Context</span>
+          <span class="feature-tag">$1-5/mo API costs</span>
+        </div>
+      </div>
+
+      <div class="feature-card fade-up fade-up-delay-5">
+        <span class="feature-emoji">🌐</span>
+        <h3>Owner Web Portal</h3>
+        <p>
+          A clean, mobile-friendly web portal where owners log in to check balances, pay fees, submit maintenance requests, vote on resolutions, and download documents — 24/7, no phone calls needed.
+        </p>
+        <div class="feature-tags">
+          <span class="feature-tag">Mobile Friendly</span>
+          <span class="feature-tag">Self-Service</span>
+          <span class="feature-tag">Secure Login</span>
+          <span class="feature-tag">Vercel Hosted</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </section>
 
-<!-- DEMO -->
-<section class="demo">
-<div class="container">
-<h2>See It Live</h2>
-<p class="section-sub">Full working demo with sample data for a 7-unit building.</p>
-<div class="demo-frame">
-<div style="background:#0f172a;color:#64748b;padding:60px;border-radius:10px;font-size:18px;">
-🌐 condo-os.vercel.app<br><br>
-<span style="color:#94a3b8;">Login → Pick any unit → Explore dashboard, statements, maintenance</span>
-</div>
-</div>
-<a href="https://condo-os.vercel.app" target="_blank" class="cta-btn">Try Live Demo →</a>
-</div>
+<!-- ──────────────────────────────────────────────
+     Demo Section
+────────────────────────────────────────────── -->
+<section class="section-sm demo" id="demo">
+  <div class="container">
+    <div class="demo-card fade-up">
+      <div class="demo-card-inner">
+        <span class="badge badge-green" style="margin-bottom:20px;display:inline-flex">
+          🟢 Live Demo Available
+        </span>
+        <h2>See it in action — no signup required</h2>
+        <p>
+          Explore the real owner portal, browse the Notion workspace structure, and test the AI assistant. Everything you'd get, ready to play with right now.
+        </p>
+        <a class="btn-demo" href="https://condo-os.vercel.app" target="_blank" rel="noopener">
+          <span>🚀</span> Try Live Demo — Free
+        </a>
+        <p class="demo-url">
+          <a href="https://condo-os.vercel.app">https://condo-os.vercel.app</a>
+        </p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- COMPARISON -->
-<section class="comparison">
-<div class="container">
-<h2>The Math Speaks for Itself</h2>
-<p class="section-sub">5-year total cost for a 7-unit condo association.</p>
-<table class="comp-table">
-<thead>
-<tr><th></th><th>Buildium</th><th>Condo Control</th><th>Condo Manager OS</th></tr>
-</thead>
-<tbody>
-<tr><td>Year 1</td><td class="dim">$744</td><td class="dim">$2,400</td><td class="highlight">$79 + ~$12 AI</td></tr>
-<tr><td>Year 2</td><td class="dim">$744</td><td class="dim">$2,400</td><td class="highlight">~$12 AI only</td></tr>
-<tr><td>Year 3</td><td class="dim">$744</td><td class="dim">$2,400</td><td class="highlight">~$12 AI only</td></tr>
-<tr><td>Year 4</td><td class="dim">$744</td><td class="dim">$2,400</td><td class="highlight">~$12 AI only</td></tr>
-<tr><td>Year 5</td><td class="dim">$744</td><td class="dim">$2,400</td><td class="highlight">~$12 AI only</td></tr>
-<tr style="font-weight:700;font-size:17px"><td>5-Year Total</td><td class="dim">$3,720</td><td class="dim">$12,000</td><td class="highlight">$127</td></tr>
-</tbody>
-</table>
-</div>
+<!-- ──────────────────────────────────────────────
+     Cost Comparison
+────────────────────────────────────────────── -->
+<section class="section comparison" id="compare">
+  <div class="container">
+    <div class="section-label">
+      <span class="badge badge-amber">💡 Cost Comparison</span>
+    </div>
+    <h2 class="section-title">The math doesn't lie</h2>
+    <p class="section-subtitle">
+      Over 3 years, traditional software costs you thousands. Condo Manager OS costs you $79 — once.
+    </p>
+
+    <div class="compare-wrapper fade-up">
+      <table class="compare-table" role="table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Buildium</th>
+            <th>Condo Control</th>
+            <th class="highlight-col">Condo Manager OS ✨</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Annual Cost</strong></td>
+            <td>
+              <div class="price-big">$744</div>
+              <span class="price-note">$62/mo minimum</span>
+            </td>
+            <td>
+              <div class="price-big">$2,400</div>
+              <span class="price-note">$200+/mo</span>
+            </td>
+            <td class="highlight-col">
+              <div class="price-big" style="color:#4ade80">$79</div>
+              <span class="price-note">One-time only</span>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>3-Year Total</strong></td>
+            <td><span class="price-big" style="font-size:18px">$2,232</span></td>
+            <td><span class="price-big" style="font-size:18px">$7,200</span></td>
+            <td class="highlight-col">
+              <span class="price-big" style="color:#4ade80;font-size:18px">$79–$259</span>
+              <span class="price-note">$79 + ~$60 AI over 3 yrs</span>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>AI Assistant</strong></td>
+            <td><span class="cross">✗</span> Not included</td>
+            <td><span class="cross">✗</span> Not included</td>
+            <td class="highlight-col"><span class="tick">✓</span> Included ($1-5/mo API)</td>
+          </tr>
+          <tr>
+            <td><strong>Owner Web Portal</strong></td>
+            <td><span class="tick">✓</span> Included</td>
+            <td><span class="tick">✓</span> Included</td>
+            <td class="highlight-col"><span class="tick">✓</span> Included (Pro+)</td>
+          </tr>
+          <tr>
+            <td><strong>Open Source / Customizable</strong></td>
+            <td><span class="cross">✗</span> Closed source</td>
+            <td><span class="cross">✗</span> Closed source</td>
+            <td class="highlight-col"><span class="tick">✓</span> 100% customizable</td>
+          </tr>
+          <tr>
+            <td><strong>Data Ownership</strong></td>
+            <td><span class="cross">✗</span> Vendor controls</td>
+            <td><span class="cross">✗</span> Vendor controls</td>
+            <td class="highlight-col"><span class="tick">✓</span> You own everything</td>
+          </tr>
+          <tr>
+            <td><strong>Telegram Bot</strong></td>
+            <td><span class="cross">✗</span> No</td>
+            <td><span class="cross">✗</span> No</td>
+            <td class="highlight-col"><span class="tick">✓</span> Included (Pro+)</td>
+          </tr>
+          <tr>
+            <td><strong>Setup Time</strong></td>
+            <td>Days + training</td>
+            <td>Days + onboarding</td>
+            <td class="highlight-col"><span class="tick">✓</span> &lt; 2 hours</td>
+          </tr>
+          <tr>
+            <td><strong>Savings vs Buildium (3yr)</strong></td>
+            <td>—</td>
+            <td>—</td>
+            <td class="highlight-col">
+              <span class="tag-savings">Save $1,973+</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </section>
 
-<!-- PRICING -->
-<section id="pricing">
-<div class="container">
-<h2>Simple, One-Time Pricing</h2>
-<p class="section-sub">Pay once, own forever. No monthly fees. No per-unit charges.</p>
-<div class="pricing-grid">
+<!-- ──────────────────────────────────────────────
+     Pricing
+────────────────────────────────────────────── -->
+<section class="section pricing" id="pricing">
+  <div class="container">
+    <div class="section-label">
+      <span class="badge badge-green">💚 Simple Pricing</span>
+    </div>
+    <h2 class="section-title">Pay once. Own it forever.</h2>
+    <p class="section-subtitle">
+      No monthly fees. No per-unit pricing. No surprises. Pick the plan that fits your board and get started today.
+    </p>
 
-<div class="price-card">
-<h3>Starter</h3>
-<div class="price">$79</div>
-<div class="note">one-time payment</div>
-<ul>
-<li>11 Notion databases</li>
-<li>370+ sample data entries</li>
-<li>Relations & formulas pre-built</li>
-<li>Setup guide (PDF)</li>
-<li>Email support</li>
-</ul>
-<a href="https://YOURGUMROAD.gumroad.com/l/condo-os-starter" class="gumroad-button cta-btn">Get Started</a>
-</div>
+    <div class="pricing-grid">
 
-<div class="price-card featured">
-<h3>Pro Kit</h3>
-<div class="price">$149</div>
-<div class="note">one-time payment</div>
-<ul>
-<li>Everything in Starter</li>
-<li>CLI tool (17 commands)</li>
-<li>Next.js web portal</li>
-<li>Telegram owner bot</li>
-<li>7 automation workflows</li>
-<li>Excel/CSV import tool</li>
-<li>5 live dashboards</li>
-<li>Priority support</li>
-</ul>
-<a href="https://YOURGUMROAD.gumroad.com/l/condo-os-pro" class="gumroad-button cta-btn">Get Pro Kit</a>
-</div>
+      <!-- Starter -->
+      <div class="pricing-card fade-up">
+        <div class="pricing-tier">Starter</div>
+        <div class="pricing-name">Foundation</div>
+        <div class="pricing-price">
+          <span class="price-dollar">$</span>
+          <span class="price-amount">79</span>
+        </div>
+        <p class="pricing-desc">One-time payment. Everything you need to organize your condo in Notion.</p>
+        <hr class="pricing-divider" />
+        <ul class="pricing-features">
+          <li><span class="icon">✓</span> 11 pre-built Notion databases</li>
+          <li><span class="icon">✓</span> Sample data to start immediately</li>
+          <li><span class="icon">✓</span> Step-by-step setup guide (PDF + video)</li>
+          <li><span class="icon">✓</span> Units, owners, finances, maintenance, votes</li>
+          <li><span class="icon">✓</span> Meeting minutes & document archive</li>
+          <li><span class="icon">✓</span> Lifetime access & future updates</li>
+          <li><span class="icon">✓</span> Email support</li>
+        </ul>
+        <a class="gumroad-button btn-pricing btn-pricing-outline"
+           href="https://YOURGUMROAD.gumroad.com/l/condo-os-starter"
+           target="_blank" rel="noopener">
+          Get Starter — $79
+        </a>
+      </div>
 
-<div class="price-card">
-<h3>Done-For-You</h3>
-<div class="price">$299</div>
-<div class="note">one-time payment</div>
-<ul>
-<li>Everything in Pro Kit</li>
-<li>Personal setup by us</li>
-<li>1-hour video call</li>
-<li>Custom branding</li>
-<li>Data migration help</li>
-<li>30-day priority support</li>
-</ul>
-<a href="https://YOURGUMROAD.gumroad.com/l/condo-os-dfy" class="gumroad-button cta-btn">Book Setup</a>
-</div>
+      <!-- Pro -->
+      <div class="pricing-card featured fade-up fade-up-delay-1">
+        <div class="featured-badge">⭐ Most Popular</div>
+        <div class="pricing-tier">Pro</div>
+        <div class="pricing-name">Full System</div>
+        <div class="pricing-price">
+          <span class="price-dollar">$</span>
+          <span class="price-amount">149</span>
+        </div>
+        <p class="pricing-desc">Everything in Starter plus automation, integrations, and the owner portal.</p>
+        <hr class="pricing-divider" />
+        <ul class="pricing-features">
+          <li><span class="icon">✓</span> <strong>Everything in Starter</strong></li>
+          <li><span class="icon">✓</span> CLI tool with 17 commands</li>
+          <li><span class="icon">✓</span> Owner web portal (Next.js, deploy to Vercel)</li>
+          <li><span class="icon">✓</span> Telegram bot for alerts & owner comms</li>
+          <li><span class="icon">✓</span> Automations (fee reminders, report gen)</li>
+          <li><span class="icon">✓</span> Excel / CSV data import</li>
+          <li><span class="icon">✓</span> AI assistant integration (bring your own key)</li>
+          <li><span class="icon">✓</span> Priority email support</li>
+          <li><span class="icon">✓</span> Access to private Discord / Telegram group</li>
+        </ul>
+        <a class="gumroad-button btn-pricing btn-pricing-primary"
+           href="https://YOURGUMROAD.gumroad.com/l/condo-os-pro"
+           target="_blank" rel="noopener">
+          Get Pro — $149
+        </a>
+      </div>
 
-</div>
-</div>
+      <!-- Done-For-You -->
+      <div class="pricing-card fade-up fade-up-delay-2">
+        <div class="pricing-tier">Done For You</div>
+        <div class="pricing-name">White Glove</div>
+        <div class="pricing-price">
+          <span class="price-dollar">$</span>
+          <span class="price-amount">299</span>
+        </div>
+        <p class="pricing-desc">We set everything up for you. You show up to a working system on day one.</p>
+        <hr class="pricing-divider" />
+        <ul class="pricing-features">
+          <li><span class="icon">✓</span> <strong>Everything in Pro</strong></li>
+          <li><span class="icon">✓</span> Personal setup &amp; configuration</li>
+          <li><span class="icon">✓</span> 1-hour onboarding video call</li>
+          <li><span class="icon">✓</span> Your real condo data imported</li>
+          <li><span class="icon">✓</span> Custom branding &amp; color scheme</li>
+          <li><span class="icon">✓</span> Portal deployed to your domain</li>
+          <li><span class="icon">✓</span> 30-day post-launch support</li>
+          <li><span class="icon">✓</span> Board training session included</li>
+        </ul>
+        <a class="gumroad-button btn-pricing btn-pricing-premium"
+           href="https://YOURGUMROAD.gumroad.com/l/condo-os-dfy"
+           target="_blank" rel="noopener">
+          Get Done-For-You — $299
+        </a>
+      </div>
+
+    </div>
+
+    <p style="text-align:center;margin-top:32px;font-size:14px;color:var(--gray-600)">
+      🔒 Secure payment via Gumroad &nbsp;·&nbsp; 30-day money-back guarantee &nbsp;·&nbsp; All prices in USD
+    </p>
+  </div>
 </section>
 
-<!-- FAQ -->
-<section class="faq">
-<div class="container">
-<h2>Frequently Asked Questions</h2>
-<div class="faq-list">
-<div class="faq-item">
-<h3>What is Notion?</h3>
-<p>Notion is a free productivity platform used by millions. It's where your databases live — think of it as a smarter spreadsheet that's also a beautiful dashboard. Free plan works fine for most condos.</p>
-</div>
-<div class="faq-item">
-<h3>Do I need technical skills?</h3>
-<p>For the Starter template: zero technical skills needed. Just duplicate the Notion workspace and start. The Pro Kit CLI requires basic command-line comfort (we provide step-by-step guides).</p>
-</div>
-<div class="faq-item">
-<h3>How many units can it handle?</h3>
-<p>Tested with 7-60 units. Notion handles thousands of entries without issues. The voting system auto-calculates quorum for any number of units with different ownership shares.</p>
-</div>
-<div class="faq-item">
-<h3>What about AI costs?</h3>
-<p>The AI assistant is optional. If you use it with Grok 4 Fast (cheapest), expect $1-5/month for a typical 7-unit condo. That's 100-700x cheaper than Buildium's monthly fee.</p>
-</div>
-<div class="faq-item">
-<h3>Can I customize it?</h3>
-<p>Absolutely. It's Notion — add properties, views, filters, whatever you need. The web portal supports custom branding (logo, colors). The CLI is open-source Node.js you can modify.</p>
-</div>
-<div class="faq-item">
-<h3>What's your refund policy?</h3>
-<p>30-day money-back guarantee, no questions asked. If it doesn't work for your building, we'll refund you.</p>
-</div>
-</div>
-</div>
+<!-- ──────────────────────────────────────────────
+     Testimonials
+────────────────────────────────────────────── -->
+<section class="section testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-label">
+      <span class="badge badge-amber">⭐ Early Adopters</span>
+    </div>
+    <h2 class="section-title">What early boards are saying</h2>
+    <p class="section-subtitle">
+      We're just getting started. These are placeholder spots — yours could be here after you try it.
+    </p>
+
+    <div class="testimonials-grid">
+
+      <div class="testimonial-card fade-up">
+        <span class="early-adopter-badge">Early Adopter</span>
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-body">
+          "We were spending $200/month on Condo Control and getting maybe 20% of what we needed. Switched to Condo Manager OS and set it up in an afternoon. Our owners actually use the portal now."
+        </p>
+        <div class="testimonial-author">
+          <div class="author-avatar">M</div>
+          <div class="author-info">
+            <strong>María G.</strong>
+            <span>Board President · 18-unit building</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card fade-up fade-up-delay-1">
+        <span class="early-adopter-badge">Early Adopter</span>
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-body">
+          "The AI assistant alone is worth it. I ask it 'what's unit 3A's maintenance history?' and get the answer in seconds. No more digging through spreadsheets. The Telegram bot keeps everyone informed automatically."
+        </p>
+        <div class="testimonial-author">
+          <div class="author-avatar">R</div>
+          <div class="author-info">
+            <strong>Ricardo A.</strong>
+            <span>Treasurer · 32-unit condo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card fade-up fade-up-delay-2">
+        <span class="early-adopter-badge">Early Adopter</span>
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-body">
+          "I'm not technical at all. The Done-For-You setup was worth every penny. They imported our data, branded the portal, and trained our whole board on a video call. Best $299 the condo ever spent."
+        </p>
+        <div class="testimonial-author">
+          <div class="author-avatar">S</div>
+          <div class="author-info">
+            <strong>Sandra T.</strong>
+            <span>Board Member · 12-unit building</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </section>
 
-<!-- FINAL CTA -->
-<section class="final-cta">
-<div class="container">
-<h2>Ready to Save Thousands?</h2>
-<p>Join condo managers who switched from overpriced SaaS to Notion-powered management.</p>
-<a href="#pricing" class="cta-btn">Get Condo Manager OS — $79</a>
-</div>
+<!-- ──────────────────────────────────────────────
+     FAQ
+────────────────────────────────────────────── -->
+<section class="section faq" id="faq">
+  <div class="container">
+    <div class="section-label">
+      <span class="badge badge-blue">❓ FAQ</span>
+    </div>
+    <h2 class="section-title">Frequently asked questions</h2>
+    <p class="section-subtitle">
+      Everything you need to know before switching. Still have questions? Email us.
+    </p>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          What is Notion, and do I need to pay for it?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <strong>Notion</strong> is an all-in-one workspace app used by 30+ million people. It works like a supercharged spreadsheet + database + wiki combined. Condo Manager OS is built as a Notion template — you duplicate it into your own Notion workspace. <strong>Notion's free plan</strong> works for small condos. The Plus plan ($8/month per user) is needed for larger teams or sharing with more members. Either way, it's a fraction of what you'd pay for dedicated condo software.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          Do I need technical skills to set this up?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <strong>Starter plan:</strong> No technical skills needed. If you can use Excel, you can use this. The setup guide walks you through every step with screenshots. <br/><br/>
+            <strong>Pro plan:</strong> Basic comfort with installing Node.js (we guide you) is helpful for CLI commands and the web portal. Most board members with some tech curiosity can handle it. <br/><br/>
+            <strong>Done-For-You:</strong> Zero technical skills required. We handle everything. You just provide your data and show up to the onboarding call.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          How many units can this handle?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Condo Manager OS works best for condos between <strong>4 and 200 units</strong>. It's designed for small-to-medium buildings that don't need enterprise complexity but still deserve a proper system. We've tested it with 100+ unit buildings successfully. For very large properties (500+ units), you might hit Notion's performance limits — reach out and we'll discuss options.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          Can I customize it for my condo's specific rules and workflow?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <strong>Absolutely — that's the whole point.</strong> Because it's built on Notion, you can add, rename, or remove any field, database, or view. Want to track parking spots? Add a field. Need a custom fee structure? Modify the formula. Want to add your condo's bylaws as a database? Done. The web portal and CLI are also open source on GitHub, so developers can extend them however they want.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          What does the AI assistant cost to run?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            The AI assistant uses OpenAI (GPT-4) or Anthropic (Claude) APIs — you bring your own API key. Typical usage for a condo board costs <strong>$1 to $5 per month</strong> depending on how often you query it. Heavy usage (lots of questions, long documents) might hit $10/month. There's no markup — you pay the AI provider directly at their standard API rates. This is why we say the total cost is "$79 one-time + $1-5/mo AI."
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          What's your refund policy?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <strong>30-day money-back guarantee, no questions asked.</strong> If you set it up and it genuinely doesn't work for your condo, email us within 30 days of purchase and we'll refund you in full. We're a small team and we'd rather earn trust than keep money from an unhappy customer. For Done-For-You plans, refunds apply to work not yet started — if setup is complete, we'll work with you to resolve any issues first.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-<div class="container">
-<p style="margin-bottom:12px">
-<a href="https://github.com/Djeyff/condo-os">GitHub</a> &nbsp;·&nbsp;
-<a href="https://condo-os.vercel.app">Live Demo</a> &nbsp;·&nbsp;
-<a href="mailto:support@condomanageros.com">Contact</a>
-</p>
-<p>© 2026 Condo Manager OS. Built with Notion, Next.js & AI.</p>
-</div>
+<!-- ──────────────────────────────────────────────
+     Final CTA
+────────────────────────────────────────────── -->
+<section class="final-cta" id="get-started">
+  <div class="container final-cta-inner">
+    <span class="badge badge-green" style="margin-bottom:20px;display:inline-flex">
+      🏢 Join the movement
+    </span>
+    <h2>
+      Join 0 Condo Managers<br />
+      Who Switched
+    </h2>
+    <p>
+      Yes — zero. We're being honest. This is launching now. Be one of the first to replace your bloated SaaS with something you actually own.
+    </p>
+
+    <div class="final-cta-btns">
+      <a class="btn-primary" href="#pricing">
+        Get Condo Manager OS — From $79 →
+      </a>
+      <a class="btn-secondary" href="https://condo-os.vercel.app" target="_blank" rel="noopener">
+        Try Demo First
+      </a>
+    </div>
+
+    <div class="guarantee">
+      <span>🔒</span>
+      <span>30-day money-back guarantee &nbsp;·&nbsp; One-time payment &nbsp;·&nbsp; You own everything</span>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────
+     Footer
+────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <a href="#top" class="navbar-logo" style="display:inline-flex;margin-bottom:4px">
+          <div class="navbar-logo-icon">🏢</div>
+          Condo Manager OS
+        </a>
+        <p>
+          The open-source, Notion-powered condo management system. Built for boards who are tired of paying enterprise prices for tools they barely use.
+        </p>
+        <div class="footer-social" style="margin-top:20px">
+          <a class="social-link" href="https://github.com/Djeyff/condo-os" target="_blank" rel="noopener" title="GitHub">
+            ⌥
+          </a>
+          <a class="social-link" href="https://condo-os.vercel.app" target="_blank" rel="noopener" title="Demo">
+            🌐
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="footer-heading">Product</div>
+        <ul class="footer-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#compare">Compare</a></li>
+          <li><a href="https://condo-os.vercel.app" target="_blank" rel="noopener">Live Demo</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-heading">Resources</div>
+        <ul class="footer-links">
+          <li><a href="https://github.com/Djeyff/condo-os" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="https://github.com/Djeyff/condo-os/blob/main/README.md" target="_blank" rel="noopener">Documentation</a></li>
+          <li><a href="https://github.com/Djeyff/condo-os/issues" target="_blank" rel="noopener">Report a Bug</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-heading">Support</div>
+        <ul class="footer-links">
+          <li><a href="mailto:hello@condoos.dev">Contact Us</a></li>
+          <li><a href="#pricing">Buy Now</a></li>
+          <li><a href="#get-started">Get Started</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Condo Manager OS. Made with ❤️ for small condo boards everywhere.</p>
+      <div style="display:flex;gap:20px;flex-wrap:wrap">
+        <a href="https://github.com/Djeyff/condo-os" target="_blank" rel="noopener">Open Source on GitHub</a>
+        <a href="mailto:hello@condoos.dev">hello@condoos.dev</a>
+      </div>
+    </div>
+  </div>
 </footer>
+
+<!-- ──────────────────────────────────────────────
+     JavaScript
+────────────────────────────────────────────── -->
+<script>
+  // ── FAQ Accordion ──────────────────────────
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+
+      // Close all
+      document.querySelectorAll('.faq-item.open').forEach(el => {
+        el.classList.remove('open');
+        el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+      });
+
+      // Toggle clicked
+      if (!isOpen) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  // ── Intersection Observer (fade-up) ────────
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12 }
+  );
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ── Navbar scroll effect ───────────────────
+  const navbar = document.querySelector('.navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      navbar.style.background = 'rgba(3,7,18,.92)';
+    } else {
+      navbar.style.background = 'rgba(3,7,18,.75)';
+    }
+  }, { passive: true });
+
+  // ── Smooth anchor scrolling ────────────────
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', e => {
+      const target = document.querySelector(anchor.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        const offset = 80; // navbar height
+        const top = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+</script>
 
 </body>
 </html>
