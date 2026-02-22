@@ -29,5 +29,12 @@
     "adminChatId": "7707300903",
     "defaultLang": "es",
     "pins": {}
+  },
+  "dashboards": {
+    "kpi": "30f00b56-b6fa-8176-adb7-cd7a22ac7420",
+    "financial": "30f00b56-b6fa-818b-9c3f-ca4b70d18887",
+    "delinquency": "30f00b56-b6fa-81c1-aff4-e8cc714fad34",
+    "maintenance": "30f00b56-b6fa-8159-b2b2-cc3e325e34b0",
+    "works": "30f00b56-b6fa-817f-8a39-e0b28aee3dc1"
   }
 }
