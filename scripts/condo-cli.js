@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // =============================================================================
-// Condo Manager OS v3.1 — Main CLI
+// Condo Manager OS v3.2 — Main CLI
 // =============================================================================
 // Usage: node condo-cli.js <command> [options]
 // Run without arguments or with --help to see all commands.
@@ -2124,13 +2124,286 @@ async function cmdAgmPrep(pos, opts) {
 // HELP
 // ═════════════════════════════════════════════════════════════════════════════
 
+// ─────────────────────────────────────────────────────────────────────────────
+// CMD: vote — Record a resolution vote and auto-calculate results
+// ─────────────────────────────────────────────────────────────────────────────
+// Usage: node condo-cli.js vote <resolution-title> [options]
+//   --meeting="Meeting name"  (required — partial match)
+//   --A-1=for --A-2=against --A-3=abstain --A-4=absent  (per-unit votes)
+//   --desc="Resolution description"
+//   --num=1  (resolution number)
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function cmdVote(pos, opts) {
+  const resTitle = pos.slice(1).join(' ') || opts.title || opts.resolution;
+  if (!resTitle) die('Usage: vote <resolution-title> --meeting="Meeting" --A-1=for --A-2=against ...');
+
+  const meetingSearch = opts.meeting || opts.m;
+  if (!meetingSearch) die('Missing --meeting="Meeting Name" (partial match supported)');
+
+  const RESOLUTIONS_DB = DB.resolutions;
+  if (!RESOLUTIONS_DB) die('Resolutions DB not configured. Add databases.resolutions to config.json');
+
+  // Get units with ownership shares
+  process.stdout.write(`${C.grey}Fetching units...${C.reset} `);
+  const units = await queryAll(DB.units);
+  console.log(`${units.length} found`);
+
+  const unitMap = {}; // unit name → { id, share, owner }
+  for (const u of units) {
+    const name = getTitle(u);
+    if (!name || name === '(template)') continue;
+    unitMap[name] = {
+      id: u.id,
+      share: getNumber(u, 'Ownership Share (%)') || 0,
+      owner: getText(u, 'Owner Name'),
+    };
+  }
+
+  // Find meeting
+  const MEETINGS_DB = DB.meetings;
+  if (!MEETINGS_DB) die('Meetings DB not configured');
+  const meetings = await queryAll(MEETINGS_DB);
+  const meeting = meetings.find(m => {
+    const t = getTitle(m).toLowerCase();
+    return t.includes(meetingSearch.toLowerCase());
+  });
+  if (!meeting) {
+    console.log(`${C.red}✗  Meeting not found: "${meetingSearch}"${C.reset}`);
+    console.log(`${C.grey}Available:${C.reset}`);
+    meetings.forEach(m => console.log(`  - ${getTitle(m)}`));
+    die('Use partial match from above');
+  }
+  console.log(`${C.green}✓${C.reset} Meeting: ${C.bold}${getTitle(meeting)}${C.reset}`);
+
+  // Parse per-unit votes from opts
+  const votes = {};
+  const validVotes = ['for', 'against', 'abstain', 'absent'];
+  const unitNames = Object.keys(unitMap).sort();
+
+  for (const unitName of unitNames) {
+    // Try various key formats: --A-1=for, --a1=for, --A1=for
+    const norm = unitName.replace('-', '').toLowerCase();
+    const key = Object.keys(opts).find(k => {
+      const kn = k.replace('-', '').toLowerCase();
+      return kn === unitName.toLowerCase() || kn === norm;
+    });
+    if (key && validVotes.includes(opts[key].toLowerCase())) {
+      votes[unitName] = opts[key].charAt(0).toUpperCase() + opts[key].slice(1).toLowerCase();
+      // Capitalize first letter: for → For
+      if (votes[unitName] === 'For') votes[unitName] = 'For';
+      else if (votes[unitName] === 'Against') votes[unitName] = 'Against';
+      else if (votes[unitName] === 'Abstain') votes[unitName] = 'Abstain';
+      else if (votes[unitName] === 'Absent') votes[unitName] = 'Absent';
+    } else {
+      votes[unitName] = 'Absent'; // default if not specified
+    }
+  }
+
+  // Calculate vote percentages
+  let forPct = 0, againstPct = 0, abstainPct = 0, presentPct = 0;
+  for (const [unit, vote] of Object.entries(votes)) {
+    const share = unitMap[unit]?.share || 0;
+    if (vote === 'For')     { forPct += share; presentPct += share; }
+    if (vote === 'Against') { againstPct += share; presentPct += share; }
+    if (vote === 'Abstain') { abstainPct += share; presentPct += share; }
+  }
+
+  const quorumMet = presentPct > 0.5;
+  const passed = quorumMet && forPct > (presentPct / 2);
+
+  // Display vote table
+  console.log(`\n${C.bold}${C.cyan}🗳️  RESOLUTION: ${resTitle}${C.reset}`);
+  console.log('─'.repeat(60));
+  console.log(`${C.bold}${'Unit'.padEnd(8)}${'Owner'.padEnd(25)}${'Share'.padEnd(10)}${'Vote'.padEnd(12)}${C.reset}`);
+  console.log('─'.repeat(60));
+
+  for (const unitName of unitNames) {
+    const info = unitMap[unitName];
+    const vote = votes[unitName];
+    const shareStr = (info.share * 100).toFixed(1) + '%';
+    const voteColor = vote === 'For' ? C.green : vote === 'Against' ? C.red : vote === 'Abstain' ? C.yellow : C.grey;
+    const ownerShort = (info.owner || '').slice(0, 23);
+    console.log(`${unitName.padEnd(8)}${ownerShort.padEnd(25)}${shareStr.padEnd(10)}${voteColor}${vote.padEnd(12)}${C.reset}`);
+  }
+
+  console.log('═'.repeat(60));
+  console.log(`Quorum Present:  ${C.bold}${(presentPct * 100).toFixed(1)}%${C.reset} (need >50%)  ${quorumMet ? C.green + '✅ MET' : C.red + '❌ NOT MET'}${C.reset}`);
+  console.log(`Votes For:       ${C.green}${(forPct * 100).toFixed(1)}%${C.reset}`);
+  console.log(`Votes Against:   ${C.red}${(againstPct * 100).toFixed(1)}%${C.reset}`);
+  console.log(`Abstentions:     ${C.yellow}${(abstainPct * 100).toFixed(1)}%${C.reset}`);
+  console.log(`Result:          ${passed ? C.green + C.bold + '✅ PASSED' : C.red + C.bold + '❌ REJECTED'}${C.reset}`);
+
+  // Create resolution in Notion
+  const properties = {
+    'Resolution': prop.title(resTitle),
+    'Meeting': prop.relation([meeting.id]),
+    'Votes For (%)': prop.number(forPct),
+    'Votes Against (%)': prop.number(againstPct),
+    'Abstentions (%)': prop.number(abstainPct),
+    'Quorum Present (%)': prop.number(presentPct),
+    'Quorum Met': prop.checkbox(quorumMet),
+    'Passed': prop.checkbox(passed),
+  };
+  if (opts.desc || opts.description) properties['Description'] = prop.text(opts.desc || opts.description);
+  if (opts.num || opts.number) properties['Resolution Number'] = prop.number(parseInt(opts.num || opts.number));
+
+  // Set per-unit vote selects
+  for (const [unit, vote] of Object.entries(votes)) {
+    properties[unit + ' Vote'] = prop.select(vote);
+  }
+
+  await api(() => request('/pages', 'POST', JSON.stringify({
+    parent: { database_id: RESOLUTIONS_DB },
+    properties,
+  })));
+
+  console.log(`\n${C.green}✓  Resolution recorded in Notion${C.reset}`);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CMD: meeting-report — Full meeting report with quorum & vote breakdown
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function cmdMeetingReport(pos, opts) {
+  const meetingSearch = pos.slice(1).join(' ') || opts.meeting || opts.m;
+  if (!meetingSearch) {
+    // List all meetings
+    const MEETINGS_DB = DB.meetings;
+    if (!MEETINGS_DB) die('Meetings DB not configured');
+    const meetings = await queryAll(MEETINGS_DB);
+    console.log(`\n${C.bold}${C.cyan}📅 ALL MEETINGS${C.reset}\n`);
+    for (const m of meetings) {
+      const title = getTitle(m);
+      const date = getDate(m, 'Date');
+      const type = getSelect(m, 'Type');
+      console.log(`  ${C.bold}${fmtDate(date)}${C.reset}  ${title}  ${C.grey}(${type})${C.reset}`);
+    }
+    console.log(`\n${C.grey}Usage: meeting-report "AGM 2025" (partial match)${C.reset}`);
+    return;
+  }
+
+  const MEETINGS_DB = DB.meetings;
+  const RESOLUTIONS_DB = DB.resolutions;
+  if (!MEETINGS_DB) die('Meetings DB not configured');
+  if (!RESOLUTIONS_DB) die('Resolutions DB not configured');
+
+  // Get units
+  const units = await queryAll(DB.units);
+  const unitMap = {};
+  for (const u of units) {
+    const name = getTitle(u);
+    if (!name || name === '(template)') continue;
+    unitMap[name] = {
+      share: getNumber(u, 'Ownership Share (%)') || 0,
+      owner: getText(u, 'Owner Name'),
+    };
+  }
+
+  // Find meeting
+  const meetings = await queryAll(MEETINGS_DB);
+  const meeting = meetings.find(m => getTitle(m).toLowerCase().includes(meetingSearch.toLowerCase()));
+  if (!meeting) {
+    console.log(`${C.red}✗  Meeting not found: "${meetingSearch}"${C.reset}`);
+    meetings.forEach(m => console.log(`  - ${getTitle(m)}`));
+    return;
+  }
+
+  const title = getTitle(meeting);
+  const date = getDate(meeting, 'Date');
+  const type = getSelect(meeting, 'Type');
+
+  console.log(`\n${'═'.repeat(60)}`);
+  console.log(`${C.bold}${C.cyan} ${title}${C.reset}`);
+  console.log(`${'═'.repeat(60)}`);
+  console.log(`Date: ${fmtDate(date)}  |  Type: ${type}`);
+
+  // Get resolutions for this meeting
+  const allRes = await queryAll(RESOLUTIONS_DB);
+  const meetingRes = allRes.filter(r => {
+    const rels = getRelationIds(r, 'Meeting');
+    return rels.includes(meeting.id);
+  }).sort((a, b) => (getNumber(a, 'Resolution Number') || 0) - (getNumber(b, 'Resolution Number') || 0));
+
+  if (!meetingRes.length) {
+    console.log(`\n${C.grey}No resolutions recorded for this meeting.${C.reset}`);
+    return;
+  }
+
+  // Determine overall quorum from first resolution (all should be same meeting)
+  const unitNames = Object.keys(unitMap).sort();
+
+  // Attendance summary from first resolution's votes
+  const firstRes = meetingRes[0];
+  const present = [], absent = [];
+  for (const u of unitNames) {
+    const vote = getSelect(firstRes, u + ' Vote');
+    if (vote === 'Absent') absent.push(u);
+    else present.push(u);
+  }
+
+  const presentPct = present.reduce((sum, u) => sum + (unitMap[u]?.share || 0), 0);
+
+  console.log(`\n${C.bold}ATTENDANCE${C.reset}`);
+  console.log('─'.repeat(60));
+  console.log(`${'Unit'.padEnd(8)}${'Owner'.padEnd(28)}${'Share'.padEnd(10)}${'Status'.padEnd(10)}`);
+  console.log('─'.repeat(60));
+  for (const u of unitNames) {
+    const info = unitMap[u];
+    const isPresent = present.includes(u);
+    const color = isPresent ? C.green : C.grey;
+    console.log(`${color}${u.padEnd(8)}${(info.owner || '').slice(0, 26).padEnd(28)}${((info.share * 100).toFixed(1) + '%').padEnd(10)}${isPresent ? 'Present' : 'Absent'}${C.reset}`);
+  }
+  console.log('═'.repeat(60));
+  console.log(`Present: ${C.bold}${present.length}/${unitNames.length}${C.reset} units = ${C.bold}${(presentPct * 100).toFixed(1)}%${C.reset} of votes  ${presentPct > 0.5 ? C.green + '✅ QUORUM MET' : C.red + '❌ NO QUORUM'}${C.reset}`);
+
+  // Each resolution
+  console.log(`\n${C.bold}RESOLUTIONS (${meetingRes.length})${C.reset}`);
+
+  for (const res of meetingRes) {
+    const num = getNumber(res, 'Resolution Number');
+    const resTitle = getTitle(res);
+    const desc = getText(res, 'Description');
+    const passed = res.properties['Passed']?.checkbox;
+    const forP = getNumber(res, 'Votes For (%)') || 0;
+    const againstP = getNumber(res, 'Votes Against (%)') || 0;
+    const abstainP = getNumber(res, 'Abstentions (%)') || 0;
+
+    console.log(`\n${'─'.repeat(60)}`);
+    console.log(`${C.bold}#${num || '?'}  ${resTitle}${C.reset}`);
+    if (desc) console.log(`${C.grey}${desc}${C.reset}`);
+
+    // Vote breakdown per unit
+    const vFor = [], vAgainst = [], vAbstain = [], vAbsent = [];
+    for (const u of unitNames) {
+      const vote = getSelect(res, u + ' Vote');
+      if (vote === 'For') vFor.push(u);
+      else if (vote === 'Against') vAgainst.push(u);
+      else if (vote === 'Abstain') vAbstain.push(u);
+      else vAbsent.push(u);
+    }
+
+    console.log(`  ${C.green}For:${C.reset}     ${vFor.join(', ') || '—'} ${C.bold}(${(forP * 100).toFixed(1)}%)${C.reset}`);
+    console.log(`  ${C.red}Against:${C.reset} ${vAgainst.join(', ') || '—'} ${C.bold}(${(againstP * 100).toFixed(1)}%)${C.reset}`);
+    console.log(`  ${C.yellow}Abstain:${C.reset} ${vAbstain.join(', ') || '—'} ${C.bold}(${(abstainP * 100).toFixed(1)}%)${C.reset}`);
+    if (vAbsent.length) console.log(`  ${C.grey}Absent:  ${vAbsent.join(', ')}${C.reset}`);
+
+    const passedStr = passed ? `${C.green}${C.bold}✅ PASSED` : `${C.red}${C.bold}❌ REJECTED`;
+    console.log(`  Result:  ${passedStr}${C.reset}`);
+  }
+
+  console.log(`\n${'═'.repeat(60)}\n`);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 function showHelp() {
   const bname   = BUILDING.name     || 'Your Building';
   const freq    = BUILDING.feeFrequency || 'quarterly';
   const budget  = fmtMoney(BUILDING.annualBudget || 0);
 
   console.log(`
-${C.bold}${C.cyan}🏢 CONDO MANAGER OS v3.1 — ${bname}${C.reset}
+${C.bold}${C.cyan}🏢 CONDO MANAGER OS v3.2 — ${bname}${C.reset}
 ${'═'.repeat(56)}
 ${C.grey}Building: ${bname} | Currency: ${CURRENCY} | Frequency: ${freq}
 Annual Budget: ${budget}${C.reset}
@@ -2209,6 +2482,18 @@ ${C.bold}PREMIUM COMMANDS (v3.1):${C.reset}
     voting shares, works summary, draft agenda, and owner notice.
     Aliases: agm, assembly
     ${C.grey}Ex: node condo-cli.js agm-prep 2026 --date=2026-03-15 --lang=es${C.reset}
+
+  ${C.cyan}vote${C.reset} <resolution-title> --meeting="Meeting" --A-1=for --A-2=against ...
+    Record a resolution vote. Auto-calculates weighted % from ownership shares.
+    Unspecified units default to Absent.
+    ${C.grey}Ex: node condo-cli.js vote "Budget 2026" --meeting="AGM 2025" --A-1=absent --A-2=for --A-3=for --A-4=for --A-5=for --A-6=for --A-7=for${C.reset}
+
+  ${C.cyan}meeting-report${C.reset} [meeting-name]
+    Full meeting report: attendance, quorum, all resolutions with vote breakdown.
+    Without arguments, lists all meetings.
+    Aliases: meeting, minutes
+    ${C.grey}Ex: node condo-cli.js meeting-report "AGM 2025"
+    Ex: node condo-cli.js meeting-report${C.reset}
 
 ${'─'.repeat(56)}
 ${C.grey}Unit matching is case-insensitive: "a1" = "A1" = "A-1"
@@ -2299,6 +2584,15 @@ async function main() {
       case 'agm':
       case 'assembly':
         await cmdAgmPrep(pos, opts);
+        break;
+      case 'vote':
+      case 'resolution':
+        await cmdVote(pos, opts);
+        break;
+      case 'meeting-report':
+      case 'meeting':
+      case 'minutes':
+        await cmdMeetingReport(pos, opts);
         break;
       default:
         console.error(`${C.red}✗  Unknown command: '${command}'${C.reset}`);
