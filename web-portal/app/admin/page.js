@@ -37,8 +37,8 @@ export default async function AdminPage() {
   const cashPages = cashDB ? await queryDB(cashDB) : [];
   const cashAccounts = cashPages.map(c => ({
     name: getTitle(c),
-    balance: getNumber(c, 'Balance') || 0,
-    type: getSelect(c, 'Type') || '',
+    balance: getNumber(c, 'Current Balance') || getNumber(c, 'Balance') || 0,
+    type: getSelect(c, 'Account Type') || getSelect(c, 'Type') || '',
   }));
   const totalCash = cashAccounts.reduce((s, c) => s + c.balance, 0);
 
