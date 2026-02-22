@@ -737,7 +737,7 @@ async function handleMaintenancePriority(ctx, session, priority) {
       'Category': { select: { name: 'General' } },
       'Location': { rich_text: [{ text: { content: location } }] },
       'Reported By': { rich_text: [{ text: { content: session.owner } }] },
-      'Reported Date': { date: { start: new Date().toISOString().slice(0, 10) } },
+      'Reported Date': { date: { start: new Date().toISOString() } },
       'Unit': { relation: [{ id: session.unitPageId }] },
     };
 
