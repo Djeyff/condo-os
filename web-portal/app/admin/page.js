@@ -214,9 +214,7 @@ export default async function AdminPage() {
               </thead>
               <tbody>
                 {units.map((u, i) => (
-                  <tr key={i} className="transition-colors" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
-                    onMouseOver={e => e.currentTarget.style.background = 'rgba(212,168,83,0.05)'}
-                    onMouseOut={e => e.currentTarget.style.background = 'none'}>
+                  <tr key={i} className="transition-colors" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                     <td className="py-3 px-4">
                       <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-xs font-bold"
                         style={{ background: 'rgba(212,168,83,0.15)', color: '#d4a853' }}>{u.unit}</span>
