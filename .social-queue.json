@@ -1,0 +1,149 @@
+{
+  "posts": [
+    {
+      "id": "painPoints-0-x",
+      "platform": "x",
+      "category": "painPoints",
+      "content": "Managing a condo with Excel spreadsheets? 😤\n\nI was too. Tracking 7 units, 140+ ledger entries, quarterly fees, delinquencies...\n\nSo I built an OS that does it all from Notion + AI.\n\n11 databases. 17 commands. One setup.\n\nhttps://casedamare.github.io/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "painPoints-0-linkedin",
+      "platform": "linkedin",
+      "category": "painPoints",
+      "content": "After years of managing a 7-unit condo with spreadsheets, I built something better.\n\nCondo Manager OS turns Notion into a full property management system:\n\n✅ 11 interconnected databases (auto-created)\n✅ 17 CLI commands for daily operations\n✅ Owner self-service portal (Telegram bot)\n✅ Automated payment reminders\n✅ Live dashboards with KPIs\n\nBuilt by a property manager, for property managers.\n\nFree & open source: https://github.com/casedamare/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "painPoints-0-reddit",
+      "platform": "reddit",
+      "category": "painPoints",
+      "content": "TITLE: I built an open-source condo management OS with Notion + AI — 11 databases, 17 commands, owner portal\n\nAfter years of Excel hell managing a small condo (7 units), I built Condo Manager OS.\n\nIt turns Notion into a complete property management system with one setup command. 11 databases auto-created with relations, formulas, and rollups.\n\nFeatures:\n- Fee calls, payment tracking, statements\n- Delinquency tracking with aging\n- Owner portal (Telegram bot — owners check their own balance)\n- Auto late-fee calculation\n- Voting system with weighted quorum\n- 5 live dashboards\n- Excel import for migration\n- Trilingual (ES/EN/FR)\n\nFree on GitHub: https://github.com/casedamare/condo-os\n\nBeen using it in production for my own building. Would love feedback from other condo/HOA managers.",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "painPoints-1-x",
+      "platform": "x",
+      "category": "painPoints",
+      "content": "Your HOA treasurer is using a $4,800/year SaaS to manage 10 units? 🤯\n\nCondo Manager OS: $149 one-time. Or free (open source).\n\n• 11 Notion databases\n• Owner portal bot\n• Auto payment reminders\n• Weighted voting system\n\nBuilt by a real condo manager.\n\nhttps://casedamare.github.io/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "painPoints-1-linkedin",
+      "platform": "linkedin",
+      "category": "painPoints",
+      "content": "The average HOA management software costs $744-4,800/year.\n\nFor a 7-unit condo, that's insane.\n\nI built Condo Manager OS — a Notion-based system that does 90% of what Buildium does, for $149 one-time (or free on GitHub).\n\nThe secret? Notion as the database + AI for automation.\n\nNo monthly fees. No vendor lock-in. Your data stays yours.\n\nhttps://github.com/casedamare/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "painPoints-2-x",
+      "platform": "x",
+      "category": "painPoints",
+      "content": "Every condo board meeting:\n\n\"Who owes what?\"\n\"Did we pay the plumber?\"\n\"What's our cash position?\"\n\n*frantically opens 4 spreadsheets*\n\nOr... just type: condo-cli dashboard\n\nhttps://casedamare.github.io/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "painPoints-3-x",
+      "platform": "x",
+      "category": "painPoints",
+      "content": "Condo owner knocking on your door at 9pm: \"What's my balance?\"\n\nWith Condo Manager OS, they just open Telegram:\n\n💰 Balance: -3,200 DOP\n📊 Last 10 transactions\n🔧 Submit maintenance request\n📅 Next meeting: March 15\n\nSelf-service portal. Trilingual. Zero effort.\n\nhttps://casedamare.github.io/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "features-0-x",
+      "platform": "x",
+      "category": "features",
+      "content": "🗳️ Condo voting shouldn't need a lawyer.\n\nCondo Manager OS auto-calculates:\n• Weighted votes by ownership share\n• Quorum (% present)\n• Pass/fail based on bylaws\n\nOne command:\ncondo-cli vote \"Roof Repair\" --meeting=\"AGM 2026\"\n\nhttps://casedamare.github.io/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "features-1-x",
+      "platform": "x",
+      "category": "features",
+      "content": "\"Send me my account statement\"\n\n$ condo-cli export A-3 --lang=fr\n\n→ Professional statement in French\n→ Every transaction, running balance\n→ Ready to print or email\n\nTrilingual 🇪🇸🇬🇧🇫🇷 out of the box.\n\nhttps://casedamare.github.io/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "features-2-x",
+      "platform": "x",
+      "category": "features",
+      "content": "Migrating from Excel to proper condo management?\n\n$ node import-excel.js your-data.xlsx\n\n→ Auto-detects sheets (units, ledger, expenses, budget)\n→ Creates all relations\n→ 5 minutes, not 5 weeks\n\nhttps://casedamare.github.io/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "features-3-x",
+      "platform": "x",
+      "category": "features",
+      "content": "5 live dashboards, auto-generated from your data:\n\n📈 KPI Dashboard — financial health score\n📊 Financial — cash flow, budget vs actual\n🔴 Delinquency — per-unit aging, impact analysis\n🔧 Maintenance — status/priority board\n🏗️ Works — project progress tracking\n\nAll inside Notion.\n\nhttps://casedamare.github.io/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "features-4-x",
+      "platform": "x",
+      "category": "features",
+      "content": "Payment plans for delinquent owners:\n\n$ condo-cli payment-plan A-1 187000 --installments=12\n\n→ Monthly schedule generated\n→ Auto-creates ledger entries\n→ Track compliance automatically\n\nBecause legal action should be the last resort.\n\nhttps://casedamare.github.io/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "features-5-x",
+      "platform": "x",
+      "category": "features",
+      "content": "7 automation workflows running 24/7:\n\n✅ Payment received → notify admin + owner\n🔧 Maintenance status change → notify owner\n⚠️ 30+ days overdue → alert admin\n📅 Meeting in 48h → remind everyone\n💰 Budget line at 90% → warning\n🏦 Cash below threshold → critical alert\n\nAll via Telegram. No code needed.\n\nhttps://casedamare.github.io/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "buildInPublic-0-x",
+      "platform": "x",
+      "category": "buildInPublic",
+      "content": "Built Condo Manager OS in a week.\n\n11 Notion databases\n17 CLI commands\nOwner portal bot\n7 automation workflows\n5 live dashboards\n2,922 lines of CLI code\n\nPowered by OpenClaw AI + Notion API.\n\nThe future of property management is AI-native.\n\nhttps://github.com/casedamare/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "buildInPublic-1-x",
+      "platform": "x",
+      "category": "buildInPublic",
+      "content": "Day 1: \"I need a better way to track condo finances\"\nDay 7: Full OS with 11 databases, portal bot, auto-dashboards\n\nBuilding with AI doesn't just save time.\nIt makes you build things you'd never attempt.\n\nOpen source: https://github.com/casedamare/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "buildInPublic-2-x",
+      "platform": "x",
+      "category": "buildInPublic",
+      "content": "Managing condos in the Caribbean?\n\nYour residents speak Spanish, English, AND French.\n\nCondo Manager OS is trilingual 🇪🇸🇬🇧🇫🇷:\n• CLI commands\n• Owner portal\n• Account statements\n• Payment reminders\n\nBuilt for the real world.\n\nhttps://casedamare.github.io/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "technical-0-x",
+      "platform": "x",
+      "category": "technical",
+      "content": "setup.js: 1,020 lines\n→ Creates 11 Notion databases\n→ Wires 19 dual relations\n→ Generates 16 formulas (including weighted vote calculations)\n→ Sets rollups, colors, icons\n→ One command. Zero manual setup.\n\nThis is what AI-native tooling looks like.\n\nhttps://github.com/casedamare/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    },
+    {
+      "id": "technical-1-x",
+      "platform": "x",
+      "category": "technical",
+      "content": "TIL: Notion formulas can calculate weighted voting quorum.\n\nEach unit has an ownership % hardcoded in the formula.\nVotes are select fields (For/Against/Abstain/Absent).\nFormulas auto-calculate totals + quorum + pass/fail.\n\nNo code needed at runtime. Pure Notion.\n\nhttps://github.com/casedamare/condo-os",
+      "status": "pending",
+      "createdAt": "2026-02-22T06:33:45.588Z"
+    }
+  ],
+  "lastGenerated": "2026-02-22T06:33:45.588Z"
+}

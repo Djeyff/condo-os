@@ -30,7 +30,9 @@ const ENTERPRISE_COMMANDS = [
   'multi-building', 'buildings',
   'owner-portal',
   'white-label',
-  'payment-plan', 'payplan',
+  'payment-plan', 'payplan', 'plan', 'installments',
+  'vote', 'meeting-report', 'meetingreport',
+  'export', 'export-statement',
 ];
 
 function getTier() {

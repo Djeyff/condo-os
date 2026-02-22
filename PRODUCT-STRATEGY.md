@@ -128,8 +128,11 @@ Happy customer → testimonials → organic growth
 ## Competitive Advantages
 1. **AI-native** — not just a template, it's an operating system with an AI brain
 2. **Zero manual Notion setup** — one command creates everything
-3. **Real-world tested** — built from actual condo management (Framboyant)
+3. **Real-world tested** — built from actual condo management experience
 4. **Multilingual** — ES/EN/FR out of the box (most competitors are English-only)
 5. **Excel migration** — competitors don't offer data import
 6. **Privacy-first** — owner data isolation built into every workflow
 7. **Caribbean/LatAm focus** — underserved market, huge demand
+8. **Voting system** — per-unit weighted votes with auto-quorum calculation
+9. **Owner portal** — Telegram self-service bot (trilingual)
+10. **Live dashboards** — 5 auto-refreshing Notion dashboard pages
