@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // =============================================================================
-// Condo Manager OS v3.0 — Main CLI
+// Condo Manager OS v3.1 — Main CLI
 // =============================================================================
 // Usage: node condo-cli.js <command> [options]
 // Run without arguments or with --help to see all commands.
@@ -1301,6 +1301,826 @@ async function cmdAssessment(pos, opts) {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
+// COMMAND: late-fees [--rate=0.02] [--grace=15] [--confirm]
+// ═════════════════════════════════════════════════════════════════════════════
+
+async function cmdLateFees(pos, opts) {
+  const rate      = parseFloat(opts.rate  || '0.02');
+  const grace     = parseInt(opts.grace   || '15', 10);
+  const isDryRun  = !opts.confirm;
+  const today     = todayISO();
+  const msPerDay  = 86400000;
+
+  console.log(`\n${C.bold}${C.cyan}💸 LATE FEE CALCULATION${C.reset}`);
+  console.log(`Rate: ${(rate * 100).toFixed(2)}%  |  Grace Period: ${grace} days  |  As of: ${fmtDate(today)}`);
+  if (isDryRun) console.log(`\n${C.yellow}⚠️  DRY RUN — add --confirm to apply fees${C.reset}\n`);
+  else console.log();
+
+  process.stdout.write(`${C.grey}Fetching units...${C.reset}`);
+  const units = await queryAll(DB.units);
+  console.log(` ${units.length} found`);
+
+  const overdue = units.filter(u => (getNumber(u, 'Current Balance') || 0) < 0);
+  if (overdue.length === 0) {
+    console.log(`\n${C.green}✅ No units with negative balance — no late fees to apply.${C.reset}`);
+    return;
+  }
+
+  const W = [8, 16, 14, 14, 12];
+  const H = ['Unit', 'Owner', 'Balance', 'Days Overdue', 'Late Fee'];
+  console.log('\n' + tableRow(H, W));
+  console.log(separator(W));
+
+  const toApply = [];
+
+  for (const unit of overdue) {
+    const uid      = getTitle(unit);
+    const owner    = getText(unit, 'Owner Name').substring(0, 15);
+    const balance  = getNumber(unit, 'Current Balance') || 0;
+    const lastPay  = getDate(unit, 'Last Payment Date');
+    const refDate  = lastPay || today;
+    const daysOver = Math.floor((Date.now() - new Date(refDate + 'T12:00:00Z')) / msPerDay);
+
+    if (daysOver <= grace) {
+      console.log(tableRow([uid, owner, fmt(balance), `${daysOver} (within grace)`, '—'], W));
+      continue;
+    }
+
+    const fee = Math.round(Math.abs(balance) * rate * 100) / 100;
+    const flag = daysOver > 90 ? `${C.red}` : (daysOver > 60 ? `${C.yellow}` : '');
+    console.log(flag + tableRow([uid, owner, fmt(balance), String(daysOver), fmt(fee)], W) + C.reset);
+    toApply.push({ unit, uid, balance, daysOver, fee });
+  }
+
+  console.log(separator(W, '═'));
+  const totalFees = toApply.reduce((s, x) => s + x.fee, 0);
+  console.log(`\nUnits subject to late fee: ${toApply.length}  |  Total: ${C.bold}${fmtMoney(totalFees)}${C.reset}`);
+
+  if (isDryRun) {
+    console.log(`\n${C.yellow}Dry run complete. Use --confirm to create ledger entries.${C.reset}`);
+    return;
+  }
+
+  if (toApply.length === 0) {
+    console.log(`\n${C.green}No fees to apply.${C.reset}`);
+    return;
+  }
+
+  console.log(`\n${C.bold}Applying late fees...${C.reset}`);
+  for (const { unit, uid, balance, fee } of toApply) {
+    const newBalance = Math.round((balance - fee) * 100) / 100;
+    await createPage(DB.ledger, {
+      'Entry':         prop.title(`${uid} — Late Fee ${today}`),
+      'Unit':          prop.relation([unit.id]),
+      'Date':          prop.date(today),
+      'Type':          prop.select('Late Fee'),
+      'Debit':         prop.number(fee),
+      'Balance After': prop.number(newBalance),
+      'Category':      prop.select('Penalties & Fees'),
+      'Period':        prop.text(today.slice(0, 7)),
+    });
+    await updatePage(unit.id, {
+      'Current Balance': prop.number(newBalance),
+      'Fee Status':      prop.select(calcFeeStatus(newBalance, getDate(unit, 'Last Payment Date'))),
+    });
+    console.log(`  ${C.green}✓${C.reset} ${uid}: fee ${fmtMoney(fee)} → new balance ${fmtMoney(newBalance)}`);
+  }
+
+  console.log(`\n${C.green}✓ Late fees applied to ${toApply.length} units.${C.reset}  Total: ${C.bold}${fmtMoney(totalFees)}${C.reset}`);
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// COMMAND: reminder [--level=1] [--unit=X] [--all-overdue] [--lang=es|en|fr]
+// ═════════════════════════════════════════════════════════════════════════════
+
+const REMINDER_L10N = {
+  en: {
+    subj: [
+      null,
+      'Reminder — {period} Charges for Unit {unit}',
+      'FORMAL NOTICE — Overdue Charges for Unit {unit}',
+      'FINAL WARNING — Urgent: Unpaid Charges Unit {unit}',
+      'NOTICE OF INTENT — Legal Proceedings — Unit {unit}',
+    ],
+    dear:     'Dear {owner},',
+    body: [
+      null,
+      // Level 1
+      `This is a friendly reminder that your common charges of {amount} {currency} for Unit {unit} appear as unpaid in our records.
+
+Your current balance: {balance} {currency}
+
+If you have recently made the payment, please send us confirmation (transfer receipt or reference number) and we will update your account.
+
+Payment deadline: {deadline}
+
+{bankDetails}
+
+Thank you for your attention.`,
+      // Level 2
+      `We wish to inform you that the following charges for Unit {unit} remain unpaid as of {today}:
+
+Amount due: {amount} {currency}
+Days overdue: {daysOver}
+Current balance: {balance} {currency}
+
+Per the condominium regulations, late payments may incur:
+  • Late fees as established in the building rules
+  • Restriction of access to common amenities
+  • Legal proceedings for recovery
+
+We kindly request immediate payment or, if you are experiencing financial difficulty, contact us to discuss a payment arrangement.
+
+Payment deadline: {deadline}
+
+{bankDetails}`,
+      // Level 3
+      `Despite our previous communications, the following amounts remain outstanding for Unit {unit}:
+
+Total outstanding: {balance} {currency}
+Days overdue: {daysOver}
+
+This debt directly impacts the condominium's ability to pay contractors for essential maintenance, cover insurance premiums, and maintain common areas.
+
+If full payment or a formal payment agreement is not received by {deadline}, the Board will be compelled to pursue legal remedies.
+
+This is our final attempt at an amicable resolution.`,
+      // Level 4
+      `Ref: Outstanding condominium charges — {balance} {currency}
+
+You are hereby formally notified that the Board has authorized the engagement of legal counsel to pursue recovery of the outstanding amount of {balance} {currency} owed by Unit {unit}.
+
+Days overdue: {daysOver}
+
+Unless full payment is received within 15 calendar days of this notice, legal proceedings will be initiated without further notice. All legal costs and fees will be charged to the debtor's account.`,
+    ],
+    closing: 'Best regards,\n{building} Administration\n{today}',
+    levelNames: ['', 'Friendly Reminder', 'Formal Notice', 'Final Warning', 'Pre-Legal Notice'],
+  },
+  es: {
+    subj: [
+      null,
+      'Recordatorio — Cargos {period} Unidad {unit}',
+      'AVISO FORMAL — Cargos Vencidos Unidad {unit}',
+      'ADVERTENCIA FINAL — Urgente: Cargos Impagos Unidad {unit}',
+      'AVISO DE INTENCIÓN — Proceso Legal — Unidad {unit}',
+    ],
+    dear:     'Estimado/a {owner},',
+    body: [
+      null,
+      // Level 1
+      `Le recordamos cordialmente que los cargos de cuota de {amount} {currency} para la Unidad {unit} aparecen como pendientes en nuestros registros.
+
+Saldo actual: {balance} {currency}
+
+Si ya realizó el pago, le agradecemos que nos envíe el comprobante de transferencia o el número de referencia para actualizar su cuenta.
+
+Fecha límite de pago: {deadline}
+
+{bankDetails}
+
+Gracias por su atención.`,
+      // Level 2
+      `Le informamos que los siguientes cargos para la Unidad {unit} continúan sin pagar al {today}:
+
+Monto adeudado: {amount} {currency}
+Días de atraso: {daysOver}
+Saldo actual: {balance} {currency}
+
+Según el reglamento del condominio, los pagos atrasados pueden incurrir en:
+  • Cargos por mora
+  • Restricción de acceso a áreas comunes
+  • Acciones legales para recuperación
+
+Le solicitamos pago inmediato o, si enfrenta dificultades económicas, que se comunique con nosotros para acordar un plan de pago.
+
+Fecha límite: {deadline}
+
+{bankDetails}`,
+      // Level 3
+      `A pesar de nuestras comunicaciones anteriores, los siguientes montos continúan pendientes para la Unidad {unit}:
+
+Total adeudado: {balance} {currency}
+Días de atraso: {daysOver}
+
+Esta deuda afecta directamente la capacidad del condominio para pagar a los contratistas, cubrir primas de seguro y mantener las áreas comunes.
+
+Si no se recibe el pago completo o un acuerdo formal antes del {deadline}, la Junta se verá obligada a iniciar los recursos legales disponibles.
+
+Este es nuestro último intento de resolución amistosa.`,
+      // Level 4
+      `Ref: Cargos de condominio pendientes — {balance} {currency}
+
+Por medio de la presente, se le notifica formalmente que la Junta ha autorizado al asesor legal para gestionar el cobro del monto de {balance} {currency} adeudado por la Unidad {unit}.
+
+Días de atraso: {daysOver}
+
+A menos que se reciba el pago completo dentro de los 15 días calendario siguientes a este aviso, se iniciarán los procedimientos legales sin previo aviso adicional.`,
+    ],
+    closing: 'Atentamente,\nAdministración {building}\n{today}',
+    levelNames: ['', 'Recordatorio Amistoso', 'Aviso Formal', 'Advertencia Final', 'Aviso Pre-Legal'],
+  },
+  fr: {
+    subj: [
+      null,
+      'Rappel — Charges {period} Appartement {unit}',
+      'AVIS FORMEL — Charges impayées Appartement {unit}',
+      'DERNIER AVERTISSEMENT — Urgent : Charges impayées Appartement {unit}',
+      'MISE EN DEMEURE — Procédure légale — Appartement {unit}',
+    ],
+    dear:     'Madame, Monsieur {owner},',
+    body: [
+      null,
+      // Level 1
+      `Nous vous rappelons cordialement que les charges de copropriété de {amount} {currency} pour l'appartement {unit} apparaissent comme impayées dans nos registres.
+
+Solde actuel : {balance} {currency}
+
+Si vous avez effectué le paiement récemment, nous vous prions de nous envoyer la confirmation (preuve de virement ou numéro de référence) afin de mettre à jour votre compte.
+
+Date limite de paiement : {deadline}
+
+{bankDetails}
+
+Nous vous remercions de votre attention.`,
+      // Level 2
+      `Nous vous informons que les charges suivantes pour l'appartement {unit} restent impayées au {today} :
+
+Montant dû : {amount} {currency}
+Jours de retard : {daysOver}
+Solde actuel : {balance} {currency}
+
+Conformément au règlement de copropriété, les retards de paiement peuvent entraîner :
+  • Des pénalités de retard
+  • La restriction d'accès aux équipements communs
+  • Des procédures judiciaires de recouvrement
+
+Nous vous demandons de procéder au règlement immédiat ou, en cas de difficultés financières, de nous contacter pour convenir d'un arrangement.
+
+Date limite : {deadline}
+
+{bankDetails}`,
+      // Level 3
+      `Malgré nos communications précédentes, les montants suivants restent dus pour l'appartement {unit} :
+
+Total dû : {balance} {currency}
+Jours de retard : {daysOver}
+
+Cette dette impacte directement la capacité de la copropriété à régler les entrepreneurs, couvrir les primes d'assurance et entretenir les parties communes.
+
+Sans règlement complet ou accord formel avant le {deadline}, le Conseil sera contraint d'engager les recours légaux disponibles.
+
+Il s'agit de notre dernière tentative de résolution amiable.`,
+      // Level 4
+      `Objet : Charges de copropriété impayées — {balance} {currency}
+
+Vous êtes par la présente formellement notifié(e) que le Conseil a autorisé le recours à un conseil juridique pour le recouvrement du montant de {balance} {currency} dû par l'appartement {unit}.
+
+Jours de retard : {daysOver}
+
+Sans règlement intégral dans les 15 jours calendaires suivant le présent avis, une procédure judiciaire sera engagée sans notification supplémentaire.`,
+    ],
+    closing: 'Cordialement,\nAdministration {building}\n{today}',
+    levelNames: ['', 'Rappel amical', 'Avis formel', 'Dernier avertissement', 'Mise en demeure'],
+  },
+};
+
+function fillTemplate(tpl, vars) {
+  return tpl.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : `{${k}}`));
+}
+
+async function cmdReminder(pos, opts) {
+  const level     = Math.min(4, Math.max(1, parseInt(opts.level || '1', 10)));
+  const lang      = (opts.lang || 'es').toLowerCase();
+  const RL        = REMINDER_L10N[lang] || REMINDER_L10N.es;
+  const today     = todayISO();
+  const deadline  = (() => {
+    const d = new Date(today + 'T12:00:00Z');
+    d.setUTCDate(d.getUTCDate() + 15);
+    return fmtDate(d.toISOString().slice(0, 10));
+  })();
+  const msPerDay  = 86400000;
+  const bankDetails = (BUILDING.bankDetails || '').replace(/\\n/g, '\n');
+
+  process.stdout.write(`${C.grey}Fetching units...${C.reset}`);
+  const units = await queryAll(DB.units);
+  console.log(` ${units.length} found`);
+
+  let targets;
+
+  if (opts.unit) {
+    const found = matchUnit(units, opts.unit);
+    if (!found) die(`Unit '${opts.unit}' not found.`);
+    targets = [found];
+  } else if (opts['all-overdue']) {
+    targets = units.filter(u => (getNumber(u, 'Current Balance') || 0) < 0);
+    if (targets.length === 0) {
+      console.log(`\n${C.green}✅ No overdue units.${C.reset}`);
+      return;
+    }
+  } else {
+    die('Usage: reminder [--level=1] [--unit=X | --all-overdue] [--lang=es|en|fr]');
+  }
+
+  console.log(`\n${C.bold}${C.cyan}📨 PAYMENT REMINDERS — ${RL.levelNames[level]}${C.reset}`);
+  console.log(`Language: ${lang.toUpperCase()}  |  Level: ${level}  |  Generating for ${targets.length} unit(s)\n`);
+
+  for (const unit of targets) {
+    const uid      = getTitle(unit);
+    const owner    = getText(unit, 'Owner Name');
+    const email    = getText(unit, 'Owner Email');
+    const balance  = getNumber(unit, 'Current Balance') || 0;
+    const lastPay  = getDate(unit, 'Last Payment Date');
+    const refDate  = lastPay || today;
+    const daysOver = Math.floor((Date.now() - new Date(refDate + 'T12:00:00Z')) / msPerDay);
+    const period   = `${new Date().getFullYear()}`;
+
+    const vars = {
+      unit:     uid,
+      owner,
+      amount:   fmt(Math.abs(balance)),
+      balance:  fmt(balance),
+      currency: CURRENCY,
+      daysOver: String(daysOver),
+      today:    fmtDate(today),
+      deadline,
+      period,
+      building: BUILDING.name || 'Building Administration',
+      bankDetails: bankDetails || '[Bank details — see config.building.bankDetails]',
+    };
+
+    const subject = fillTemplate(RL.subj[level], vars);
+    const body    = fillTemplate(RL.body[level], vars);
+    const closing = fillTemplate(RL.closing, vars);
+
+    const line = '─'.repeat(70);
+    console.log(line);
+    console.log(`${C.bold}Unit:${C.reset}    ${uid}  |  ${C.bold}Owner:${C.reset} ${owner}  |  ${C.bold}Email:${C.reset} ${email || '—'}`);
+    console.log(`${C.bold}Balance:${C.reset} ${C.red}${fmtMoney(balance)}${C.reset}  |  Days overdue: ${daysOver}`);
+    console.log(line);
+    console.log(`${C.bold}Subject:${C.reset} ${subject}`);
+    console.log();
+    console.log(RL.dear.replace('{owner}', owner));
+    console.log();
+    console.log(body);
+    console.log();
+    console.log(closing);
+    console.log();
+
+    // Log to Communications DB
+    if (DB.communications) {
+      await createPage(DB.communications, {
+        'Subject':   prop.title(subject),
+        'Unit':      prop.relation([unit.id]),
+        'Type':      prop.select('Payment Reminder'),
+        'Channel':   prop.select('Email'),
+        'Date':      prop.date(today),
+        'Direction': prop.select('Sent'),
+        'Content':   prop.text(`Level ${level} — ${body.substring(0, 1800)}`),
+      });
+    }
+  }
+
+  console.log('─'.repeat(70));
+  console.log(`\n${C.green}✓ ${targets.length} reminder(s) generated (Level ${level} — ${RL.levelNames[level]}).${C.reset}`);
+  if (DB.communications) console.log(`  ${C.grey}Logged to Communications DB.${C.reset}`);
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// COMMAND: reserve-projection [--years=5] [--annual-contribution=X] [--rate=0.03]
+// ═════════════════════════════════════════════════════════════════════════════
+
+async function cmdReserveProjection(pos, opts) {
+  const years            = parseInt(opts.years || '5', 10);
+  const interestRate     = parseFloat(opts.rate || '0.03');
+  let   annualContrib    = opts['annual-contribution'] ? parseFloat(opts['annual-contribution']) : null;
+
+  // Find Reserve Fund account in cash position
+  process.stdout.write(`${C.grey}Fetching cash position...${C.reset}`);
+  const cashAccts = await queryAll(DB.cashPosition);
+  console.log(` ${cashAccts.length} accounts`);
+
+  const reserveAcct = cashAccts.find(a => {
+    const name = getTitle(a).toLowerCase();
+    return name.includes('reserve') || name.includes('reserv') || name.includes('fondo');
+  });
+
+  let openingBalance = 0;
+  if (reserveAcct) {
+    openingBalance = getNumber(reserveAcct, 'Current Balance') || 0;
+    console.log(`Reserve Fund account: ${C.bold}${getTitle(reserveAcct)}${C.reset} — ${fmtMoney(openingBalance)}`);
+  } else {
+    console.log(`${C.yellow}⚠️  No Reserve Fund account found in Cash Position. Starting from 0.${C.reset}`);
+  }
+
+  // Default contribution: use annual budget fraction if not provided
+  if (!annualContrib) {
+    annualContrib = BUILDING.annualBudget ? Math.round(BUILDING.annualBudget * 0.1) : 0;
+    if (annualContrib > 0) {
+      console.log(`${C.grey}Using 10% of annual budget as default contribution: ${fmtMoney(annualContrib)}${C.reset}`);
+    } else {
+      console.log(`${C.yellow}⚠️  No --annual-contribution specified and no budget found. Contribution = 0.${C.reset}`);
+    }
+  }
+
+  // Planned works withdrawals: query works DB for planned/in-progress
+  const plannedWithdrawals = {};
+  if (DB.works) {
+    process.stdout.write(`${C.grey}Fetching planned works...${C.reset}`);
+    const worksFilter = {
+      or: [
+        { property: 'Status', select: { equals: 'Approved' } },
+        { property: 'Status', select: { equals: 'Contractor Selected' } },
+        { property: 'Status', select: { equals: 'In Progress' } },
+      ]
+    };
+    const works = await queryAll(DB.works, worksFilter);
+    console.log(` ${works.length} planned/active`);
+    for (const w of works) {
+      const remaining = getNumber(w, 'Remaining') || getNumber(w, 'Quoted Amount') || 0;
+      if (remaining > 0) {
+        const yr = new Date().getFullYear(); // default current year
+        plannedWithdrawals[yr] = (plannedWithdrawals[yr] || 0) + remaining;
+      }
+    }
+  }
+
+  const startYear = new Date().getFullYear();
+  const W = [6, 14, 14, 12, 14, 14];
+  const H = ['Year', 'Opening', 'Contribution', 'Interest', 'Withdrawals', 'Closing'];
+  const LABEL = `RESERVE FUND PROJECTION (${years} years)`;
+
+  console.log(`\n${boxTop(70)}`);
+  console.log(boxLine(LABEL, 70));
+  console.log(boxTop(70));
+  console.log(`Interest rate: ${(interestRate * 100).toFixed(1)}%/year  |  Annual contribution: ${fmtMoney(annualContrib)}\n`);
+  console.log(tableRow(H, W));
+  console.log(separator(W));
+
+  let balance    = openingBalance;
+  let warnYears  = [];
+
+  for (let i = 0; i < years; i++) {
+    const yr           = startYear + i;
+    const opening      = balance;
+    const contribution = annualContrib;
+    const interest     = i === 0 ? 0 : Math.round(opening * interestRate * 100) / 100;
+    const withdrawals  = plannedWithdrawals[yr] || 0;
+    const closing      = Math.round((opening + contribution + interest - withdrawals) * 100) / 100;
+
+    if (closing < 0) warnYears.push(yr);
+
+    const closingStr = closing < 0 ? `${C.red}${fmt(closing)}${C.reset}` : fmt(closing);
+    console.log(tableRow(
+      [String(yr), fmt(opening), fmt(contribution), fmt(interest), fmt(withdrawals), closing < 0 ? `⚠️  ${fmt(closing)}` : fmt(closing)],
+      W
+    ));
+
+    balance = closing;
+  }
+
+  console.log(separator(W, '═'));
+  console.log(`\n  Final balance (${startYear + years - 1}): ${C.bold}${fmtMoney(balance)}${C.reset}`);
+
+  if (warnYears.length > 0) {
+    console.log(`\n${C.red}⚠️  WARNING: Projected balance goes NEGATIVE in: ${warnYears.join(', ')}${C.reset}`);
+    console.log(`   Consider increasing annual contributions or deferring planned works.`);
+  } else {
+    console.log(`\n${C.green}✅ Reserve fund remains positive throughout the ${years}-year projection.${C.reset}`);
+  }
+  console.log();
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// COMMAND: agm-prep [year] [--date=YYYY-MM-DD] [--lang=es|en|fr]
+// ═════════════════════════════════════════════════════════════════════════════
+
+const AGM_L10N = {
+  en: {
+    title:   'ANNUAL GENERAL MEETING PREPARATION PACKAGE',
+    agenda:  'DRAFT AGENDA',
+    items: [
+      'Roll call & quorum verification',
+      'Approval of previous meeting minutes',
+      'Financial report {year}',
+      'Budget proposal {nextYear}',
+      'Delinquency report & collection actions',
+      'Works completed & planned',
+      'Election of board members',
+      'Any other business',
+    ],
+    quorum:  'QUORUM REQUIREMENT',
+    financials: 'FINANCIAL SUMMARY {year}',
+    delinquency: 'DELINQUENCY SUMMARY',
+    cashPos:   'CASH POSITION',
+    works:     'WORKS SUMMARY',
+    shares:    'VOTING SHARES PER UNIT',
+    notice:    'NOTICE TO OWNERS',
+    subject:   'Notice of Annual General Meeting — {building} — {year}',
+    noticeBody: `Dear Co-owners,
+
+You are hereby invited to the Annual General Meeting of {building} to be held on:
+
+Date: {date}
+Location: {location}
+
+The meeting will address the following agenda items:
+
+{agenda}
+
+The quorum requires the presence of co-owners representing more than 50% of voting shares.
+
+Please confirm your attendance or submit a proxy form to administration.
+
+{building} Administration
+{today}`,
+    income:    'Total Income',
+    expenses:  'Total Expenses',
+    netResult: 'Net Result',
+    budget:    'Approved Budget',
+    variance:  'Variance',
+  },
+  es: {
+    title:   'PAQUETE DE PREPARACIÓN — ASAMBLEA GENERAL ANUAL',
+    agenda:  'AGENDA PRELIMINAR',
+    items: [
+      'Llamado a lista y verificación del quórum',
+      'Aprobación del acta de la asamblea anterior',
+      'Informe financiero {year}',
+      'Presupuesto propuesto {nextYear}',
+      'Informe de morosidad y acciones de cobro',
+      'Obras realizadas y planificadas',
+      'Elección de miembros de la Junta Directiva',
+      'Asuntos varios',
+    ],
+    quorum:  'REQUISITO DE QUÓRUM',
+    financials: 'RESUMEN FINANCIERO {year}',
+    delinquency: 'RESUMEN DE MOROSIDAD',
+    cashPos:   'POSICIÓN DE CAJA',
+    works:     'RESUMEN DE OBRAS',
+    shares:    'PORCENTAJE DE PARTICIPACIÓN POR UNIDAD',
+    notice:    'CONVOCATORIA A PROPIETARIOS',
+    subject:   'Convocatoria Asamblea General — {building} — {year}',
+    noticeBody: `Estimados Copropietarios,
+
+Por medio de la presente, les convocamos a la Asamblea General Anual de {building} a celebrarse:
+
+Fecha: {date}
+Lugar: {location}
+
+La asamblea tratará los siguientes puntos del orden del día:
+
+{agenda}
+
+El quórum requiere la presencia de copropietarios que representen más del 50% de las participaciones con derecho a voto.
+
+Por favor confirme su asistencia o entregue un poder notarial a la administración.
+
+Administración {building}
+{today}`,
+    income:    'Ingresos Totales',
+    expenses:  'Gastos Totales',
+    netResult: 'Resultado Neto',
+    budget:    'Presupuesto Aprobado',
+    variance:  'Variación',
+  },
+  fr: {
+    title:   "DOSSIER DE PRÉPARATION — ASSEMBLÉE GÉNÉRALE ANNUELLE",
+    agenda:  "ORDRE DU JOUR PROVISOIRE",
+    items: [
+      "Appel et vérification du quorum",
+      "Approbation du procès-verbal de l'assemblée précédente",
+      "Rapport financier {year}",
+      "Proposition de budget {nextYear}",
+      "Rapport de recouvrement et actions envers les copropriétaires défaillants",
+      "Travaux réalisés et planifiés",
+      "Élection des membres du Conseil Syndical",
+      "Questions diverses",
+    ],
+    quorum:  'EXIGENCE DE QUORUM',
+    financials: 'RÉSUMÉ FINANCIER {year}',
+    delinquency: 'RÉSUMÉ DES IMPAYÉS',
+    cashPos:   'POSITION DE TRÉSORERIE',
+    works:     'RÉSUMÉ DES TRAVAUX',
+    shares:    'TANTIÈMES PAR LOT',
+    notice:    'CONVOCATION AUX PROPRIÉTAIRES',
+    subject:   "Convocation à l'Assemblée Générale — {building} — {year}",
+    noticeBody: `Madame, Monsieur,
+
+Vous êtes convoqué(e) à l'Assemblée Générale Annuelle de {building} qui se tiendra le :
+
+Date : {date}
+Lieu : {location}
+
+L'assemblée traitera les points suivants à l'ordre du jour :
+
+{agenda}
+
+Le quorum requiert la présence de copropriétaires représentant plus de 50 % des tantièmes.
+
+Veuillez confirmer votre présence ou remettre une procuration à l'administration.
+
+Administration {building}
+{today}`,
+    income:    'Revenus Totaux',
+    expenses:  'Dépenses Totales',
+    netResult: 'Résultat Net',
+    budget:    'Budget Approuvé',
+    variance:  'Écart',
+  },
+};
+
+async function cmdAgmPrep(pos, opts) {
+  const year     = parseInt(pos[1] || String(new Date().getFullYear()), 10);
+  const nextYear = year + 1;
+  const lang     = (opts.lang || 'es').toLowerCase();
+  const AL       = AGM_L10N[lang] || AGM_L10N.es;
+  const today    = todayISO();
+  const meetDate = opts.date ? fmtDate(toISO(opts.date)) : '[DATE TO BE CONFIRMED]';
+  const location = BUILDING.address || '[Location to be confirmed]';
+  const W        = 72;
+
+  console.log(`\n${'═'.repeat(W)}`);
+  console.log(boxLine(AL.title, W));
+  console.log(boxLine(`${BUILDING.name || 'Building'} — ${year}`, W));
+  console.log(`${'═'.repeat(W)}`);
+  console.log(` Prepared: ${fmtDate(today)}  |  Language: ${lang.toUpperCase()}\n`);
+
+  // ── Financial data ─────────────────────────────────────────────────────────
+  console.log(`${C.bold}[1/6] ${AL.financials.replace('{year}', year)}${C.reset}`);
+  process.stdout.write(`    ${C.grey}Loading ledger...${C.reset}`);
+  const yearFilter = {
+    and: [
+      { property: 'Date', date: { on_or_after:  `${year}-01-01` } },
+      { property: 'Date', date: { on_or_before: `${year}-12-31` } },
+    ]
+  };
+  const ledger = await queryAll(DB.ledger, yearFilter);
+  console.log(` ${ledger.length} entries`);
+
+  let totalIncome = 0, totalFeeCalls = 0;
+  for (const e of ledger) {
+    const t = getSelect(e, 'Type');
+    if (t === 'Payment Received') totalIncome    += getNumber(e, 'Credit') || 0;
+    if (t === 'Fee Call')         totalFeeCalls  += getNumber(e, 'Debit')  || 0;
+  }
+
+  process.stdout.write(`    ${C.grey}Loading expenses...${C.reset}`);
+  const expFilter = {
+    and: [
+      { property: 'Date', date: { on_or_after:  `${year}-01-01` } },
+      { property: 'Date', date: { on_or_before: `${year}-12-31` } },
+    ]
+  };
+  const expenses = await queryAll(DB.expenses, expFilter);
+  console.log(` ${expenses.length} entries`);
+
+  const totalExpenses = expenses.reduce((s, e) => s + (getNumber(e, 'Amount') || 0), 0);
+  const netResult     = totalIncome - totalExpenses;
+  const annualBudget  = BUILDING.annualBudget || 0;
+
+  console.log(`    ${padR(AL.income + ':', 28)} ${fmtMoney(totalIncome)}`);
+  console.log(`    ${padR(AL.expenses + ':', 28)} ${fmtMoney(totalExpenses)}`);
+  console.log(`    ${padR(AL.netResult + ':', 28)} ${(netResult >= 0 ? C.green : C.red)}${fmtMoney(netResult)}${C.reset}`);
+  console.log(`    ${padR(AL.budget + ':', 28)} ${fmtMoney(annualBudget)}`);
+  const variance = totalExpenses - annualBudget;
+  console.log(`    ${padR(AL.variance + ':', 28)} ${(variance <= 0 ? C.green : C.red)}${fmtMoney(variance)}${C.reset}`);
+  console.log();
+
+  // ── Cash position ──────────────────────────────────────────────────────────
+  console.log(`${C.bold}[2/6] ${AL.cashPos}${C.reset}`);
+  process.stdout.write(`    ${C.grey}Loading cash position...${C.reset}`);
+  const cashAccts = await queryAll(DB.cashPosition);
+  console.log();
+  let totalCash = 0;
+  for (const acc of cashAccts) {
+    const name = getTitle(acc);
+    const bal  = getNumber(acc, 'Current Balance') || 0;
+    totalCash += bal;
+    console.log(`    ${padR(name + ':', 32)} ${fmtMoney(bal)}`);
+  }
+  console.log(`    ${'─'.repeat(44)}`);
+  console.log(`    ${padR('TOTAL:', 32)} ${C.bold}${fmtMoney(totalCash)}${C.reset}`);
+  console.log();
+
+  // ── Delinquency ────────────────────────────────────────────────────────────
+  console.log(`${C.bold}[3/6] ${AL.delinquency}${C.reset}`);
+  process.stdout.write(`    ${C.grey}Loading units...${C.reset}`);
+  const units = await queryAll(DB.units);
+  console.log(` ${units.length} units`);
+
+  const delinquent = units.filter(u => (getNumber(u, 'Current Balance') || 0) < 0);
+  const totalOwed  = delinquent.reduce((s, u) => s + (getNumber(u, 'Current Balance') || 0), 0);
+  const DW = [8, 22, 14, 16];
+  const DH = ['Unit', 'Owner', 'Balance', 'Status'];
+  if (delinquent.length > 0) {
+    console.log('    ' + tableRow(DH, DW));
+    console.log('    ' + separator(DW));
+    for (const u of delinquent.sort((a,b) => (getNumber(a,'Current Balance')||0) - (getNumber(b,'Current Balance')||0))) {
+      const uid    = getTitle(u);
+      const owner  = getText(u, 'Owner Name').substring(0, 21);
+      const bal    = getNumber(u, 'Current Balance') || 0;
+      const status = getSelect(u, 'Fee Status');
+      console.log('    ' + tableRow([uid, owner, fmt(bal), status], DW));
+    }
+    console.log(`\n    Delinquent: ${delinquent.length}/${units.length} units  |  Total owed: ${C.red}${C.bold}${fmtMoney(totalOwed)}${C.reset}`);
+  } else {
+    console.log(`    ${C.green}✅ No delinquent units.${C.reset}`);
+  }
+  console.log();
+
+  // ── Voting shares ──────────────────────────────────────────────────────────
+  console.log(`${C.bold}[4/6] ${AL.shares}${C.reset}`);
+  const UW = [8, 26, 10];
+  const UH = ['Unit', 'Owner', 'Share %'];
+  console.log('    ' + tableRow(UH, UW));
+  console.log('    ' + separator(UW));
+  let totalShares = 0;
+  for (const u of units.sort((a,b) => getTitle(a).localeCompare(getTitle(b)))) {
+    const uid   = getTitle(u);
+    const owner = getText(u, 'Owner Name').substring(0, 25);
+    const share = getNumber(u, 'Ownership Share (%)') || 0;
+    totalShares += share;
+    console.log('    ' + tableRow([uid, owner, `${share.toFixed(2)}%`], UW));
+  }
+  console.log('    ' + separator(UW));
+  console.log('    ' + tableRow(['TOTAL', '', `${totalShares.toFixed(2)}%`], UW));
+  const quorumNeeded = (totalShares / 2).toFixed(4);
+  console.log(`\n    ${AL.quorum}: > ${quorumNeeded}% (>50% of ${totalShares.toFixed(2)}%)`);
+  console.log();
+
+  // ── Works summary ──────────────────────────────────────────────────────────
+  console.log(`${C.bold}[5/6] ${AL.works}${C.reset}`);
+  if (DB.works) {
+    process.stdout.write(`    ${C.grey}Loading works...${C.reset}`);
+    const works = await queryAll(DB.works);
+    console.log(` ${works.length} total`);
+    const WW = [26, 12, 14, 14];
+    const WH = ['Project', 'Status', 'Quoted', 'Total Paid'];
+    console.log('    ' + tableRow(WH, WW));
+    console.log('    ' + separator(WW));
+    for (const w of works) {
+      const name   = getTitle(w).substring(0, 25);
+      const status = getSelect(w, 'Status').substring(0, 11);
+      const quoted = getNumber(w, 'Quoted Amount') || 0;
+      const paid   = getNumber(w, 'Total Paid')    || 0;
+      console.log('    ' + tableRow([name, status, fmt(quoted), fmt(paid)], WW));
+    }
+  } else {
+    console.log(`    ${C.grey}Works DB not configured.${C.reset}`);
+  }
+  console.log();
+
+  // ── Draft agenda ──────────────────────────────────────────────────────────
+  console.log(`${C.bold}[6/6] ${AL.agenda}${C.reset}`);
+  const agendaLines = AL.items.map((item, i) => {
+    const line = fillTemplate(item, { year: String(year), nextYear: String(nextYear) });
+    return `    ${i + 1}. ${line}`;
+  });
+  agendaLines.forEach(l => console.log(l));
+  console.log();
+
+  // ── Notice to owners ─────────────────────────────────────────────────────
+  const agendaForNotice = AL.items.map((item, i) => {
+    const line = fillTemplate(item, { year: String(year), nextYear: String(nextYear) });
+    return `  ${i + 1}. ${line}`;
+  }).join('\n');
+
+  const noticeVars = {
+    building:  BUILDING.name || 'Building Administration',
+    year:      String(year),
+    nextYear:  String(nextYear),
+    date:      meetDate,
+    location,
+    today:     fmtDate(today),
+    agenda:    agendaForNotice,
+  };
+
+  const noticeSubject = fillTemplate(AL.subject, noticeVars);
+  const noticeBody    = fillTemplate(AL.noticeBody, noticeVars);
+
+  console.log('─'.repeat(W));
+  console.log(`\n${C.bold}${AL.notice}${C.reset}`);
+  console.log(`${C.bold}Subject:${C.reset} ${noticeSubject}\n`);
+  console.log(noticeBody);
+
+  console.log(`\n${'═'.repeat(W)}`);
+  console.log(`${C.green}✓ AGM preparation package for ${year} complete.${C.reset}`);
+  if (DB.communications) {
+    await createPage(DB.communications, {
+      'Subject':   prop.title(noticeSubject),
+      'Type':      prop.select('Meeting Notice'),
+      'Channel':   prop.select('Email'),
+      'Date':      prop.date(today),
+      'Direction': prop.select('Sent'),
+      'Content':   prop.text(noticeBody.substring(0, 1800)),
+    });
+    console.log(`${C.grey}  Meeting notice logged to Communications DB.${C.reset}`);
+  }
+  console.log();
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
 // HELP
 // ═════════════════════════════════════════════════════════════════════════════
 
@@ -1310,7 +2130,7 @@ function showHelp() {
   const budget  = fmtMoney(BUILDING.annualBudget || 0);
 
   console.log(`
-${C.bold}${C.cyan}🏢 CONDO MANAGER OS v3.0 — ${bname}${C.reset}
+${C.bold}${C.cyan}🏢 CONDO MANAGER OS v3.1 — ${bname}${C.reset}
 ${'═'.repeat(56)}
 ${C.grey}Building: ${bname} | Currency: ${CURRENCY} | Frequency: ${freq}
 Annual Budget: ${budget}${C.reset}
@@ -1364,6 +2184,31 @@ ${C.bold}COMMANDS:${C.reset}
     Special assessment for voted works, distributed by ownership %.
     Options: --vote-date=xxx --vote-type="Electronic Vote" --date=xxx
     ${C.grey}Ex: node condo-cli.js assessment "Roof Repair" 186000 --vote-type="Electronic Vote"${C.reset}
+
+${C.bold}PREMIUM COMMANDS (v3.1):${C.reset}
+
+  ${C.cyan}late-fees${C.reset} [--rate=0.02] [--grace=15] [--confirm]
+    Calculate late fees on overdue units. Dry-run by default.
+    Aliases: latefees, late_fees, penalties
+    ${C.grey}Ex: node condo-cli.js late-fees --rate=0.02 --grace=15 --confirm${C.reset}
+
+  ${C.cyan}reminder${C.reset} [--level=1] [--unit=X | --all-overdue] [--lang=es|en|fr]
+    Generate payment reminder letters (4 escalation levels).
+    Levels: 1=Friendly 2=Formal 3=Final Warning 4=Pre-Legal
+    Aliases: remind, notice
+    ${C.grey}Ex: node condo-cli.js reminder --all-overdue --level=2 --lang=en${C.reset}
+    ${C.grey}Ex: node condo-cli.js reminder --unit=A-3 --level=1 --lang=es${C.reset}
+
+  ${C.cyan}reserve-projection${C.reset} [--years=5] [--annual-contribution=X] [--rate=0.03]
+    Project reserve fund growth year-by-year.
+    Aliases: reserve, reserves, projection
+    ${C.grey}Ex: node condo-cli.js reserve-projection --years=10 --annual-contribution=50000${C.reset}
+
+  ${C.cyan}agm-prep${C.reset} [year] [--date=YYYY-MM-DD] [--lang=es|en|fr]
+    Generate full AGM preparation package: financials, delinquency,
+    voting shares, works summary, draft agenda, and owner notice.
+    Aliases: agm, assembly
+    ${C.grey}Ex: node condo-cli.js agm-prep 2026 --date=2026-03-15 --lang=es${C.reset}
 
 ${'─'.repeat(56)}
 ${C.grey}Unit matching is case-insensitive: "a1" = "A1" = "A-1"
@@ -1432,6 +2277,28 @@ async function main() {
       case 'assessment':
       case 'assess':
         await cmdAssessment(pos, opts);
+        break;
+      case 'late-fees':
+      case 'latefees':
+      case 'late_fees':
+      case 'penalties':
+        await cmdLateFees(pos, opts);
+        break;
+      case 'reminder':
+      case 'remind':
+      case 'notice':
+        await cmdReminder(pos, opts);
+        break;
+      case 'reserve-projection':
+      case 'reserve':
+      case 'reserves':
+      case 'projection':
+        await cmdReserveProjection(pos, opts);
+        break;
+      case 'agm-prep':
+      case 'agm':
+      case 'assembly':
+        await cmdAgmPrep(pos, opts);
         break;
       default:
         console.error(`${C.red}✗  Unknown command: '${command}'${C.reset}`);
