@@ -3,6 +3,7 @@ import { getBranding, getDB } from '@/lib/config';
 import { queryDB, getTitle, getText, getNumber, getSelect, getDate } from '@/lib/notion';
 import { redirect } from 'next/navigation';
 import Header from '@/components/Header';
+import PrintButton from '@/components/PrintButton';
 import TransactionTable from '@/components/TransactionTable';
 
 export default async function StatementPage({ searchParams }) {
@@ -68,9 +69,7 @@ export default async function StatementPage({ searchParams }) {
       <main className="max-w-6xl mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">Account Statement</h2>
-          <button onClick={() => window.print()} className="btn-secondary text-sm print:hidden">
-            🖨️ Print / PDF
-          </button>
+          <PrintButton />
         </div>
 
         {/* Statement Header */}
