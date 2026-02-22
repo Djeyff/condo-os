@@ -6,7 +6,8 @@
     "currency": "DOP",
     "fiscalYear": "calendar",
     "feeFrequency": "quarterly",
-    "annualBudget": 0
+    "annualBudget": 0,
+    "unitPrefix": "A"
   },
   "notion": {
     "parentPageId": "YOUR_NOTION_PAGE_ID"

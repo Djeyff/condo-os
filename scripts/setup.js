@@ -614,6 +614,35 @@ function schema_accountMovements(ids) {
   };
 }
 
+function schema_resolutions(ids) {
+  const voteOpts = [
+    { name: 'For', color: 'green' },
+    { name: 'Against', color: 'red' },
+    { name: 'Abstain', color: 'yellow' },
+    { name: 'Absent', color: 'default' },
+  ];
+  const schema = {
+    'Resolution':        prop.title(),
+    'Meeting':           prop.relation(ids.meetings),
+    'Resolution Number': prop.number('number'),
+    'Description':       prop.text(),
+    'Passed':            { checkbox: {} },
+    'Notes':             prop.text(),
+    'Votes For (%)':     prop.number('percent'),
+    'Votes Against (%)': prop.number('percent'),
+    'Abstentions (%)':   prop.number('percent'),
+    'Quorum Present (%)':prop.number('percent'),
+    'Quorum Met':        { checkbox: {} },
+  };
+  // Per-unit vote selects — dynamically generated from building config
+  const unitCount = config.building?.units || 7;
+  const prefix = config.building?.unitPrefix || 'A';
+  for (let i = 1; i <= unitCount; i++) {
+    schema[`${prefix}-${i} Vote`] = { select: { options: voteOpts } };
+  }
+  return schema;
+}
+
 // ---------------------------------------------------------------------------
 // Post-creation: formulas & rollups
 // These are added via PATCH /databases/:id after all DBs exist, so relation
@@ -852,6 +881,13 @@ async function main() {
     { cashPosition: cashPositionId }
   );
 
+  // 11. Resolutions & Votes (relation → Meetings)
+  const resolutionsId = await createDb(
+    'resolutions', '🗳️', 'Resolutions & Votes',
+    (ids) => schema_resolutions(ids),
+    { meetings: meetingsId }
+  );
+
   log.section('Phase 1 complete — all databases created');
   log.info('Database IDs saved to config.json');
 
@@ -949,6 +985,7 @@ async function main() {
     communicationsLog:'📨 Communications Log',
     meetings:         '📅 Meetings',
     accountMovements: '💳 Account Movements',
+    resolutions:      '🗳️ Resolutions & Votes',
   };
   for (const [key, label] of Object.entries(dbNames)) {
     const id = cfg.databases[key];
