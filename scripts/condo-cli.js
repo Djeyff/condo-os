@@ -302,7 +302,7 @@ function boxLine(text, width) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// i18n Labels (statement command only)
+// i18n Labels (statement + reminder commands)
 // ─────────────────────────────────────────────────────────────────────────────
 
 const L10N = {
