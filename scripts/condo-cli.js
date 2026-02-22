@@ -2392,6 +2392,293 @@ async function cmdMeetingReport(pos, opts) {
   console.log(`\n${'═'.repeat(60)}\n`);
 }
 
+// ═════════════════════════════════════════════════════════════════════════════
+// COMMAND: payment-plan <unit> <total-debt> --installments=6 [--start=YYYY-MM-DD] [--confirm]
+// ═════════════════════════════════════════════════════════════════════════════
+
+async function cmdPaymentPlan(pos, opts) {
+  const unitInput    = pos[1];
+  const totalDebt    = parseFloat(pos[2]);
+  const installments = parseInt(opts.installments || '6', 10);
+  const confirm      = !!opts.confirm;
+  const startDate    = opts.start ? toISO(opts.start) : todayISO();
+
+  if (!unitInput || isNaN(totalDebt) || totalDebt <= 0) {
+    die('Usage: payment-plan <unit> <total-debt> --installments=6 [--start=YYYY-MM-DD] [--confirm]\n  Ex: payment-plan A-3 75000 --installments=6 --confirm');
+  }
+
+  if (installments < 1 || installments > 60) {
+    die('--installments must be between 1 and 60.');
+  }
+
+  process.stdout.write(`${C.grey}Fetching units...${C.reset}`);
+  const units = await queryAll(DB.units);
+  console.log();
+
+  const unit = matchUnit(units, unitInput);
+  if (!unit) {
+    const avail = units.map(u => getTitle(u)).join(', ');
+    die(`Unit '${unitInput}' not found.\nAvailable: ${avail}`);
+  }
+
+  const uid     = getTitle(unit);
+  const owner   = getText(unit, 'Owner Name');
+  const balance = getNumber(unit, 'Current Balance') || 0;
+  const monthly = Math.round(totalDebt / installments * 100) / 100;
+
+  // Generate schedule
+  const schedule = [];
+  const startDt  = new Date(startDate + 'T12:00:00Z');
+
+  for (let i = 0; i < installments; i++) {
+    const dueDt = new Date(startDt);
+    dueDt.setUTCMonth(dueDt.getUTCMonth() + i);
+    const dueISO     = dueDt.toISOString().slice(0, 10);
+    const cumulative = Math.round(monthly * (i + 1) * 100) / 100;
+    schedule.push({ month: i + 1, dueISO, amount: monthly, cumulative });
+  }
+
+  // ── Header ─────────────────────────────────────────────────────────────────
+  console.log(`\n${C.bold}${C.cyan}📅 PAYMENT PLAN — ${uid} (${owner})${C.reset}`);
+  console.log(`Total Debt:    ${C.bold}${fmtMoney(totalDebt)}${C.reset}`);
+  console.log(`Installments:  ${installments}`);
+  console.log(`Monthly Amt:   ${C.bold}${fmtMoney(monthly)}${C.reset}`);
+  console.log(`Starts:        ${fmtDate(startDate)}`);
+  console.log(`Current Bal:   ${balance >= 0 ? C.green : C.red}${fmtMoney(balance)}${C.reset}`);
+  if (!confirm) console.log(`\n${C.yellow}⚠️  DRY RUN — add --confirm to create Notion entries${C.reset}`);
+  console.log();
+
+  // ── Schedule Table ─────────────────────────────────────────────────────────
+  const W = [7, 14, 16, 16];
+  const H = ['Month', 'Due Date', 'Amount', 'Cumulative'];
+  console.log(tableRow(H, W));
+  console.log(separator(W));
+
+  for (const row of schedule) {
+    console.log(tableRow(
+      [String(row.month), fmtDate(row.dueISO), fmtMoney(row.amount), fmtMoney(row.cumulative)],
+      W
+    ));
+  }
+
+  console.log(separator(W, '═'));
+  console.log(`Total: ${C.bold}${fmtMoney(totalDebt)}${C.reset}\n`);
+
+  if (!confirm) {
+    console.log(`${C.yellow}Dry run complete. Use --confirm to write ${installments} entries to Notion Ledger.${C.reset}`);
+    return;
+  }
+
+  // ── Write to Notion ─────────────────────────────────────────────────────────
+  console.log(`${C.bold}Creating ${installments} payment plan entries in Notion...${C.reset}`);
+
+  for (let i = 0; i < schedule.length; i++) {
+    const row       = schedule[i];
+    const entryTitle = `${uid} — Payment Plan ${i + 1}/${installments} (${row.dueISO})`;
+
+    await createPage(DB.ledger, {
+      'Entry':    prop.title(entryTitle),
+      'Unit':     prop.relation([unit.id]),
+      'Date':     prop.date(row.dueISO),
+      'Type':     prop.select('Payment Plan'),
+      'Category': prop.select('Payment Plan'),
+      'Debit':    prop.number(row.amount),
+    });
+
+    console.log(`  ${C.green}✓${C.reset} Installment ${i + 1}/${installments}  ${fmtDate(row.dueISO)}  ${fmtMoney(row.amount)}`);
+    if (i < schedule.length - 1) await sleep(RATE_MS);
+  }
+
+  console.log(`\n${C.green}✓ Payment plan created: ${installments} installments of ${fmtMoney(monthly)}, starting ${fmtDate(startDate)}${C.reset}`);
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// COMMAND: export <unit> [--from=YYYY-MM-DD] [--to=YYYY-MM-DD] [--lang=es|en|fr] [--output=file.txt]
+// ═════════════════════════════════════════════════════════════════════════════
+
+async function cmdExport(pos, opts) {
+  const unitInput = pos[1];
+  if (!unitInput) {
+    die('Usage: export <unit> [--from=YYYY-MM-DD] [--to=YYYY-MM-DD] [--lang=es|en|fr] [--output=file.txt]\n  Ex: export A-1 --lang=en --output=statement.txt');
+  }
+
+  const lang   = (opts.lang || 'es').toLowerCase();
+  const L      = L10N[lang] || L10N.es;
+  const from   = opts.from   ? toISO(opts.from)   : null;
+  const to     = opts.to     ? toISO(opts.to)     : null;
+  const output = opts.output || null;
+
+  process.stdout.write(`${C.grey}Fetching units...${C.reset}`);
+  const units = await queryAll(DB.units);
+  console.log();
+
+  const unit = matchUnit(units, unitInput);
+  if (!unit) {
+    const avail = units.map(u => getTitle(u)).join(', ');
+    die(`Unit '${unitInput}' not found.\nAvailable: ${avail}`);
+  }
+
+  const uid        = getTitle(unit);
+  const owner      = getText(unit, 'Owner Name');
+  const ownership  = getNumber(unit, 'Ownership Share (%)') || 0;
+  const curBalance = getNumber(unit, 'Current Balance') || 0;
+
+  // ── Ledger query ────────────────────────────────────────────────────────────
+  const andFilters = [{ property: 'Unit', relation: { contains: unit.id } }];
+  if (from) andFilters.push({ property: 'Date', date: { on_or_after:  from } });
+  if (to)   andFilters.push({ property: 'Date', date: { on_or_before: to   } });
+  const filter = andFilters.length === 1 ? andFilters[0] : { and: andFilters };
+  const sorts  = [{ property: 'Date', direction: 'ascending' }];
+
+  process.stdout.write('Fetching ledger entries...');
+  const entries = await queryAll(DB.ledger, filter, sorts);
+  console.log(` ${entries.length} entries`);
+
+  // ── Extra i18n labels ───────────────────────────────────────────────────────
+  const EL = {
+    es: { nextFee: 'Próxima cuota estimada', generatedOn: 'Generado el', currency: 'Moneda', type: 'Tipo' },
+    en: { nextFee: 'Next estimated fee',      generatedOn: 'Generated on', currency: 'Currency', type: 'Type' },
+    fr: { nextFee: 'Prochaine charge est.',   generatedOn: 'Généré le',   currency: 'Devise',   type: 'Type' },
+  }[lang] || { nextFee: 'Próxima cuota estimada', generatedOn: 'Generado el', currency: 'Moneda', type: 'Tipo' };
+
+  // ── Column widths ───────────────────────────────────────────────────────────
+  const pageWidth = 90;
+  const dW   = 12;  // date
+  const tW   = 18;  // type
+  const descW= 24;  // description
+  const dbW  = 13;  // debit
+  const crW  = 11;  // credit
+  const balW = 12;  // balance
+
+  const border  = '═'.repeat(pageWidth);
+  const divider = '─'.repeat(pageWidth);
+
+  const buildingName = BUILDING.name || 'Condo Manager';
+  const today        = todayISO();
+
+  // ── Build lines array ───────────────────────────────────────────────────────
+  const lines = [];
+
+  // Header
+  lines.push(border);
+  lines.push((' ' + buildingName.toUpperCase()).padEnd(pageWidth));
+  lines.push((' ' + L.title).padEnd(pageWidth));
+  lines.push(border);
+  lines.push('');
+
+  const col1 = ` ${L.unit}: ${uid}`;
+  const col2 = `${EL.generatedOn}: ${fmtDate(today)}`;
+  lines.push(col1.padEnd(48) + col2);
+
+  const col3 = ` ${L.owner}: ${owner}`;
+  const col4 = `${EL.currency}: ${CURRENCY}`;
+  lines.push(col3.padEnd(48) + col4);
+
+  lines.push(` ${L.share}: ${ownership.toFixed(2)}%`);
+
+  if (from || to) {
+    const pFrom = from ? fmtDate(from) : '...';
+    const pTo   = to   ? fmtDate(to)   : '...';
+    lines.push(` ${L.period}: ${pFrom} — ${pTo}`);
+  }
+
+  lines.push('');
+  lines.push(divider);
+
+  // Table header row
+  lines.push(
+    padR(L.date, dW) +
+    padR(EL.type, tW) +
+    padR(L.description, descW) +
+    padL(L.debit, dbW) +
+    padL(L.credit, crW) +
+    padL(L.balance, balW)
+  );
+  lines.push(divider);
+
+  // ── Data rows ───────────────────────────────────────────────────────────────
+  let runBal = null;
+
+  for (let i = 0; i < entries.length; i++) {
+    const e        = entries[i];
+    const eDate    = getDate(e, 'Date');
+    const eType    = getSelect(e, 'Type');
+    const eTitle   = getText(e, 'Entry');
+    const eDebit   = getNumber(e, 'Debit')  || 0;
+    const eCredit  = getNumber(e, 'Credit') || 0;
+    const balAfter = getNumber(e, 'Balance After');
+
+    // Opening balance line (first entry only, when filtering by date)
+    if (runBal === null) {
+      if (balAfter !== null) {
+        runBal = balAfter + eDebit - eCredit;
+      } else {
+        runBal = 0;
+      }
+      if (from || to) {
+        lines.push(
+          padR(fmtDate(from || eDate), dW) +
+          padR('', tW) +
+          padR(L.opening, descW) +
+          padL('', dbW) +
+          padL('', crW) +
+          padL(fmt(runBal), balW)
+        );
+      }
+    }
+
+    // Advance running balance
+    if (balAfter !== null) {
+      runBal = balAfter;
+    } else {
+      runBal = Math.round((runBal - eDebit + eCredit) * 100) / 100;
+    }
+
+    // Strip "UnitID — " prefix from entry title for cleaner description
+    const shortDesc = eTitle.replace(new RegExp(`^${uid}\\s*[—-]\\s*`), '').substring(0, descW - 1);
+    const shortType = eType.substring(0, tW - 1);
+
+    lines.push(
+      padR(fmtDate(eDate), dW) +
+      padR(shortType, tW) +
+      padR(shortDesc, descW) +
+      padL(eDebit  > 0 ? fmt(eDebit)  : '', dbW) +
+      padL(eCredit > 0 ? fmt(eCredit) : '', crW) +
+      padL(fmt(runBal), balW)
+    );
+  }
+
+  // ── Footer ─────────────────────────────────────────────────────────────────
+  lines.push('═'.repeat(pageWidth));
+
+  const closing = entries.length > 0 ? (runBal !== null ? runBal : curBalance) : curBalance;
+  const closingSign = closing >= 0 ? '' : '-';
+  lines.push(` ${L.closing}: ${closingSign}${fmtMoney(Math.abs(closing))}`);
+
+  // Next periodic fee estimate
+  const annualBudget = BUILDING.annualBudget || 0;
+  const freq         = BUILDING.feeFrequency || 'quarterly';
+  const divisor      = freq === 'quarterly' ? 4 : 12;
+  const nextFee      = Math.round(annualBudget * ownership / 100 / divisor * 100) / 100;
+  if (nextFee > 0) lines.push(` ${EL.nextFee}: ${fmtMoney(nextFee)}`);
+
+  lines.push('');
+  lines.push(border);
+  lines.push('');
+
+  const statement = lines.join('\n');
+
+  // ── Output ─────────────────────────────────────────────────────────────────
+  if (output) {
+    fs.writeFileSync(output, statement, 'utf8');
+    console.log(`\n${C.green}✓ Statement written to: ${C.bold}${output}${C.reset}`);
+    console.log(`  Unit: ${uid} | Entries: ${entries.length} | Balance: ${fmtMoney(closing)}`);
+  } else {
+    process.stdout.write('\n');
+    process.stdout.write(statement);
+  }
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 function showHelp() {
@@ -2492,6 +2779,21 @@ ${C.bold}PREMIUM COMMANDS (v3.1):${C.reset}
     ${C.grey}Ex: node condo-cli.js meeting-report "AGM 2025"
     Ex: node condo-cli.js meeting-report${C.reset}
 
+  ${C.cyan}payment-plan${C.reset} <unit> <total-debt> --installments=6 [--start=YYYY-MM-DD] [--confirm]
+    Create an installment payment schedule for a unit's outstanding debt.
+    Generates a Month | Due Date | Amount | Cumulative table.
+    Dry-run by default — shows schedule. Add --confirm to write entries to Ledger.
+    Aliases: plan, installments
+    ${C.grey}Ex: node condo-cli.js payment-plan A-3 75000 --installments=6 --confirm
+    Ex: node condo-cli.js plan A-5 120000 --installments=12 --start=2026-03-01${C.reset}
+
+  ${C.cyan}export${C.reset} <unit> [--from=YYYY-MM-DD] [--to=YYYY-MM-DD] [--lang=es|en|fr] [--output=file.txt]
+    Export a professional fixed-width text account statement (PDF-ready).
+    Trilingual headers (es/en/fr). Prints to stdout or writes to --output file.
+    Aliases: export-statement, stmt-export
+    ${C.grey}Ex: node condo-cli.js export A-1 --lang=en --output=statement.txt
+    Ex: node condo-cli.js export A-5 --from=2025-01-01 --to=2025-12-31 --lang=es${C.reset}
+
 ${'─'.repeat(56)}
 ${C.grey}Unit matching is case-insensitive: "a1" = "A1" = "A-1"
 Set DEBUG=1 for full error stack traces.${C.reset}
@@ -2590,6 +2892,16 @@ async function main() {
       case 'meeting':
       case 'minutes':
         await cmdMeetingReport(pos, opts);
+        break;
+      case 'payment-plan':
+      case 'plan':
+      case 'installments':
+        await cmdPaymentPlan(pos, opts);
+        break;
+      case 'export':
+      case 'export-statement':
+      case 'stmt-export':
+        await cmdExport(pos, opts);
         break;
       default:
         console.error(`${C.red}✗  Unknown command: '${command}'${C.reset}`);
