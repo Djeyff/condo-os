@@ -230,7 +230,7 @@ const T = {
       'Problema: {desc}\n' +
       'Ubicación: {location}\n' +
       'Prioridad: {priority}\n\n' +
-      'Recibirá actualizaciones aquí.',
+      'La administración le contactará según la urgencia y disponibilidad del contratista correspondiente.',
     meetings: '📅 *Próximas Reuniones*\n\n',
     noMeetings: '📅 No hay reuniones programadas.',
     announcements: '📢 *Últimas Comunicaciones*\n\n',
@@ -277,7 +277,7 @@ const T = {
       'Issue: {desc}\n' +
       'Location: {location}\n' +
       'Priority: {priority}\n\n' +
-      'You will receive updates here.',
+      'Administration will contact you based on urgency and contractor availability.',
     meetings: '📅 *Upcoming Meetings*\n\n',
     noMeetings: '📅 No meetings scheduled.',
     announcements: '📢 *Latest Communications*\n\n',
@@ -324,7 +324,7 @@ const T = {
       'Problème: {desc}\n' +
       'Emplacement: {location}\n' +
       'Priorité: {priority}\n\n' +
-      'Vous recevrez des mises à jour ici.',
+      'L\'administration vous contactera selon l\'urgence et la disponibilité du prestataire.',
     meetings: '📅 *Prochaines Réunions*\n\n',
     noMeetings: '📅 Aucune réunion prévue.',
     announcements: '📢 *Dernières Communications*\n\n',
@@ -752,9 +752,11 @@ async function handleMaintenancePriority(ctx, session, priority) {
 
     delete convState[chatId];
 
-    const shortId = page.id.slice(0, 8);
+    // Generate sequential ticket number from total maintenance count
+    const allMaint = await queryAll(DB.maintenance);
+    const ticketNum = String(allMaint.length).padStart(4, '0');
     const text = fill(t('maintenanceSubmitted', lang), {
-      id: shortId,
+      id: ticketNum,
       desc,
       location,
       priority: priorityName,
