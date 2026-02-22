@@ -5,16 +5,25 @@ let _config = null;
 
 export function getConfig() {
   if (_config) return _config;
+
+  // 1) Try CONDO_CONFIG env var (JSON string — works on Vercel)
+  if (process.env.CONDO_CONFIG) {
+    try { _config = JSON.parse(process.env.CONDO_CONFIG); return _config; } catch {}
+  }
+
+  // 2) Try local config.json (parent dir — works self-hosted)
   const configPath = path.join(process.cwd(), '..', 'config.json');
   try {
     _config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  } catch {
-    _config = {
-      building: { name: 'Condo Manager OS', units: 7, currency: 'DOP', annualBudget: 500000 },
-      databases: {},
-      branding: {},
-    };
-  }
+    return _config;
+  } catch {}
+
+  // 3) Fallback defaults
+  _config = {
+    building: { name: 'Condo Manager OS', units: 7, currency: 'DOP', annualBudget: 500000 },
+    databases: {},
+    branding: {},
+  };
   return _config;
 }
 
