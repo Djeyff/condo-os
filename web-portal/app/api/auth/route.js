@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 import { validatePin, validateAdminPin } from '@/lib/auth';
+import { getConfig } from '@/lib/config';
 
 export async function POST(req) {
   const body = await req.json();
+  const config = getConfig();
+  const demoMode = !config.portal?.pins || Object.keys(config.portal.pins).length === 0;
 
   if (body.admin) {
-    if (!validateAdminPin(body.pin)) {
+    if (!demoMode && !validateAdminPin(body.pin)) {
       return NextResponse.json({ ok: false, error: 'Invalid admin PIN' }, { status: 401 });
     }
     const res = NextResponse.json({ ok: true, admin: true });
