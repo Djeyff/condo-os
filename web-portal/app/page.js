@@ -1,4 +1,4 @@
-import { getBranding, getDB } from '@/lib/config';
+import { getBranding, getDB, getConfig } from '@/lib/config';
 import { queryDB, getTitle, getText, getNumber } from '@/lib/notion';
 import { getSession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
@@ -6,9 +6,11 @@ import LoginForm from './LoginForm';
 
 export default async function LoginPage() {
   const session = await getSession();
-  if (session.unit) redirect('/dashboard');
+  if (session.unit || session.isAdmin) redirect('/dashboard');
 
   const branding = getBranding();
+  const config = getConfig();
+  const demoMode = !config.portal?.pins || Object.keys(config.portal.pins).length === 0;
   const unitsDB = getDB('units');
   let units = [];
 
@@ -33,7 +35,7 @@ export default async function LoginPage() {
           <p className="text-gray-500 mt-1">Owner Portal</p>
         </div>
 
-        <LoginForm units={units} />
+        <LoginForm units={units} demoMode={demoMode} />
 
         <p className="text-center text-xs text-gray-400 mt-6">
           Powered by Condo Manager OS

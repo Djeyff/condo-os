@@ -1,619 +1,1401 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Condo Manager OS — Social Media Launch Kit</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;background:#f8fafc;color:#1e293b;line-height:1.6}
-.container{max-width:800px;margin:0 auto;padding:24px}
-h1{font-size:32px;font-weight:800;text-align:center;margin:40px 0 8px}
-.subtitle{text-align:center;color:#64748b;margin-bottom:48px}
-h2{font-size:22px;font-weight:700;margin:48px 0 20px;padding-bottom:8px;border-bottom:2px solid #2563eb;display:flex;align-items:center;gap:10px}
-.post{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:16px;position:relative}
-.post-label{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
-.post-title{font-weight:700;font-size:16px;margin-bottom:8px;color:#1e293b}
-.post-body{font-size:14px;color:#475569;white-space:pre-wrap}
-.char-count{position:absolute;top:16px;right:16px;font-size:11px;color:#94a3b8}
-.copy-btn{display:inline-block;margin-top:12px;background:#2563eb;color:#fff;border:none;padding:6px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
-.copy-btn:hover{background:#1d4ed8}
-.tag{display:inline-block;background:#eff6ff;color:#2563eb;font-size:12px;font-weight:500;padding:2px 10px;border-radius:20px;margin:2px}
-.section-note{background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;font-size:13px;color:#92400e;margin-bottom:20px}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Condo Manager OS — Social Media Kit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f13;
+      --surface: #18181f;
+      --surface2: #1f1f2a;
+      --border: #2a2a3a;
+      --accent: #7c6fff;
+      --accent2: #ff6fb7;
+      --accent3: #43e0b0;
+      --text: #e8e8f0;
+      --muted: #888899;
+      --twitter: #1d9bf0;
+      --reddit: #ff4500;
+      --linkedin: #0a66c2;
+      --facebook: #1877f2;
+      --youtube: #ff0000;
+      --producthunt: #da552f;
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Hero ─────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #12121a 0%, #1a1030 50%, #12121a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 24px 50px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124,111,255,.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(124,111,255,.15);
+      border: 1px solid rgba(124,111,255,.3);
+      color: #b3aaff;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, #e8e8f0 30%, #b3aaff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 28px;
+    }
+    .hero-url {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--accent3);
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .hero-url:hover { background: rgba(255,255,255,.1); }
+
+    /* ── Nav ──────────────────────────────────────────────── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15,15,19,.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav::-webkit-scrollbar { display: none; }
+    .nav-inner {
+      display: flex;
+      gap: 2px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6px 0;
+      white-space: nowrap;
+    }
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s, background .2s;
+    }
+    .nav a:hover { color: var(--text); background: rgba(255,255,255,.06); }
+    .nav a .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── Layout ───────────────────────────────────────────── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── Section ──────────────────────────────────────────── */
+    .section { margin-bottom: 64px; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+    .section-meta h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+    .section-meta p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .platform-badge {
+      margin-left: auto;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    /* ── Post Card ────────────────────────────────────────── */
+    .posts-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .posts-grid.two-col {
+      grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+    }
+
+    .post-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color .2s, transform .2s;
+    }
+    .post-card:hover {
+      border-color: rgba(124,111,255,.4);
+      transform: translateY(-1px);
+    }
+    .post-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .post-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .post-label .num {
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .char-count {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 3px 8px;
+      background: rgba(255,255,255,.05);
+      border-radius: 999px;
+    }
+    .char-count.over { color: #ff6b6b; background: rgba(255,107,107,.1); }
+    .char-count.warn { color: #ffd93d; background: rgba(255,217,61,.1); }
+    .char-count.ok   { color: var(--accent3); background: rgba(67,224,176,.1); }
+
+    .post-body {
+      padding: 16px;
+    }
+    .post-text {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .post-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      background: rgba(124,111,255,.08);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .post-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+    }
+    .subreddit-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--reddit);
+      background: rgba(255,69,0,.1);
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    /* ── Copy Button ──────────────────────────────────────── */
+    .btn-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+    }
+    .btn-copy:hover {
+      background: rgba(124,111,255,.15);
+      border-color: rgba(124,111,255,.4);
+      color: var(--accent);
+    }
+    .btn-copy.copied {
+      background: rgba(67,224,176,.15);
+      border-color: rgba(67,224,176,.4);
+      color: var(--accent3);
+    }
+    .btn-copy svg { width: 13px; height: 13px; }
+
+    /* ── YouTube Cards ────────────────────────────────────── */
+    .yt-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .yt-card:hover { border-color: rgba(255,0,0,.3); }
+    .yt-card-top {
+      background: linear-gradient(135deg, #1a0808, #1f0f0f);
+      border-bottom: 1px solid var(--border);
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .yt-num {
+      background: var(--youtube);
+      color: #fff;
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .yt-title-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .yt-body { padding: 16px; }
+    .yt-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .yt-desc-text {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+    .yt-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Product Hunt ─────────────────────────────────────── */
+    .ph-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+    .ph-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .ph-card-head {
+      background: linear-gradient(135deg, #1e0f08, #251208);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ph-card-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--producthunt);
+    }
+    .ph-card-body { padding: 16px; }
+    .ph-limit {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* ── Stats Banner ─────────────────────────────────────── */
+    .stats-banner {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── Toast ────────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--surface2);
+      border: 1px solid rgba(67,224,176,.3);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent3);
+      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+      z-index: 9999;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── Scrollbar ────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width: 680px) {
+      .posts-grid.two-col { grid-template-columns: 1fr; }
+      .ph-grid { grid-template-columns: 1fr; }
+      .stats-banner { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">📦 Social Media Kit v1.0</div>
+  <h1>Condo Manager OS<br/>Social Media Kit</h1>
+  <p>Ready-to-copy posts for every platform. Click any button to copy to clipboard.</p>
+  <a href="https://condo-os.vercel.app" target="_blank" class="hero-url">
+    🔗 condo-os.vercel.app
+  </a>
+</header>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#twitter"><span class="dot" style="background:#1d9bf0"></span>Twitter/X</a>
+    <a href="#reddit"><span class="dot" style="background:#ff4500"></span>Reddit</a>
+    <a href="#linkedin"><span class="dot" style="background:#0a66c2"></span>LinkedIn</a>
+    <a href="#facebook"><span class="dot" style="background:#1877f2"></span>Facebook</a>
+    <a href="#youtube"><span class="dot" style="background:#ff0000"></span>YouTube</a>
+    <a href="#producthunt"><span class="dot" style="background:#da552f"></span>Product Hunt</a>
+  </div>
+</nav>
+
+<!-- Main -->
+<main class="container">
+
+  <!-- Stats -->
+  <div class="stats-banner">
+    <div class="stat-card">
+      <div class="stat-num">35</div>
+      <div class="stat-label">Total Posts</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Platforms</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">11</div>
+      <div class="stat-label">Notion Databases</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">$0</div>
+      <div class="stat-label">vs $460/yr Buildium</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       TWITTER / X
+  ═══════════════════════════════════════════════════════ -->
+  <section class="section" id="twitter">
+    <div class="section-header">
+      <div class="section-icon">🐦</div>
+      <div class="section-meta">
+        <h2>Twitter / X Posts</h2>
+        <p>10 posts · max 280 chars each · all link to condo-os.vercel.app</p>
+      </div>
+      <span class="platform-badge" style="background:rgba(29,155,240,.15);color:#1d9bf0;border:1px solid rgba(29,155,240,.3)">Twitter/X</span>
+    </div>
+    <div class="posts-grid two-col" id="twitter-posts"></div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       REDDIT
+  ═══════════════════════════════════════════════════════ -->
+  <section class="section" id="reddit">
+    <div class="section-header">
+      <div class="section-icon">📱</div>
+      <div class="section-meta">
+        <h2>Reddit Posts</h2>
+        <p>5 posts · full title + body · authentic tone</p>
+      </div>
+      <span class="platform-badge" style="background:rgba(255,69,0,.12);color:#ff4500;border:1px solid rgba(255,69,0,.3)">Reddit</span>
+    </div>
+    <div class="posts-grid" id="reddit-posts"></div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       LINKEDIN
+  ═══════════════════════════════════════════════════════ -->
+  <section class="section" id="linkedin">
+    <div class="section-header">
+      <div class="section-icon">💼</div>
+      <div class="section-meta">
+        <h2>LinkedIn Posts</h2>
+        <p>3 posts · professional tone · 150–300 words each</p>
+      </div>
+      <span class="platform-badge" style="background:rgba(10,102,194,.12);color:#0a66c2;border:1px solid rgba(10,102,194,.3)">LinkedIn</span>
+    </div>
+    <div class="posts-grid" id="linkedin-posts"></div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FACEBOOK
+  ═══════════════════════════════════════════════════════ -->
+  <section class="section" id="facebook">
+    <div class="section-header">
+      <div class="section-icon">📘</div>
+      <div class="section-meta">
+        <h2>Facebook Group Posts</h2>
+        <p>3 posts · casual, helpful tone · for HOA/condo community groups</p>
+      </div>
+      <span class="platform-badge" style="background:rgba(24,119,242,.12);color:#1877f2;border:1px solid rgba(24,119,242,.3)">Facebook</span>
+    </div>
+    <div class="posts-grid" id="facebook-posts"></div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       YOUTUBE
+  ═══════════════════════════════════════════════════════ -->
+  <section class="section" id="youtube">
+    <div class="section-header">
+      <div class="section-icon">🎬</div>
+      <div class="section-meta">
+        <h2>YouTube Video Titles & Descriptions</h2>
+        <p>5 videos · optimized titles + full descriptions</p>
+      </div>
+      <span class="platform-badge" style="background:rgba(255,0,0,.1);color:#ff4444;border:1px solid rgba(255,0,0,.25)">YouTube</span>
+    </div>
+    <div class="posts-grid" id="youtube-posts"></div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PRODUCT HUNT
+  ═══════════════════════════════════════════════════════ -->
+  <section class="section" id="producthunt">
+    <div class="section-header">
+      <div class="section-icon">🚀</div>
+      <div class="section-meta">
+        <h2>Product Hunt</h2>
+        <p>Tagline · Description · Maker Comment</p>
+      </div>
+      <span class="platform-badge" style="background:rgba(218,85,47,.12);color:#da552f;border:1px solid rgba(218,85,47,.3)">Product Hunt</span>
+    </div>
+    <div class="ph-grid" id="ph-posts"></div>
+  </section>
+
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast">✅ Copied to clipboard!</div>
+
 <script>
-function copyText(id){
-  const el=document.getElementById(id);
-  navigator.clipboard.writeText(el.innerText).then(()=>{
-    const btn=el.parentElement.querySelector('.copy-btn');
-    btn.textContent='✓ Copied!';
-    setTimeout(()=>btn.textContent='📋 Copy',1500);
+/* ─── Data ──────────────────────────────────────────────────────────────── */
+
+const TWITTER = [
+  {
+    type: "Problem→Solution",
+    text: `Paying $460/yr for HOA software at a 7-unit condo?\n\nI built a free alternative with Notion + a custom owner portal.\n\n11 databases. Telegram bot. Fee tracking. Documents. All for $0.\n\n→ https://condo-os.vercel.app\n\n#HOA #CondoManagement #Notion #PropTech #OpenSource`
+  },
+  {
+    type: "Cost Comparison",
+    text: `Buildium: $460/yr\nCondo Control: $600/yr\nAppFolio: $1.40/unit/mo\n\nCondo Manager OS: $0 (self-hosted)\n\nFull-featured. Open source. Runs on Notion.\n\nhttps://condo-os.vercel.app\n\n#HOA #PropTech #OpenSource #CondoManagement`
+  },
+  {
+    type: "Feature Highlight",
+    text: `Built an owner portal for my HOA with:\n✅ Fee status dashboard\n✅ Document library\n✅ Maintenance request tracker\n✅ Telegram bot notifications\n✅ AI-assisted logging\n\nAll free. All open source.\n\nhttps://condo-os.vercel.app #HOA #Notion #PropTech`
+  },
+  {
+    type: "Poll/Question",
+    text: `HOA managers: what software do you use?\n\n🔵 Buildium\n🟠 Condo Control\n🟢 Google Sheets / Notion\n⚪ Something else\n\nI built a free Notion-based OS for small condos:\nhttps://condo-os.vercel.app\n\n#HOA #CondoManagement #PropTech`
+  },
+  {
+    type: "Feature Highlight",
+    text: `Our condo used to track fees in a Google Sheet.\n\nNow we have:\n• Auto-calculated balances\n• Per-owner payment history\n• Telegram reminders on due dates\n• A web portal owners can actually use\n\nCost: $0/month 👇\nhttps://condo-os.vercel.app\n\n#HOA #Notion`
+  },
+  {
+    type: "Problem→Solution",
+    text: `Small HOAs don't need enterprise software.\n\nYou need:\n→ Fee tracking\n→ Document storage\n→ Maintenance logs\n→ Owner communication\n\nI built exactly that — free, open source, Notion-powered.\n\nhttps://condo-os.vercel.app\n\n#HOA #OpenSource #CondoManagement #PropTech`
+  },
+  {
+    type: "Social Proof",
+    text: `I manage a 7-unit condo myself.\n\nAfter 6 months of using Buildium I cancelled and built my own system in Notion.\n\nSaved $460/yr. Runs smoother. Owners prefer the portal.\n\nI open-sourced it 👇\nhttps://condo-os.vercel.app\n\n#HOA #Notion #PropTech #OpenSource`
+  },
+  {
+    type: "Feature Highlight",
+    text: `Condo Manager OS feature no one talks about:\n\nA Telegram bot that:\n• Notifies owners when fees are logged\n• Sends maintenance request updates\n• Posts building announcements instantly\n\nNo email list. No app download. Just Telegram.\n\nhttps://condo-os.vercel.app #HOA #PropTech`
+  },
+  {
+    type: "Problem→Solution",
+    text: `HOA software companies charge like you're managing 200 units.\n\nYou're managing 8.\n\nCondo Manager OS is built for small condos:\n→ Free forever\n→ Self-hostable\n→ 11 Notion databases ready to use\n\nhttps://condo-os.vercel.app\n\n#HOA #CondoManagement #Notion #OpenSource`
+  },
+  {
+    type: "Open Source",
+    text: `Just open-sourced my condo management system 🎉\n\n11-database Notion workspace + Next.js owner portal + Telegram bot\n\nBuilt it for my own building. Figured others could use it too.\n\nFree. Forever.\n\nhttps://condo-os.vercel.app\n\n#OpenSource #HOA #Notion #PropTech #CondoManagement`
+  }
+];
+
+const REDDIT = [
+  {
+    sub: "r/HOA",
+    title: "I built a free alternative to Buildium for small HOAs",
+    body: `Hey r/HOA,
+
+Long-time lurker, first-time poster. I'm a co-owner in a 7-unit condo building and I've been the de facto "manager" for the past two years. When I first took over, we were paying for Buildium — and paying a lot for a platform clearly designed for property management companies with hundreds of units, not a 7-person HOA trying to track monthly fees and maintenance requests.
+
+After six months I cancelled and decided to just... build something better. I'm a developer by trade, so I had the skills, but I was genuinely surprised how far I could get with Notion as the backbone.
+
+**What I ended up with:**
+
+- **11 Notion databases** covering: owners, units, fees, payments, expenses, vendors, maintenance requests, documents, meetings, announcements, and audit logs
+- A **Next.js owner portal** where residents can log in, check their fee status, view documents, and submit maintenance requests — no Notion account required
+- A **Telegram bot** that sends fee notifications, maintenance updates, and building-wide announcements
+- An **AI assistant integration** to help with routine logging tasks
+
+Total monthly cost: basically $0 (Notion free tier handles it, portal is on Vercel free tier).
+
+I've been using this for about 8 months now and it's genuinely better than Buildium was for our use case. Owners actually engage with the portal. Maintenance requests don't fall through the cracks. Fee tracking is crystal clear.
+
+I decided to open-source the whole thing in case other small HOAs are in the same situation.
+
+Link: **https://condo-os.vercel.app**
+
+Screenshots are on the site. Happy to answer questions about setup or how it handles specific workflows. I know every HOA is different so curious to hear what features you'd want that aren't there yet.`
+  },
+  {
+    sub: "r/Notion",
+    title: "I built an 11-database Condo/HOA Management OS in Notion",
+    body: `Hey Notion nerds 👋
+
+I wanted to share a project I've been working on — a full property/HOA management system built entirely in Notion, paired with a Next.js portal and Telegram bot.
+
+**The Notion structure (11 databases):**
+
+1. **Owners** — owner profiles, contact info, unit links
+2. **Units** — unit details, ownership history, area
+3. **Monthly Fees** — per-unit fee records, payment status, due dates
+4. **Payments** — individual payment logs with amounts and methods
+5. **Expenses** — building expenses, vendor links, categories
+6. **Vendors** — contractor/vendor directory with ratings and history
+7. **Maintenance Requests** — submitted requests, status tracking, assignments
+8. **Documents** — bylaws, invoices, insurance, meeting minutes
+9. **Meetings** — meeting records, agendas, notes, attendance
+10. **Announcements** — building notices with audience targeting
+11. **Audit Log** — auto-logged change history for accountability
+
+The relations and rollups are where it gets interesting. Each Unit rolls up: total fees owed, total paid, balance, all maintenance history, and linked documents. It's genuinely useful as a management dashboard.
+
+**Beyond Notion:**
+
+Since I didn't want owners needing Notion accounts, I built a Next.js portal that connects via the Notion API. Owners log in and see a clean dashboard — no Notion UI, no complexity.
+
+The Telegram bot handles notifications: fee posted → owner gets a message. Maintenance status changes → owner gets an update. It's replaced email entirely for routine comms.
+
+**Open source, free:**
+
+The full template + portal code is at https://condo-os.vercel.app
+
+Would love feedback from other Notion builders — especially around the relational structure. There are some awkward rollup chains I'm not happy with yet.`
+  },
+  {
+    sub: "r/selfhosted",
+    title: "Open-source condo management with Notion + Next.js portal",
+    body: `Hey r/selfhosted,
+
+Sharing a project that might interest this community: an open-source HOA/condo management system that uses Notion as the database layer with a self-hosted Next.js frontend.
+
+**Architecture:**
+
+- **Backend:** Notion (11 relational databases) + Notion API
+- **Frontend:** Next.js 14 app hosted on Vercel (or self-hostable on any Node.js server)
+- **Auth:** Custom lightweight auth with per-owner credentials
+- **Notifications:** Telegram Bot API
+- **AI layer:** OpenAI/Claude API for optional assistant features (fully optional)
+
+**Why Notion as the backend?**
+
+Controversial choice, I know. I considered Supabase, PocketBase, even a simple SQLite setup. Chose Notion because:
+
+1. The property manager (me) needs a GUI for daily operations — Notion gives a great built-in editor, views, and filters without building an admin panel
+2. The Notion API is stable and well-documented
+3. Notion free tier handles our data volume easily
+4. Non-technical co-owners can view/edit data directly in Notion if needed
+
+The obvious downside: you're dependent on Notion's uptime and API limits. For a small condo this is a non-issue in practice.
+
+**Self-hosting the portal:**
+
+The Next.js app needs 3 env vars: your Notion API key, a database ID, and a session secret. Deploy to Vercel in 5 minutes or run with `npm run build && npm start` on any VPS.
+
+**What it handles:**
+- Fee tracking & payment history per unit
+- Maintenance request workflow (submit → assign → resolve)
+- Document library with download links
+- Owner-facing dashboard (no Notion account needed)
+- Telegram notifications for key events
+- Expense & vendor management
+
+Full repo + setup guide: **https://condo-os.vercel.app**
+
+Happy to discuss the architecture tradeoffs or help with self-hosting.`
+  },
+  {
+    sub: "r/PropertyManagement",
+    title: "Managing a 7-unit condo? Here's what I use instead of Buildium",
+    body: `This is specifically for small residential condos and HOAs — if you're managing 50+ units, Buildium probably makes sense. If you're managing 5–20 units, this might be relevant.
+
+**The problem with existing software:**
+
+I tried Buildium for 6 months managing our 7-unit condo. It works, but it's priced and designed for property management companies. The features I actually needed — fee tracking, maintenance logs, owner communication, document storage — were buried under a mountain of stuff I'd never use, and the annual cost felt unjustifiable for our small building.
+
+I'm a developer, so I built my own system. After 8 months of daily use, I'm happy enough with it to open-source it.
+
+**What Condo Manager OS does:**
+
+*Fee & financial tracking:* Each owner has a fee record per month. Payments are logged individually. The system auto-calculates balances and flags overdue accounts. Not as full-featured as dedicated accounting software, but handles 90% of what a small condo needs.
+
+*Maintenance workflow:* Owners submit requests via the web portal or Telegram. Requests go into a database with status tracking (Open → In Progress → Resolved). Vendors can be linked. Photo attachments via Notion.
+
+*Owner portal:* A clean Next.js web app where owners can check their fee status, download documents, and submit maintenance requests without needing Notion access.
+
+*Communication:* Telegram bot for instant notifications. No email lists to maintain.
+
+*Documents:* Bylaws, insurance certs, meeting minutes, invoices — all in one place with a clean download interface.
+
+**What it doesn't do (yet):**
+- Online payment processing (you'd need to integrate Stripe separately)
+- Accounting/tax reports
+- Automated late fees
+
+Screenshots and setup guide at **https://condo-os.vercel.app**. It's free and open source. Happy to answer questions about whether it fits your specific situation.`
+  },
+  {
+    sub: "r/SideProject",
+    title: "I turned my condo management frustration into a product",
+    body: `The classic SideProject story: I had a problem, I built a solution, now I'm sharing it.
+
+**The problem:** I co-own a 7-unit condo and became the de facto manager. We were paying $460/year for Buildium, which felt absurd for a building this size. The software worked, but it was built for professional property management companies, not small HOAs run by residents.
+
+**The build:** I spent about 3 months evenings and weekends building Condo Manager OS — a Notion-based management system paired with a Next.js owner portal and Telegram bot.
+
+Stack:
+- **Notion** (11 relational databases — the "backend")
+- **Next.js 14** (owner-facing portal)
+- **Telegram Bot API** (notifications)
+- **Vercel** (hosting, free tier)
+- **OpenAI/Claude API** (optional AI features)
+
+The hardest part wasn't the code — it was designing the data model. Getting the relationships between Units, Owners, Fees, Payments, and Maintenance Requests right took many iterations. Notion's relational features are powerful but have some quirks when you're trying to use it as a proper relational database.
+
+**Current status:** 8 months of daily use in our actual building. Owners use the portal weekly to check their fee status. Maintenance requests are properly tracked. We haven't lost a document since switching. I cancelled Buildium.
+
+**What I'm sharing:** The full Notion template + portal source code, completely free. You can be up and running in under an hour if you're comfortable with Notion and basic web deployment.
+
+→ **https://condo-os.vercel.app**
+
+Screenshots on the landing page show the actual dashboards we use. Would love feedback from anyone in property or HOA management on what's missing.`
+  }
+];
+
+const LINKEDIN = [
+  {
+    type: "Launch Announcement",
+    text: `Today I'm open-sourcing something I've been building for the past several months: Condo Manager OS.
+
+It started as a personal project. I co-own a 7-unit condo and found myself paying $460/year for HOA software clearly designed for large property management companies. So I built something better-suited for small condos — and now I'm sharing it.
+
+What it is:
+→ An 11-database Notion workspace covering everything from fee tracking to vendor management
+→ A Next.js owner portal so residents can check their status and submit requests without needing Notion
+→ A Telegram bot for instant notifications
+→ Optional AI assistant integration for routine tasks
+
+Total cost to run: $0/month on free tiers.
+
+I've been using this daily in our actual building for 8 months. It handles our full workflow — fee collection, maintenance requests, document storage, owner communication — with less friction than the commercial software we replaced.
+
+The full system (Notion template + portal code + setup guide) is live at condo-os.vercel.app.
+
+If you're involved with a small HOA or residential condo, I'd love to hear whether this solves problems you've experienced. And if you're a developer interested in contributing, the repo is open.
+
+Building tools that solve real problems — even small ones — is one of the most satisfying parts of this work. This one happens to save other HOA boards a few hundred dollars a year while it's at it.
+
+#PropTech #OpenSource #HOA #Notion #SideProject #RealEstate`
+  },
+  {
+    type: "Cost Savings Story",
+    text: `A story about HOA software pricing and why I built an alternative.
+
+When I became de facto manager of our 7-unit condo, I set up Buildium because it's what everyone recommends. It cost $460/year. For 7 units.
+
+That's $65 per unit annually for software that:
+• Was designed for companies managing hundreds of units
+• Had more features than we'd ever use
+• Felt like overkill every single time I logged in
+
+I cancelled after 6 months and built Condo Manager OS instead.
+
+The comparison after 8 months of real use:
+
+**Buildium ($460/yr):**
+✓ Full accounting suite
+✓ Online payment processing
+✓ Tenant screening
+✗ Expensive for small buildings
+✗ Complex UI for simple tasks
+✗ Features we'd never use
+
+**Condo Manager OS ($0/yr):**
+✓ Fee tracking & payment history
+✓ Maintenance request workflow
+✓ Owner portal (no account needed)
+✓ Telegram notifications
+✓ Document library
+✓ Right-sized for 5–30 units
+✗ No built-in payment processing (yet)
+
+I'm not saying Buildium is bad. It's excellent for what it's designed for. But small HOAs don't need enterprise software.
+
+If your HOA is paying hundreds per year for software and you're only managing a handful of units, there's now a free alternative.
+
+condo-os.vercel.app
+
+#HOA #PropTech #OpenSource #CostSavings #RealEstate`
+  },
+  {
+    type: "Open Source Philosophy",
+    text: `Why did I open-source my HOA management system instead of trying to monetize it?
+
+Honest answer: because the HOA software market is already full of companies charging small volunteer-run boards more than they should pay for tools they only half-use. Adding another SaaS to that pile didn't feel right.
+
+Here's what I believe:
+
+A 7-unit condo association is not a business. It's a group of neighbors sharing ownership of a building. The administrative overhead — tracking fees, logging maintenance, sharing documents — should cost as close to $0 as possible.
+
+Commercial HOA software is priced for professional property management companies with hundreds of units and paying staff. When a small board uses it, they're subsidizing features they'll never touch and paying for scale they'll never reach.
+
+Open source changes that equation. The Notion template, the owner portal code, the Telegram bot — all of it is freely available. Anyone with basic technical skills can deploy it in an afternoon. Boards without that skill can find a local developer to set it up for a one-time fee that's still less than a year of Buildium.
+
+I've been using this system in my own building for 8 months. It works. The owners prefer the portal to any previous tool we used. Maintenance requests actually get resolved. Documents are findable.
+
+That's enough. I don't need it to be a business.
+
+If you're involved in property technology, HOA management, or open source software, I'd love to connect and hear your perspective.
+
+→ condo-os.vercel.app
+
+#OpenSource #PropTech #HOA #SoftwareEthics #RealEstate #CommunityBuilding`
+  }
+];
+
+const FACEBOOK = [
+  {
+    group: "HOA & Condo Owners Community",
+    text: `Hi everyone! 👋
+
+Quick share for anyone who manages or sits on the board of a small condo or HOA.
+
+I've been managing our 7-unit building for a couple years and got tired of paying for software that felt way too big for our needs. So I built my own system and I'm sharing it for free.
+
+It's called **Condo Manager OS** — it's a Notion-based setup that handles everything we actually need:
+
+📋 Monthly fee tracking with payment history per owner
+🔧 Maintenance request tracking (owners submit, we update status)
+📁 Document library (bylaws, insurance, meeting minutes)
+📣 Building announcements via Telegram
+🌐 An owner portal where residents can check their fee balance and submit requests
+
+It's completely free to use. There's a short setup process (takes about an hour) and full instructions are included.
+
+I shared screenshots on the site so you can see what it actually looks like before committing to set it up.
+
+Check it out at: **condo-os.vercel.app**
+
+Happy to answer questions here if you're curious about whether it'd work for your building! 🏢`
+  },
+  {
+    group: "Small HOA Boards Network",
+    text: `Does anyone else feel like HOA software is massively overpriced for small buildings?
+
+We were paying $460/year for Buildium for a 7-unit condo. That's money coming out of our HOA fund for software designed for property management companies with hundreds of units.
+
+I ended up building my own free alternative — I'm a developer so I had the skills. It's been running in our actual building for 8 months and works really well.
+
+Features that small HOAs actually need:
+✅ Fee tracking & who's paid/who hasn't
+✅ Maintenance request workflow  
+✅ Shared document storage
+✅ Owner communication (we use Telegram)
+✅ Meeting notes & history
+
+I've open-sourced it so any HOA can use it at no cost: **condo-os.vercel.app**
+
+Would love to hear from others managing small buildings — what's your biggest administrative headache? Maybe I can add it to the system! 💬`
+  },
+  {
+    group: "Condo Living & Management Tips",
+    text: `Sharing something that's genuinely made managing our building so much easier 🙂
+
+We have a 7-unit condo and I handle the administrative side. For a while I was juggling spreadsheets, email threads, and a shared Google Drive. It was... not great. Maintenance requests got lost. Owners didn't know their fee status. Documents were scattered everywhere.
+
+I built a proper system called **Condo Manager OS** that finally put everything in one place:
+
+🏠 Each owner has a clean dashboard showing their fee history and balance
+📬 They get Telegram messages when fees are posted or maintenance is updated  
+🔧 Maintenance requests go into a proper tracking system with statuses
+📂 All building documents are in one organized library
+📊 I can see the building overview at a glance
+
+The best part — it's completely free! I open-sourced it because small HOAs shouldn't have to pay hundreds per year for basic organization tools.
+
+Setup takes about an hour and there are step-by-step instructions: **condo-os.vercel.app**
+
+If your building is still running on spreadsheets and email, this might be worth a look! 😊`
+  }
+];
+
+const YOUTUBE = [
+  {
+    n: 1,
+    title: "Condo Manager OS: Full Setup in 5 Minutes",
+    desc: `In this video I'll walk you through setting up Condo Manager OS from scratch — the free, open-source HOA management system built on Notion and Next.js.
+
+By the end of this video you'll have:
+✅ Your Notion workspace configured with all 11 databases
+✅ Your first owners and units entered
+✅ The owner portal deployed and live
+✅ Telegram bot set up and sending notifications
+
+WHAT YOU'LL NEED:
+- A free Notion account
+- A free Vercel account (for the owner portal)
+- A Telegram account (for bot notifications)
+- About 5–10 minutes
+
+CHAPTERS:
+0:00 — Intro & overview
+0:45 — Duplicating the Notion template
+1:30 — Adding your first owner & unit
+2:20 — Setting up the Notion API connection
+3:10 — Deploying the owner portal to Vercel
+4:15 — Creating the Telegram bot
+5:00 — First end-to-end test: logging a fee, owner sees it in portal
+
+LINKS:
+→ Condo Manager OS: https://condo-os.vercel.app
+→ Notion (free): https://notion.so
+→ Vercel (free): https://vercel.com
+
+This system costs $0/month to run and is a free alternative to Buildium, Condo Control, and similar HOA software — built specifically for small condos and HOAs (5–30 units).
+
+#HOA #CondoManagement #Notion #OpenSource #PropTech`
+  },
+  {
+    n: 2,
+    title: "Stop Overpaying for HOA Software | Free Notion Alternative",
+    desc: `Is your HOA paying $400–$600/year for software? In this video I break down exactly why commercial HOA platforms are overpriced for small buildings — and show you the free alternative I built.
+
+We'll compare:
+📊 Buildium vs Condo Manager OS
+📊 Condo Control vs Condo Manager OS
+📊 AppFolio vs Condo Manager OS
+
+Spoiler: if you're managing fewer than 30 units, you're almost certainly overpaying.
+
+WHAT CONDO MANAGER OS INCLUDES:
+• Fee tracking & payment history per owner
+• Maintenance request workflow (submit → assign → resolve)
+• Owner portal — no Notion account needed for residents
+• Telegram bot notifications
+• Document library
+• Expense & vendor management
+• Meeting records
+• Building announcements
+
+WHAT IT DOESN'T (YET):
+• Built-in online payment processing
+• Full accounting/tax reports
+• Tenant screening
+
+For most small HOAs, what it includes is 90% of what you actually use.
+
+CHAPTERS:
+0:00 — The HOA software pricing problem
+1:30 — Buildium pricing breakdown
+3:00 — What a 7-unit condo actually needs
+4:30 — Condo Manager OS live demo
+8:00 — Feature comparison table
+10:15 — When to use commercial software vs this
+11:30 — How to get started (free)
+
+→ https://condo-os.vercel.app
+
+#HOA #PropTech #Buildium #CondoManagement #OpenSource #SaveMoney`
+  },
+  {
+    n: 3,
+    title: "Owner Portal Demo: Telegram Bot + Web Dashboard",
+    desc: `Deep dive into the two owner-facing features of Condo Manager OS: the web owner portal and the Telegram bot.
+
+In this video I show exactly what residents see and experience — not just the management side.
+
+OWNER PORTAL WALKTHROUGH:
+→ Logging in (no Notion account required)
+→ Fee history dashboard — current balance, paid vs. pending
+→ Submitting a maintenance request
+→ Downloading building documents
+→ Viewing announcements
+
+TELEGRAM BOT DEMO:
+→ Receiving a fee notification
+→ Getting maintenance status updates
+→ Building-wide announcements in real time
+→ Setting up the bot (takes 5 minutes)
+
+WHY TELEGRAM INSTEAD OF EMAIL:
+Most building communication systems rely on email lists that nobody maintains. Telegram gives instant delivery, high open rates, and works on any device — no app installation needed beyond Telegram itself.
+
+THE TECH STACK (for developers):
+• Next.js 14 (App Router)
+• Notion API for data
+• Telegram Bot API for notifications
+• Deployed on Vercel (free tier)
+
+Try the live demo at: https://condo-os.vercel.app
+
+Full source code is open source and free to use.
+
+#HOA #CondoManagement #Telegram #Notion #NextJS #OpenSource #PropTech`
+  },
+  {
+    n: 4,
+    title: "How I Manage a 7-Unit Condo for $1/month with AI",
+    desc: `I manage all the administrative work for a 7-unit condo building. In this video I show my complete workflow — including the AI features that save me the most time.
+
+MONTHLY ADMIN TIME (before vs. after):
+Before (spreadsheets + email): ~4 hours/month
+After (Condo Manager OS): ~45 minutes/month
+
+THE AI FEATURES:
+• Assisted fee logging — describe what happened, AI structures the database entry
+• Maintenance request parsing — owners send a message, AI extracts the key details
+• Meeting notes summarization — paste rough notes, AI formats them properly
+• Expense categorization — upload receipts, AI suggests categories and amounts
+
+HOW IT'S SET UP:
+The AI integration is optional and uses the OpenAI or Claude API. At our usage level it costs about $0.50–$1.00/month. The rest of the system (Notion + Vercel + Telegram) is completely free.
+
+MY MONTHLY WORKFLOW:
+1. First of month: log fees for each unit (5 mins with AI assist)
+2. Weekly: check maintenance requests, update statuses (10 mins)
+3. As-needed: respond to owner questions via portal or Telegram
+4. Quarterly: update documents, prep for meetings (30 mins)
+
+Full system: https://condo-os.vercel.app
+Open source, free to use.
+
+Questions about the AI integration? Drop them in the comments.
+
+#HOA #AI #CondoManagement #Notion #OpenSource #Automation #PropTech`
+  },
+  {
+    n: 5,
+    title: "Condo Manager OS vs Buildium vs Condo Control | Honest Comparison",
+    desc: `I used Buildium for 6 months before building my own HOA management system. Here's my honest, experience-based comparison of the three most common options for small condo associations.
+
+PLATFORMS COMPARED:
+1. Buildium — most popular, starts at ~$460/yr
+2. Condo Control — HOA-specific, starts at ~$600/yr
+3. Condo Manager OS — free, open source (what I built)
+
+I'll score each on:
+• Pricing fairness for small HOAs
+• Fee tracking & financial management
+• Maintenance request workflow
+• Owner communication tools
+• Document management
+• Ease of setup
+• Ongoing maintenance burden
+
+THE HONEST VERDICT:
+Buildium and Condo Control are genuinely good products — for their target market. If you're a professional property manager or a large HOA with paid staff, they make sense.
+
+For a volunteer-run HOA board managing 5–30 units, you're paying for scale and features you'll never use.
+
+Condo Manager OS won't beat them on every feature. But on the features small condos actually use every day, it holds up — and it costs $0.
+
+WHEN TO CHOOSE EACH:
+✅ Buildium: 50+ units, professional management, need online payments
+✅ Condo Control: HOA-specific workflows, board voting features, larger community
+✅ Condo Manager OS: 5–30 units, volunteer board, tech-comfortable, cost-sensitive
+
+→ Full details and demo: https://condo-os.vercel.app
+
+I have no affiliation with Buildium or Condo Control. This is based entirely on personal experience.
+
+#HOA #Buildium #CondoControl #CondoManagement #PropTech #OpenSource #Comparison`
+  }
+];
+
+const PH = {
+  tagline: "Free Notion-powered OS for small HOAs & condos",
+  description: "11-database Notion workspace + Next.js owner portal + Telegram bot. Tracks fees, maintenance, documents & announcements for small condos. Built by a condo owner tired of paying $460/yr for enterprise HOA software. 100% free & open source.",
+  comment: `Hey Product Hunt! 👋 I'm the maker of Condo Manager OS, and I'm genuinely excited to share this here.
+
+**The origin story:** I co-own a 7-unit condo and became the building's de facto manager. We were using Buildium — $460/year for a platform built for professional property companies managing hundreds of units. For our small, volunteer-run HOA it felt absurd.
+
+So I built a replacement. And after 8 months of daily use in our actual building, I'm confident enough in it to open-source it.
+
+**What it actually is:**
+
+A Notion workspace with 11 carefully designed relational databases — Owners, Units, Fees, Payments, Expenses, Vendors, Maintenance Requests, Documents, Meetings, Announcements, and an Audit Log. These are wired together so a single unit view shows you: outstanding balance, full payment history, all maintenance requests, linked documents, and more.
+
+Paired with that is a Next.js owner portal — so residents can log in and check their fee status, download documents, and submit maintenance requests without ever touching Notion. And a Telegram bot that handles all routine notifications.
+
+**Why free / open source:**
+
+Small HOAs are volunteer-run neighbor groups. They shouldn't have to pay SaaS prices for software that's actually designed for property management businesses. The marginal cost of me sharing this template and code is zero. The benefit to other small HOA boards could be hundreds of dollars a year.
+
+**What I'd love feedback on:**
+
+- Is the onboarding clear enough for non-developers?
+- What features does your HOA need that I haven't built yet?
+- Any PropTech founders here who see potential for this to grow into something bigger?
+
+Try it free at condo-os.vercel.app — I'll be in the comments all day. 🙌`
+};
+
+/* ─── Render Helpers ────────────────────────────────────────────────────── */
+
+function charBadge(text, limit) {
+  const n = text.length;
+  let cls = 'ok';
+  if (limit) {
+    if (n > limit) cls = 'over';
+    else if (n > limit * 0.9) cls = 'warn';
+  }
+  return `<span class="char-count ${cls}">${n.toLocaleString()}${limit ? ' / ' + limit : ''} chars</span>`;
+}
+
+function copyBtn(text, label = 'Copy') {
+  const safe = text.replace(/`/g, '\\`').replace(/\\/g, '\\\\');
+  return `<button class="btn-copy" onclick="copyText(\`${safe}\`, this)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+      <rect x="5" y="5" width="9" height="9" rx="2"/>
+      <path d="M11 5V3a2 2 0 0 0-2-2H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
+    </svg>
+    ${label}
+  </button>`;
+}
+
+/* ─── Twitter ───────────────────────────────────────────────────────────── */
+const twitterEl = document.getElementById('twitter-posts');
+TWITTER.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'post-card';
+  card.innerHTML = `
+    <div class="post-card-header">
+      <div class="post-label">
+        <span class="num">${i+1}</span>
+        <span style="color:#1d9bf0">${p.type}</span>
+      </div>
+      ${charBadge(p.text, 280)}
+    </div>
+    <div class="post-body">
+      <div class="post-text">${p.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+    </div>
+    <div class="post-footer">
+      <span style="font-size:11px;color:var(--muted)">🐦 Twitter / X</span>
+      ${copyBtn(p.text)}
+    </div>`;
+  twitterEl.appendChild(card);
+});
+
+/* ─── Reddit ────────────────────────────────────────────────────────────── */
+const redditEl = document.getElementById('reddit-posts');
+REDDIT.forEach((p, i) => {
+  const combined = `TITLE: ${p.title}\n\n${p.body}`;
+  const card = document.createElement('div');
+  card.className = 'post-card';
+  card.innerHTML = `
+    <div class="post-card-header">
+      <div class="post-label">
+        <span class="num">${i+1}</span>
+        <span style="color:#ff4500">${p.sub}</span>
+      </div>
+      ${charBadge(p.body)}
+    </div>
+    <div class="post-body">
+      <div class="post-title">${p.title.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      <div class="post-text">${p.body.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>
+    </div>
+    <div class="post-footer">
+      <span class="subreddit-tag">${p.sub}</span>
+      <div style="display:flex;gap:8px">
+        ${copyBtn(p.title, 'Copy Title')}
+        ${copyBtn(combined, 'Copy All')}
+      </div>
+    </div>`;
+  redditEl.appendChild(card);
+});
+
+/* ─── LinkedIn ──────────────────────────────────────────────────────────── */
+const linkedinEl = document.getElementById('linkedin-posts');
+LINKEDIN.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'post-card';
+  card.innerHTML = `
+    <div class="post-card-header">
+      <div class="post-label">
+        <span class="num">${i+1}</span>
+        <span style="color:#0a66c2">${p.type}</span>
+      </div>
+      ${charBadge(p.text)}
+    </div>
+    <div class="post-body">
+      <div class="post-text">${p.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+    </div>
+    <div class="post-footer">
+      <span style="font-size:11px;color:var(--muted)">💼 LinkedIn</span>
+      ${copyBtn(p.text)}
+    </div>`;
+  linkedinEl.appendChild(card);
+});
+
+/* ─── Facebook ──────────────────────────────────────────────────────────── */
+const facebookEl = document.getElementById('facebook-posts');
+FACEBOOK.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'post-card';
+  card.innerHTML = `
+    <div class="post-card-header">
+      <div class="post-label">
+        <span class="num">${i+1}</span>
+        <span style="color:#1877f2">${p.group}</span>
+      </div>
+      ${charBadge(p.text)}
+    </div>
+    <div class="post-body">
+      <div class="post-text">${p.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+    </div>
+    <div class="post-footer">
+      <span style="font-size:11px;color:var(--muted)">📘 Facebook Group</span>
+      ${copyBtn(p.text)}
+    </div>`;
+  facebookEl.appendChild(card);
+});
+
+/* ─── YouTube ───────────────────────────────────────────────────────────── */
+const youtubeEl = document.getElementById('youtube-posts');
+YOUTUBE.forEach((v) => {
+  const combined = `TITLE: ${v.title}\n\nDESCRIPTION:\n${v.desc}`;
+  const card = document.createElement('div');
+  card.className = 'yt-card';
+  card.innerHTML = `
+    <div class="yt-card-top">
+      <div class="yt-num">${v.n}</div>
+      <div>
+        <div class="yt-title-text">${v.title.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap">
+          ${charBadge(v.title)} <span style="font-size:11px;color:var(--muted)">title</span>
+          ${charBadge(v.desc)} <span style="font-size:11px;color:var(--muted)">description</span>
+        </div>
+      </div>
+    </div>
+    <div class="yt-body">
+      <div class="yt-section-label">Video Description</div>
+      <div class="yt-desc-text">${v.desc.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      <div class="yt-actions">
+        ${copyBtn(v.title, 'Copy Title')}
+        ${copyBtn(v.desc, 'Copy Description')}
+        ${copyBtn(combined, 'Copy Both')}
+      </div>
+    </div>`;
+  youtubeEl.appendChild(card);
+});
+
+/* ─── Product Hunt ──────────────────────────────────────────────────────── */
+const phEl = document.getElementById('ph-posts');
+
+function phCard(label, text, limit, extraNote) {
+  const d = document.createElement('div');
+  d.className = 'ph-card';
+  d.innerHTML = `
+    <div class="ph-card-head">
+      <span class="ph-card-label">${label}</span>
+      ${charBadge(text, limit)}
+    </div>
+    <div class="ph-card-body">
+      <div class="post-text">${text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      ${extraNote ? `<div class="ph-limit">${extraNote}</div>` : ''}
+      <div style="margin-top:12px">${copyBtn(text)}</div>
+    </div>`;
+  return d;
+}
+
+phEl.appendChild(phCard('Tagline', PH.tagline, 60, 'Max 60 characters'));
+phEl.appendChild(phCard('Description', PH.description, 260, 'Max 260 characters'));
+
+// Maker comment — full width
+const commentCard = document.createElement('div');
+commentCard.className = 'ph-card';
+commentCard.style.gridColumn = '1 / -1';
+commentCard.innerHTML = `
+  <div class="ph-card-head">
+    <span class="ph-card-label">Maker Comment (First Comment)</span>
+    ${charBadge(PH.comment)}
+  </div>
+  <div class="ph-card-body">
+    <div class="post-text">${PH.comment.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>
+    <div style="margin-top:12px">${copyBtn(PH.comment)}</div>
+  </div>`;
+phEl.appendChild(commentCard);
+
+/* ─── Copy & Toast ──────────────────────────────────────────────────────── */
+const toast = document.getElementById('toast');
+let toastTimer;
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.innerHTML;
+    btn.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8l4 4 6-6"/></svg> Copied!`;
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+
+    toast.textContent = '✅ Copied to clipboard!';
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+  }).catch(() => {
+    // Fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.classList.add('copied');
+    setTimeout(() => btn.classList.remove('copied'), 2000);
   });
 }
 </script>
-</head>
-<body>
-<div class="container">
-
-<h1>🚀 Social Media Launch Kit</h1>
-<p class="subtitle">Condo Manager OS — Ready-to-post content for every platform</p>
-
-<!-- ===== TWITTER/X ===== -->
-<h2>🐦 Twitter / X Posts</h2>
-<p class="section-note">Post 1-2 per day during launch week. Best times: 9AM, 12PM, 5PM EST. Always include the link.</p>
-
-<div class="post">
-<div class="post-label">Tweet #1 — Launch</div>
-<div class="char-count">274 chars</div>
-<div class="post-body" id="tw1">Just launched Condo Manager OS 🏢
-
-11 Notion databases that replace Buildium ($744/yr) for a one-time $79.
-
-• Owner portal
-• Voting system
-• AI assistant
-• Maintenance tracking
-• Live dashboards
-
-Free demo → https://condo-os.vercel.app
-
-#HOA #Notion #PropTech</div>
-<button class="copy-btn" onclick="copyText('tw1')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Tweet #2 — Cost comparison</div>
-<div class="post-body" id="tw2">Buildium: $744/yr
-Condo Control: $2,400/yr
-Condo Manager OS: $79 once + $1/mo AI
-
-5-year savings: $3,600+
-
-Same features. Runs on Notion. Open source.
-
-https://condo-os.vercel.app
-
-#HOA #CondoManagement</div>
-<button class="copy-btn" onclick="copyText('tw2')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Tweet #3 — Problem hook</div>
-<div class="post-body" id="tw3">If you manage a condo association with spreadsheets, you're one formula error away from disaster.
-
-If you pay $62/month for Buildium, you're overpaying by 97%.
-
-I built something better → https://condo-os.vercel.app</div>
-<button class="copy-btn" onclick="copyText('tw3')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Tweet #4 — Feature spotlight</div>
-<div class="post-body" id="tw4">Condo Manager OS has a voting system that:
-
-✅ Auto-calculates quorum
-✅ Weights votes by ownership %
-✅ Tracks per-unit votes (For/Against/Abstain)
-✅ Generates meeting reports
-
-All from Notion. No coding needed.
-
-https://condo-os.vercel.app #HOA</div>
-<button class="copy-btn" onclick="copyText('tw4')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Tweet #5 — AI angle</div>
-<div class="post-body" id="tw5">"Generate the Q1 fee call"
-"Show me delinquent units"
-"Create a maintenance ticket for unit 3B"
-
-Managing a condo with AI costs $1/month.
-
-Managing it with Buildium costs $62/month.
-
-https://condo-os.vercel.app</div>
-<button class="copy-btn" onclick="copyText('tw5')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Tweet #6 — Owners love it</div>
-<div class="post-body" id="tw6">Condo owners can now:
-
-📊 Check their balance online
-📄 Download statements anytime
-🔧 Submit maintenance requests from their phone
-🗳️ Vote on resolutions
-
-No app download. No login portal fees. Just Notion + a free web portal.
-
-https://condo-os.vercel.app</div>
-<button class="copy-btn" onclick="copyText('tw6')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Tweet #7 — Open source</div>
-<div class="post-body" id="tw7">I open-sourced my entire condo management system.
-
-17 CLI commands. 11 Notion databases. Web portal. Telegram bot.
-
-No vendor lock-in. No monthly fees. Your data stays yours.
-
-GitHub → https://github.com/Djeyff/condo-os
-
-#OpenSource #PropTech</div>
-<button class="copy-btn" onclick="copyText('tw7')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Tweet #8 — Question</div>
-<div class="post-body" id="tw8">Condo/HOA managers — what do you currently use to track:
-
-• Monthly fees & delinquency
-• Maintenance requests
-• Owner communications
-• Annual budgets
-
-Spreadsheets? Buildium? Paper?
-
-I built a Notion-based alternative for $79 → https://condo-os.vercel.app</div>
-<button class="copy-btn" onclick="copyText('tw8')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Tweet #9 — Stats</div>
-<div class="post-body" id="tw9">370K+ condo associations in the US.
-
-30-40% are self-managed.
-
-Most use spreadsheets or pay $744+/yr for software.
-
-There was ZERO Notion template for condo management.
-
-So I built one → https://condo-os.vercel.app
-
-#HOA #Notion</div>
-<button class="copy-btn" onclick="copyText('tw9')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Tweet #10 — Urgency</div>
-<div class="post-body" id="tw10">Q1 fee calls are due.
-
-If you're still chasing owners via WhatsApp and tracking payments in a spreadsheet, there's a better way.
-
-Condo Manager OS: automated fee calls, payment tracking, owner portal.
-
-$79 once. Not $744/yr.
-
-https://condo-os.vercel.app</div>
-<button class="copy-btn" onclick="copyText('tw10')">📋 Copy</button>
-</div>
-
-<!-- ===== REDDIT ===== -->
-<h2>📱 Reddit Posts</h2>
-<p class="section-note">Post ONE per subreddit per week max. Be authentic — Reddit hates obvious marketing. Share your story, provide value first.</p>
-
-<div class="post">
-<div class="post-label">r/HOA</div>
-<div class="post-title" id="r1t">I built a free alternative to Buildium for small HOA/condo associations</div>
-<div class="post-body" id="r1b">I manage a 7-unit condo in the Dominican Republic. Like many of you, I was stuck between:
-
-- Paying $62-400/month for Buildium or Condo Control (insane for 7 units)
-- Managing everything in spreadsheets (error-prone, no transparency)
-- Doing everything manually via WhatsApp groups
-
-So I built Condo Manager OS — a system that runs entirely on Notion (free tier works) with 11 connected databases:
-
-- Owner Ledger with running balances
-- Fee call generation and payment tracking  
-- Maintenance request system with ticket numbers
-- Voting & resolutions with auto-calculated quorum
-- Budget tracking with category breakdowns
-- Cash position monitoring across accounts
-
-There's also an optional web portal where owners can check their balance, view statements, and submit maintenance requests.
-
-The Notion template is $79 one-time (no monthly fees). The code is open-source on GitHub.
-
-Live demo: https://condo-os.vercel.app
-GitHub: https://github.com/Djeyff/condo-os
-
-Happy to answer questions. I know the pain of self-managing a small building — that's exactly why I built this.</div>
-<button class="copy-btn" onclick="copyText('r1t');copyText('r1b')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">r/Notion</div>
-<div class="post-title" id="r2t">I built an 11-database Condo/HOA Management system in Notion — here's what I learned</div>
-<div class="post-body" id="r2b">After months of building, I'm sharing my Condo Manager OS — an 11-database system for managing residential condominiums.
-
-What's inside:
-- 🏠 Units Registry (owners, shares, contact info)
-- 💰 Owner Ledger (debits, credits, running balance via formulas)
-- 📋 Budget (line items with category tracking)
-- 💸 Expenses (linked to budget lines and cash accounts)
-- 🔧 Maintenance (ticket system with priorities)
-- 🏗️ Works & Projects (contractor tracking)
-- 🏦 Cash Position (multi-account balances)
-- 📅 Meetings (with linked resolutions)
-- 🗳️ Resolutions & Votes (per-unit voting with ownership-weighted formulas!)
-- 📨 Communications Log
-- 💳 Account Movements
-
-The cool part: everything is connected with relations, rollups, and formulas. The voting system auto-calculates quorum based on ownership shares — each unit's vote is weighted by their % of the building.
-
-I also built a Next.js web portal on top (owners can log in and see their balance/statements) and a CLI tool with 17 commands.
-
-Demo: https://condo-os.vercel.app
-Template: $79 on Gumroad (link in comments)
-
-What other complex Notion systems have you all built? Would love to see similar multi-DB setups.</div>
-<button class="copy-btn" onclick="copyText('r2t');copyText('r2b')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">r/selfhosted</div>
-<div class="post-title" id="r3t">Open-source condo management: Notion backend + Next.js portal + Telegram bot</div>
-<div class="post-body" id="r3b">I self-manage a 7-unit condo and got tired of paying for SaaS. Built an open-source stack:
-
-**Backend:** Notion API (11 databases — free tier is enough)
-**Web portal:** Next.js 14 + Tailwind, deployed on Vercel (free)
-**Bot:** Telegram bot for owner self-service (grammY)
-**CLI:** Node.js, 17 commands (fee-call, payment, delinquency, vote, export, etc.)
-**Automations:** 7 workflows (payment notifications, overdue alerts, meeting reminders)
-**AI:** Optional OpenClaw integration for natural-language management
-
-Total running cost: ~$1/month for AI tokens (optional). Everything else is free tier.
-
-Features:
-- Owner login portal with balance/statements
-- Maintenance ticket system
-- Voting with weighted quorum calculation
-- Budget tracking with category breakdowns
-- Multi-account cash position
-
-GitHub: https://github.com/Djeyff/condo-os
-Demo: https://condo-os.vercel.app
-
-Self-hosting the portal is just `npm run build && npm start`. Docker coming soon.
-
-Feedback welcome — especially on the Notion-as-database approach. Works surprisingly well for this scale.</div>
-<button class="copy-btn" onclick="copyText('r3t');copyText('r3b')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">r/PropertyManagement</div>
-<div class="post-title" id="r4t">Managing a small condo (7-20 units)? Here's what I use instead of Buildium</div>
-<div class="post-body" id="r4b">For years I managed our 7-unit condo with a mix of spreadsheets, WhatsApp, and prayer. Looked at Buildium ($62/mo minimum) and Condo Control ($200/mo+) — way too expensive for a small building.
-
-I ended up building my own system on Notion. It handles:
-
-- Quarterly fee calls (auto-generated based on ownership shares)
-- Payment tracking with running balances per owner
-- Delinquency reports (color-coded, aging buckets)
-- Maintenance requests (owners submit via web portal or Telegram)
-- Annual budget with expense tracking
-- General assembly voting (quorum auto-calculated)
-- Financial reports and exports
-
-Cost: $79 one-time for the template. No monthly fees. The optional AI assistant costs about $1/month.
-
-I put the code on GitHub and built a demo: https://condo-os.vercel.app
-
-Anyone else self-managing a small building? Curious what tools you use.</div>
-<button class="copy-btn" onclick="copyText('r4t');copyText('r4b')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">r/SideProject</div>
-<div class="post-title" id="r5t">I turned my condo management frustration into a product — $79 Notion template replacing $744/yr SaaS</div>
-<div class="post-body" id="r5b">**The problem:** I manage a 7-unit condo. Buildium wants $744/year. For 7 units. That's $106 per unit per year just for software.
-
-**What I built:** Condo Manager OS — 11 connected Notion databases with a Next.js web portal, Telegram bot, and CLI tool.
-
-**The stack:**
-- Notion (backend/databases) — free
-- Next.js 14 + Tailwind (owner portal) — free on Vercel
-- Node.js CLI (17 commands)
-- Telegram bot (owner self-service)
-- OpenClaw AI assistant (optional, ~$1/mo)
-
-**The business model:**
-- $79: Notion template only
-- $149: Full kit (template + CLI + portal + bot + automations)
-- $299: Done-for-you setup with video call
-
-**Market insight:** There are ZERO condo/HOA management templates on Notion. Every property template I found is for landlords/investors, not shared-ownership associations. This is genuinely a new category.
-
-**Stats:** 370K HOA associations in the US, 30-40% self-managed. If I capture 0.1% of the self-managed market... that's decent side income.
-
-Live demo: https://condo-os.vercel.app
-GitHub: https://github.com/Djeyff/condo-os
-
-Happy to share my launch strategy and learnings. This is my first digital product.</div>
-<button class="copy-btn" onclick="copyText('r5t');copyText('r5b')">📋 Copy</button>
-</div>
-
-<!-- ===== LINKEDIN ===== -->
-<h2>💼 LinkedIn Posts</h2>
-
-<div class="post">
-<div class="post-label">LinkedIn #1 — Launch announcement</div>
-<div class="post-body" id="li1">🏢 I just launched Condo Manager OS — and I'm excited to share why.
-
-Managing a small condo association shouldn't require enterprise software.
-
-Buildium charges $62-400/month. Condo Control starts at $200/month. For a 7-unit building, that math doesn't work.
-
-So I built an alternative:
-→ 11 connected Notion databases
-→ Web portal for owners (balance, statements, maintenance)
-→ CLI with 17 management commands
-→ Voting system with weighted quorum
-→ AI assistant for natural-language management
-
-One-time cost: $79 for the template. No monthly fees.
-
-5-year savings vs Buildium: $3,600+.
-
-The code is open-source, the demo is live, and I'm looking for early adopters who manage small to medium condos.
-
-🔗 Demo: https://condo-os.vercel.app
-🔗 GitHub: https://github.com/Djeyff/condo-os
-
-If you know anyone on an HOA board or managing a condo, I'd appreciate you sharing this.
-
-#PropertyManagement #HOA #Notion #PropTech #OpenSource</div>
-<button class="copy-btn" onclick="copyText('li1')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">LinkedIn #2 — Cost savings story</div>
-<div class="post-body" id="li2">💰 The hidden tax on small condo associations:
-
-A 7-unit building paying for Buildium spends $744/year on management software.
-
-Over 5 years, that's $3,720 — paid by owners through their fees.
-
-For context, that's enough to:
-• Repaint the entire lobby
-• Replace a water heater
-• Fund 6 months of landscaping
-
-I built Condo Manager OS as a one-time $79 alternative. Same features (fee tracking, maintenance, voting, reports), runs on Notion, includes a web portal for owners.
-
-The question every HOA board should ask: "Are we paying monthly for something we could own?"
-
-https://condo-os.vercel.app
-
-#HOA #PropertyManagement #CostSavings</div>
-<button class="copy-btn" onclick="copyText('li2')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">LinkedIn #3 — Open source philosophy</div>
-<div class="post-body" id="li3">🔓 Why I open-sourced my condo management system:
-
-Condo associations are non-profit entities run by volunteers. Charging them $200-800/month for software feels wrong.
-
-So I put the entire system on GitHub:
-→ 17 CLI commands
-→ Next.js owner portal
-→ Telegram bot
-→ 7 automation workflows
-→ Excel import tool
-
-The Notion template is $79 (someone has to pay for development time). But the code? Free forever.
-
-If you're technical and want to set it up yourself: go ahead.
-If you want the polished package with support: that's what the $79-149 is for.
-
-I believe property management software should be accessible to every building, not just the ones that can afford enterprise SaaS.
-
-GitHub: https://github.com/Djeyff/condo-os
-
-#OpenSource #PropTech #CommunityFirst</div>
-<button class="copy-btn" onclick="copyText('li3')">📋 Copy</button>
-</div>
-
-<!-- ===== FACEBOOK ===== -->
-<h2>📘 Facebook Group Posts</h2>
-<p class="section-note">Post in HOA/condo management groups. Lead with value, not sales pitch.</p>
-
-<div class="post">
-<div class="post-label">HOA Management Groups</div>
-<div class="post-body" id="fb1">Hi everyone! I manage a 7-unit condo and spent months building a management system on Notion that I wanted to share with this community.
-
-It handles: fee collection tracking, owner balances, maintenance requests, budget monitoring, voting for assemblies, and financial reports.
-
-There's a web portal where owners can check their balance and submit requests without calling you.
-
-I put together a live demo if anyone wants to try it: https://condo-os.vercel.app
-
-The template is $79 (one-time, no monthly fees). Happy to answer questions about how it works or whether it'd fit your building.
-
-What tools are you all currently using? Curious to hear what works and what doesn't.</div>
-<button class="copy-btn" onclick="copyText('fb1')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Notion Community Groups</div>
-<div class="post-body" id="fb2">I built what might be the most complex Notion template I've seen — 11 databases for managing a condo/HOA:
-
-🏠 Units, 💰 Owner Ledger, 📋 Budget, 💸 Expenses, 🔧 Maintenance, 🏗️ Works, 🏦 Cash Position, 📨 Communications, 📅 Meetings, 🗳️ Resolutions, 💳 Movements
-
-The databases are all connected with relations, rollups, and formulas. The voting system calculates quorum based on ownership percentages — each unit's vote is weighted automatically.
-
-Plus there's a Next.js web portal that reads from the Notion databases in real-time.
-
-Demo: https://condo-os.vercel.app
-
-Would love feedback from the Notion community. What would you add?</div>
-<button class="copy-btn" onclick="copyText('fb2')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Real Estate / Property Groups</div>
-<div class="post-body" id="fb3">Quick question for anyone on a condo board or managing a small building:
-
-What do you use to track monthly fees, maintenance requests, and owner balances?
-
-I ask because I couldn't find anything affordable for our 7-unit building (Buildium starts at $62/mo which felt crazy), so I built my own system. It runs on Notion and costs $79 one-time.
-
-Just wanted to see if others have the same problem or if I'm the only one who thought the existing options were overpriced 😅
-
-Here's what it looks like: https://condo-os.vercel.app</div>
-<button class="copy-btn" onclick="copyText('fb3')">📋 Copy</button>
-</div>
-
-<!-- ===== YOUTUBE ===== -->
-<h2>🎬 YouTube Video Titles & Descriptions</h2>
-
-<div class="post">
-<div class="post-label">Video #1 — Setup Tutorial</div>
-<div class="post-title">Condo Manager OS: Full Setup in 5 Minutes | Notion Template</div>
-<div class="post-body" id="yt1">Description:
-Set up a complete condo/HOA management system in Notion in under 5 minutes. 11 connected databases, automated formulas, and a web portal for owners.
-
-What's covered:
-00:00 - What is Condo Manager OS?
-00:30 - Running setup.js
-01:30 - Database overview (11 DBs)
-02:30 - Adding your first unit
-03:30 - Generating a fee call
-04:30 - Owner portal demo
-
-🔗 Demo: https://condo-os.vercel.app
-🔗 GitHub: https://github.com/Djeyff/condo-os
-🔗 Get it: [Gumroad link]
-
-#HOA #CondoManagement #Notion #Tutorial</div>
-<button class="copy-btn" onclick="copyText('yt1')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Video #2 — Cost Comparison</div>
-<div class="post-title">Stop Overpaying for HOA Software | Free Notion Alternative to Buildium</div>
-<div class="post-body" id="yt2">Description:
-Buildium charges $744/year. Condo Control charges $2,400/year. I built an alternative for $79 one-time. Here's the honest comparison.
-
-00:00 - The problem with HOA software pricing
-01:00 - Buildium vs Condo Control vs Condo Manager OS
-02:30 - Feature-by-feature comparison
-04:00 - 5-year cost breakdown
-05:00 - Live demo walkthrough
-07:00 - Is it right for your building?
-
-🔗 https://condo-os.vercel.app
-
-#HOA #Buildium #PropertyManagement</div>
-<button class="copy-btn" onclick="copyText('yt2')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Video #3 — Owner Portal</div>
-<div class="post-title">Owner Portal Demo: Telegram Bot + Web Dashboard for Condo Managers</div>
-<div class="post-body" id="yt3">Description:
-Give your condo owners transparency with zero effort. This video shows the web portal and Telegram bot in action.
-
-00:00 - Why owners need a portal
-00:45 - Web portal login
-01:30 - Owner dashboard (balance, transactions)
-02:30 - Account statement with running balance
-03:30 - Submitting a maintenance request
-04:30 - Telegram bot walkthrough
-06:00 - Admin dashboard
-
-🔗 https://condo-os.vercel.app</div>
-<button class="copy-btn" onclick="copyText('yt3')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Video #4 — AI Demo</div>
-<div class="post-title">How I Manage a 7-Unit Condo for $1/month with AI</div>
-<div class="post-body" id="yt4">Description:
-Using AI to manage a condo costs $1/month. Using Buildium costs $62/month. Here's what AI-powered condo management looks like.
-
-00:00 - AI cost breakdown ($1/mo vs $62/mo)
-01:00 - Natural language commands
-02:30 - "Generate Q1 fee call" demo
-03:30 - "Show delinquent units" demo
-04:30 - Automated notifications
-05:30 - When AI makes sense vs manual
-
-🔗 https://condo-os.vercel.app</div>
-<button class="copy-btn" onclick="copyText('yt4')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Video #5 — Comparison</div>
-<div class="post-title">Condo Manager OS vs Buildium vs Condo Control | Honest Comparison 2026</div>
-<div class="post-body" id="yt5">Description:
-An honest, side-by-side comparison of three condo management solutions. Pricing, features, ease of use, and who each one is best for.
-
-00:00 - Why this comparison matters
-01:00 - Buildium review (pros/cons)
-03:00 - Condo Control review
-05:00 - Condo Manager OS review
-07:00 - Feature comparison table
-09:00 - Pricing comparison (5-year TCO)
-10:00 - My recommendation
-
-🔗 https://condo-os.vercel.app</div>
-<button class="copy-btn" onclick="copyText('yt5')">📋 Copy</button>
-</div>
-
-<!-- ===== PRODUCT HUNT ===== -->
-<h2>🚀 Product Hunt</h2>
-
-<div class="post">
-<div class="post-label">Tagline (60 chars max)</div>
-<div class="post-body" id="ph1">AI-powered condo management on Notion for $79, not $744/yr</div>
-<button class="copy-btn" onclick="copyText('ph1')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Description (260 chars)</div>
-<div class="post-body" id="ph2">Replace Buildium & Condo Control with 11 Notion databases, a Next.js owner portal, Telegram bot, and AI assistant. Fee tracking, voting, maintenance, dashboards — everything a condo association needs. One-time $79. Open source.</div>
-<button class="copy-btn" onclick="copyText('ph2')">📋 Copy</button>
-</div>
-
-<div class="post">
-<div class="post-label">Maker Comment (first comment)</div>
-<div class="post-body" id="ph3">Hey Product Hunt! 👋
-
-I built Condo Manager OS because I manage a 7-unit condo in the Dominican Republic, and the existing software options were either way too expensive (Buildium at $744/yr) or way too basic (spreadsheets).
-
-After months of building, I ended up with something I'm genuinely proud of:
-
-→ 11 connected Notion databases (ledger, budget, maintenance, voting, etc.)
-→ A Next.js web portal where owners can check their balance and submit requests
-→ A Telegram bot for owner self-service
-→ A CLI tool with 17 commands
-→ An optional AI assistant that costs ~$1/month
-
-The Notion template is $79 one-time. No monthly fees, no per-unit charges. The code is open-source on GitHub.
-
-I'd love your feedback — especially from anyone who's been on an HOA board or managed a building. What features would you add?
-
-Live demo: https://condo-os.vercel.app</div>
-<button class="copy-btn" onclick="copyText('ph3')">📋 Copy</button>
-</div>
-
-<!-- ===== HASHTAGS ===== -->
-<h2>🏷️ Hashtag Reference</h2>
-<div class="post">
-<div class="post-body">
-<strong>Primary:</strong> <span class="tag">#CondoManagement</span> <span class="tag">#HOA</span> <span class="tag">#PropertyManagement</span> <span class="tag">#Notion</span> <span class="tag">#PropTech</span>
-
-<strong>Secondary:</strong> <span class="tag">#OpenSource</span> <span class="tag">#SaaS</span> <span class="tag">#NoCode</span> <span class="tag">#RealEstate</span> <span class="tag">#AI</span>
-
-<strong>Niche:</strong> <span class="tag">#HOAManagement</span> <span class="tag">#CondoAssociation</span> <span class="tag">#BuildingManagement</span> <span class="tag">#NotionTemplate</span> <span class="tag">#SelfHosted</span>
-</div>
-</div>
-
-</div>
 </body>
 </html>

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function LoginForm({ units }) {
+export default function LoginForm({ units, demoMode }) {
   const [selectedUnit, setSelectedUnit] = useState('');
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
@@ -37,6 +37,12 @@ export default function LoginForm({ units }) {
 
   return (
     <form onSubmit={handleSubmit} className="card space-y-4">
+      {demoMode && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800">
+          <strong>🎯 Demo Mode</strong> — Select any unit, PIN is not required. Try Admin too!
+        </div>
+      )}
+
       <div className="flex gap-2 mb-2">
         <button type="button" onClick={() => setIsAdmin(false)}
           className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${!isAdmin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}`}>
@@ -62,18 +68,20 @@ export default function LoginForm({ units }) {
         </div>
       )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">PIN</label>
-        <input type="password" value={pin} onChange={(e) => setPin(e.target.value)}
-          placeholder={isAdmin ? 'Admin PIN' : 'Enter PIN'}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          maxLength={6} />
-      </div>
+      {!demoMode && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">PIN</label>
+          <input type="password" value={pin} onChange={(e) => setPin(e.target.value)}
+            placeholder={isAdmin ? 'Admin PIN' : 'Enter PIN'}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            maxLength={6} />
+        </div>
+      )}
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
       <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
-        {loading ? 'Signing in...' : 'Sign In'}
+        {loading ? 'Signing in...' : demoMode ? 'Explore Demo →' : 'Sign In'}
       </button>
     </form>
   );
