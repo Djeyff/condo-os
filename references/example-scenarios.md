@@ -57,7 +57,7 @@ Apartamento A-2:
   Titular: Sra. Yunairy Encarnacion
   Referencia: indicar "A-2" en el concepto
 
-La Administración — Condominio El Framboyant
+La Administración — Condominio Coral Breeze
 ```
 
 **Ledger entries created** (one per unit):
@@ -208,12 +208,12 @@ A-7   |      -9,249.79   |   256,692.50  |   238,894.91   |   +8,547.80 ✅
 
 **Step 3: Generate individual year-end statements**
 
-For each owner, the agent creates a statement in the Framboyant style:
+For each owner, the agent creates a statement in the Coral Breeze style:
 
 ```
 ══════════════════════════════════════════════════════════════════
 ESTADO DE CUENTA INDIVIDUAL — CIERRE DEFINITIVO 2025
-Condominio El Framboyant
+Condominio Coral Breeze
 ══════════════════════════════════════════════════════════════════
 
 Apartamento: A-3
@@ -336,7 +336,7 @@ FINANCIAL AUDIT — February 2026
 
 You say: "Draft the owner communication explaining this"
 
-The agent produces a formal letter with the cash flow table, root cause, timeline, and reassurance — exactly like the Framboyant financial notes you've seen.
+The agent produces a formal letter with the cash flow table, root cause, timeline, and reassurance — exactly like the Coral Breeze financial notes you've seen.
 
 ---
 
@@ -536,13 +536,13 @@ For managers with 2+ buildings:
 
 Building             | Units | Collection | Cash    | Issues
 ─────────────────────┼───────┼────────────┼─────────┼────────────
-El Framboyant        |   7   |   85.7%    | 178K    | A-1 delinquent
+Coral Breeze        |   7   |   85.7%    | 178K    | A-1 delinquent
 CoralStone Phase 1   |  12   |  100.0%    | 445K    | None ✅
 Las Palmeras         |  20   |   95.0%    | 892K    | Unit 15 (30 days)
 ─────────────────────┼───────┼────────────┼─────────┼────────────
 TOTAL                |  39   |   94.9%    | 1,515K  | 2 delinquent
 
-⚠️ Priority attention: El Framboyant — cash gap, see audit report
+⚠️ Priority attention: Coral Breeze — cash gap, see audit report
 ```
 
 *(Each building would have its own set of 9 databases, and the skill handles them independently based on which building context you're working in.)*

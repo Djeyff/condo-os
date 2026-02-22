@@ -1,34 +1,29 @@
 {
   "building": {
-    "name": "My Building Name",
-    "address": "123 Main Street, City, Country",
+    "name": "Your Building Name",
     "units": 7,
     "currency": "DOP",
-    "fiscalYear": "calendar",
     "feeFrequency": "quarterly",
-    "annualBudget": 0,
-    "unitPrefix": "A"
+    "annualBudget": 500000
   },
   "notion": {
     "parentPageId": "YOUR_NOTION_PAGE_ID"
   },
   "databases": {},
   "portal": {
-    "botToken": "YOUR_TELEGRAM_BOT_TOKEN",
-    "adminChatId": null,
+    "adminChatId": "YOUR_TELEGRAM_CHAT_ID",
     "defaultLang": "es",
-    "pins": {
-      "A-1": "1234",
-      "A-2": "5678"
-    }
+    "pins": {}
   },
   "automations": {
     "notifyMethod": "telegram",
-    "adminChatId": null,
-    "overdueDays": 30,
-    "cashCritical": 10000,
-    "expenseBudgetPct": 0.9,
-    "meetingReminderMs": 172800000,
-    "pollIntervalMs": 900000
-  }
+    "thresholds": {
+      "overdueDays": 30,
+      "cashCritical": 10000,
+      "expenseBudgetPct": 0.9,
+      "meetingReminderMs": 172800000,
+      "pollIntervalMs": 900000
+    }
+  },
+  "dashboards": {}
 }

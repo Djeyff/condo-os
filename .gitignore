@@ -6,3 +6,6 @@ automations-state.json
 config.json
 node_modules/
 portal-sessions.json
+.social-queue.json
+.social-stats.json
+automations-state.json

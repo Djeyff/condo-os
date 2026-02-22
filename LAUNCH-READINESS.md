@@ -110,4 +110,3 @@ Give enough to be useful, frustrate just enough to convert:
 - [ ] **5-min demo video** (screen recording)
 - [ ] **Product Hunt listing draft**
 - [ ] **Social media bot** (automated posting)
-- [ ] **Remove "Framboyant" from PRODUCT-STRATEGY.md** (last reference)
