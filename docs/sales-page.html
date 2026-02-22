@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condo Manager OS — AI-Powered Condo & HOA Management on Notion</title>
+<meta name="description" content="Stop paying $744/year for condo management software. Condo Manager OS replaces Buildium, Condo Control & AppFolio — for a one-time $79.">
+<meta property="og:title" content="Condo Manager OS">
+<meta property="og:description" content="AI-powered condo & HOA management on Notion. 11 databases, web portal, Telegram bot. One-time $79.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://condo-os.vercel.app">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://gumroad.com/js/gumroad.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;color:#1e293b;line-height:1.6;background:#fff}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+/* Hero */
+.hero{background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 50%,#4f46e5 100%);color:#fff;padding:100px 0 80px;text-align:center}
+.hero h1{font-size:clamp(28px,5vw,52px);font-weight:800;line-height:1.15;margin-bottom:20px;max-width:800px;margin-left:auto;margin-right:auto}
+.hero .sub{font-size:clamp(16px,2.5vw,20px);opacity:.9;max-width:650px;margin:0 auto 36px}
+.cta-btn{display:inline-block;background:#f59e0b;color:#1e293b;font-weight:700;font-size:18px;padding:16px 40px;border-radius:12px;text-decoration:none;transition:transform .2s,box-shadow .2s}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(245,158,11,.4)}
+.cta-btn-white{background:#fff;color:#2563eb}
+.cta-btn-white:hover{box-shadow:0 8px 30px rgba(255,255,255,.3)}
+/* Sections */
+section{padding:80px 0}
+section h2{font-size:clamp(24px,3.5vw,38px);font-weight:800;text-align:center;margin-bottom:16px}
+section .section-sub{text-align:center;color:#64748b;font-size:18px;max-width:600px;margin:0 auto 48px}
+/* Problem */
+.problem{background:#f8fafc}
+.problems-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.problem-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:32px;text-align:center}
+.problem-card .icon{font-size:48px;margin-bottom:16px}
+.problem-card h3{font-size:20px;font-weight:700;margin-bottom:8px}
+.problem-card p{color:#64748b;font-size:15px}
+/* Features */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.feature-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:28px;transition:transform .2s,box-shadow .2s}
+.feature-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.08)}
+.feature-card .icon{font-size:36px;margin-bottom:12px}
+.feature-card h3{font-size:18px;font-weight:700;margin-bottom:8px}
+.feature-card p{color:#64748b;font-size:14px}
+/* Comparison */
+.comparison{background:#1e293b;color:#fff}
+.comparison h2{color:#fff}
+.comparison .section-sub{color:#94a3b8}
+.comp-table{width:100%;border-collapse:collapse;margin:0 auto;max-width:800px;font-size:15px}
+.comp-table th{padding:14px 20px;text-align:left;border-bottom:2px solid #334155;color:#94a3b8;font-weight:600}
+.comp-table td{padding:14px 20px;border-bottom:1px solid #334155}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-table .highlight{color:#22c55e;font-weight:700}
+.comp-table .dim{color:#ef4444}
+/* Pricing */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;max-width:950px;margin:0 auto}
+.price-card{background:#fff;border:2px solid #e2e8f0;border-radius:20px;padding:36px 28px;text-align:center;position:relative;transition:transform .2s}
+.price-card.featured{border-color:#2563eb;transform:scale(1.04)}
+.price-card.featured::before{content:"MOST POPULAR";position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;letter-spacing:1px}
+.price-card h3{font-size:20px;font-weight:700;margin-bottom:4px}
+.price-card .price{font-size:48px;font-weight:800;margin:16px 0 4px}
+.price-card .price span{font-size:18px;color:#64748b}
+.price-card .note{font-size:13px;color:#64748b;margin-bottom:20px}
+.price-card ul{text-align:left;list-style:none;margin-bottom:28px}
+.price-card li{padding:6px 0;font-size:14px;color:#475569}
+.price-card li::before{content:"✓ ";color:#22c55e;font-weight:700}
+.price-card .cta-btn{width:100%;text-align:center;display:block;font-size:16px;padding:14px}
+/* FAQ */
+.faq{background:#f8fafc}
+.faq-list{max-width:700px;margin:0 auto}
+.faq-item{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:12px}
+.faq-item h3{font-size:16px;font-weight:700;margin-bottom:8px}
+.faq-item p{color:#64748b;font-size:14px}
+/* Demo */
+.demo{text-align:center}
+.demo-frame{background:#1e293b;border-radius:16px;padding:12px;max-width:800px;margin:0 auto 32px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.demo-frame img{width:100%;border-radius:10px}
+/* Final CTA */
+.final-cta{background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;text-align:center;padding:80px 0}
+.final-cta h2{color:#fff;margin-bottom:16px}
+.final-cta p{color:rgba(255,255,255,.85);font-size:18px;margin-bottom:32px}
+/* Footer */
+footer{background:#0f172a;color:#94a3b8;padding:40px 0;text-align:center;font-size:14px}
+footer a{color:#60a5fa;text-decoration:none}
+@media(max-width:768px){
+.hero{padding:60px 0 50px}
+section{padding:50px 0}
+.price-card.featured{transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+<div class="container">
+<h1>Stop Paying $744/year for Condo Management Software</h1>
+<p class="sub">The open-source Notion-powered system that replaces Buildium, Condo Control &amp; AppFolio — for a one-time <strong>$79</strong>.</p>
+<a href="#pricing" class="cta-btn">Get Started — $79</a>
+&nbsp;&nbsp;
+<a href="https://condo-os.vercel.app" target="_blank" class="cta-btn cta-btn-white">Try Live Demo →</a>
+</div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem">
+<div class="container">
+<h2>Managing a Condo Shouldn't Cost a Fortune</h2>
+<p class="section-sub">Most condo managers are stuck between expensive SaaS and spreadsheet chaos.</p>
+<div class="problems-grid">
+<div class="problem-card">
+<div class="icon">💸</div>
+<h3>Expensive Software</h3>
+<p>Buildium charges $62-400/month. Condo Control starts at $200/month. For a 7-unit building, that's insane.</p>
+</div>
+<div class="problem-card">
+<div class="icon">📊</div>
+<h3>Spreadsheet Hell</h3>
+<p>Tracking fees, maintenance, and budgets in Excel? One formula error and your books are wrong for months.</p>
+</div>
+<div class="problem-card">
+<div class="icon">🔒</div>
+<h3>Zero Transparency</h3>
+<p>Owners can't see their balance, vote on resolutions, or submit maintenance requests without calling the manager.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- FEATURES -->
+<section>
+<div class="container">
+<h2>Everything You Need. Nothing You Don't.</h2>
+<p class="section-sub">11 connected databases, AI assistant, web portal, Telegram bot — all on Notion.</p>
+<div class="features-grid">
+<div class="feature-card">
+<div class="icon">💰</div>
+<h3>Financial Management</h3>
+<p>Fee calls, payment tracking, owner ledger with running balances, fiscal year close, and export to Excel/CSV.</p>
+</div>
+<div class="feature-card">
+<div class="icon">🗳️</div>
+<h3>Voting & Resolutions</h3>
+<p>Auto-calculated quorum, weighted votes by ownership share, meeting reports — all from one command.</p>
+</div>
+<div class="feature-card">
+<div class="icon">🔧</div>
+<h3>Maintenance Tracking</h3>
+<p>Sequential ticket numbers, priority levels, status tracking, contractor assignment — via web or Telegram.</p>
+</div>
+<div class="feature-card">
+<div class="icon">📊</div>
+<h3>Live Dashboards</h3>
+<p>5 auto-refreshing Notion pages: KPIs, financial overview, delinquency tracker, maintenance board, works progress.</p>
+</div>
+<div class="feature-card">
+<div class="icon">🤖</div>
+<h3>AI Assistant</h3>
+<p>Natural language commands via OpenClaw. "Generate fee call for Q1" or "Show delinquent units" — just talk.</p>
+</div>
+<div class="feature-card">
+<div class="icon">🌐</div>
+<h3>Owner Web Portal</h3>
+<p>Next.js portal where owners check balances, view statements, submit maintenance requests. Custom branding.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- DEMO -->
+<section class="demo">
+<div class="container">
+<h2>See It Live</h2>
+<p class="section-sub">Full working demo with sample data for a 7-unit building.</p>
+<div class="demo-frame">
+<div style="background:#0f172a;color:#64748b;padding:60px;border-radius:10px;font-size:18px;">
+🌐 condo-os.vercel.app<br><br>
+<span style="color:#94a3b8;">Login → Pick any unit → Explore dashboard, statements, maintenance</span>
+</div>
+</div>
+<a href="https://condo-os.vercel.app" target="_blank" class="cta-btn">Try Live Demo →</a>
+</div>
+</section>
+
+<!-- COMPARISON -->
+<section class="comparison">
+<div class="container">
+<h2>The Math Speaks for Itself</h2>
+<p class="section-sub">5-year total cost for a 7-unit condo association.</p>
+<table class="comp-table">
+<thead>
+<tr><th></th><th>Buildium</th><th>Condo Control</th><th>Condo Manager OS</th></tr>
+</thead>
+<tbody>
+<tr><td>Year 1</td><td class="dim">$744</td><td class="dim">$2,400</td><td class="highlight">$79 + ~$12 AI</td></tr>
+<tr><td>Year 2</td><td class="dim">$744</td><td class="dim">$2,400</td><td class="highlight">~$12 AI only</td></tr>
+<tr><td>Year 3</td><td class="dim">$744</td><td class="dim">$2,400</td><td class="highlight">~$12 AI only</td></tr>
+<tr><td>Year 4</td><td class="dim">$744</td><td class="dim">$2,400</td><td class="highlight">~$12 AI only</td></tr>
+<tr><td>Year 5</td><td class="dim">$744</td><td class="dim">$2,400</td><td class="highlight">~$12 AI only</td></tr>
+<tr style="font-weight:700;font-size:17px"><td>5-Year Total</td><td class="dim">$3,720</td><td class="dim">$12,000</td><td class="highlight">$127</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+<div class="container">
+<h2>Simple, One-Time Pricing</h2>
+<p class="section-sub">Pay once, own forever. No monthly fees. No per-unit charges.</p>
+<div class="pricing-grid">
+
+<div class="price-card">
+<h3>Starter</h3>
+<div class="price">$79</div>
+<div class="note">one-time payment</div>
+<ul>
+<li>11 Notion databases</li>
+<li>370+ sample data entries</li>
+<li>Relations & formulas pre-built</li>
+<li>Setup guide (PDF)</li>
+<li>Email support</li>
+</ul>
+<a href="https://YOURGUMROAD.gumroad.com/l/condo-os-starter" class="gumroad-button cta-btn">Get Started</a>
+</div>
+
+<div class="price-card featured">
+<h3>Pro Kit</h3>
+<div class="price">$149</div>
+<div class="note">one-time payment</div>
+<ul>
+<li>Everything in Starter</li>
+<li>CLI tool (17 commands)</li>
+<li>Next.js web portal</li>
+<li>Telegram owner bot</li>
+<li>7 automation workflows</li>
+<li>Excel/CSV import tool</li>
+<li>5 live dashboards</li>
+<li>Priority support</li>
+</ul>
+<a href="https://YOURGUMROAD.gumroad.com/l/condo-os-pro" class="gumroad-button cta-btn">Get Pro Kit</a>
+</div>
+
+<div class="price-card">
+<h3>Done-For-You</h3>
+<div class="price">$299</div>
+<div class="note">one-time payment</div>
+<ul>
+<li>Everything in Pro Kit</li>
+<li>Personal setup by us</li>
+<li>1-hour video call</li>
+<li>Custom branding</li>
+<li>Data migration help</li>
+<li>30-day priority support</li>
+</ul>
+<a href="https://YOURGUMROAD.gumroad.com/l/condo-os-dfy" class="gumroad-button cta-btn">Book Setup</a>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+<div class="container">
+<h2>Frequently Asked Questions</h2>
+<div class="faq-list">
+<div class="faq-item">
+<h3>What is Notion?</h3>
+<p>Notion is a free productivity platform used by millions. It's where your databases live — think of it as a smarter spreadsheet that's also a beautiful dashboard. Free plan works fine for most condos.</p>
+</div>
+<div class="faq-item">
+<h3>Do I need technical skills?</h3>
+<p>For the Starter template: zero technical skills needed. Just duplicate the Notion workspace and start. The Pro Kit CLI requires basic command-line comfort (we provide step-by-step guides).</p>
+</div>
+<div class="faq-item">
+<h3>How many units can it handle?</h3>
+<p>Tested with 7-60 units. Notion handles thousands of entries without issues. The voting system auto-calculates quorum for any number of units with different ownership shares.</p>
+</div>
+<div class="faq-item">
+<h3>What about AI costs?</h3>
+<p>The AI assistant is optional. If you use it with Grok 4 Fast (cheapest), expect $1-5/month for a typical 7-unit condo. That's 100-700x cheaper than Buildium's monthly fee.</p>
+</div>
+<div class="faq-item">
+<h3>Can I customize it?</h3>
+<p>Absolutely. It's Notion — add properties, views, filters, whatever you need. The web portal supports custom branding (logo, colors). The CLI is open-source Node.js you can modify.</p>
+</div>
+<div class="faq-item">
+<h3>What's your refund policy?</h3>
+<p>30-day money-back guarantee, no questions asked. If it doesn't work for your building, we'll refund you.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+<div class="container">
+<h2>Ready to Save Thousands?</h2>
+<p>Join condo managers who switched from overpriced SaaS to Notion-powered management.</p>
+<a href="#pricing" class="cta-btn">Get Condo Manager OS — $79</a>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+<div class="container">
+<p style="margin-bottom:12px">
+<a href="https://github.com/Djeyff/condo-os">GitHub</a> &nbsp;·&nbsp;
+<a href="https://condo-os.vercel.app">Live Demo</a> &nbsp;·&nbsp;
+<a href="mailto:support@condomanageros.com">Contact</a>
+</p>
+<p>© 2026 Condo Manager OS. Built with Notion, Next.js & AI.</p>
+</div>
+</footer>
+
+</body>
+</html>
