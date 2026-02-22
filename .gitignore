@@ -9,3 +9,6 @@ portal-sessions.json
 .social-queue.json
 .social-stats.json
 automations-state.json
+web-portal/.next/
+web-portal/node_modules/
+web-portal/.env.local
