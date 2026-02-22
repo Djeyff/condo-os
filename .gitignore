@@ -1,6 +1,7 @@
 *.log
 .DS_Store
 .env
+.portal.pid
 automations-state.json
 config.json
 node_modules/
