@@ -1,0 +1,32 @@
+{
+  "name": "condo-manager-os",
+  "version": "3.0.0",
+  "description": "AI-powered condominium management OS for OpenClaw — accounting, maintenance, communications, reporting via Notion",
+  "author": "casedamare",
+  "license": "MIT",
+  "main": "scripts/condo-cli.js",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "cli": "node scripts/condo-cli.js",
+    "import": "node scripts/import-excel.js"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  },
+  "keywords": [
+    "openclaw",
+    "skill",
+    "condo",
+    "condominium",
+    "property-management",
+    "hoa",
+    "accounting",
+    "notion",
+    "building-management",
+    "fee-call",
+    "owner-ledger"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

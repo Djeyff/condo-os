@@ -1,0 +1,26 @@
+{
+  "building": {
+    "name": "Condominio El Framboyant",
+    "address": "Calle 30 de Marzo, Las Terrenas, Samaná, RD 32200",
+    "units": 7,
+    "currency": "DOP",
+    "fiscalYear": "calendar",
+    "feeFrequency": "quarterly",
+    "annualBudget": 547840
+  },
+  "notion": {
+    "parentPageId": "30e00b56-b6fa-8154-b553-ccfa094a8fef"
+  },
+  "databases": {
+    "units": "30e00b56-b6fa-81e0-a3f5-e11123f11fcb",
+    "ledger": "30e00b56-b6fa-8102-8f51-e564856afc7f",
+    "budget": "30e00b56-b6fa-81aa-adb4-d898daac567a",
+    "expenses": "30e00b56-b6fa-819f-82e1-f502b905f4ca",
+    "maintenance": "30e00b56-b6fa-8169-afef-c22a89093eed",
+    "works": "30e00b56-b6fa-8110-b41c-d4bc14b9d96a",
+    "cashPosition": "30e00b56-b6fa-8172-8a56-c53ba499f78b",
+    "communications": "30e00b56-b6fa-817e-9ac2-fcf802fefd0c",
+    "meetings": "30e00b56-b6fa-8186-9932-d303f1b2e0fd",
+    "movements": "30e00b56-b6fa-818f-8b0d-e9d6f7d7c0bf"
+  }
+}
