@@ -4,148 +4,134 @@ import { queryDB, getTitle, getText, getNumber, getSelect, getDate } from '@/lib
 import { redirect } from 'next/navigation';
 import Header from '@/components/Header';
 import PrintButton from '@/components/PrintButton';
-import TransactionTable from '@/components/TransactionTable';
 
-export default async function StatementPage({ searchParams }) {
+export default async function StatementPage() {
   const session = await getSession();
   if (!session.unit) redirect('/');
   const branding = getBranding();
   const unitPageId = session.unitPageId;
-
-  // Fetch unit info
-  let unitInfo = { unit: session.unit, owner: '', balance: 0, share: 0 };
-  const unitsDB = getDB('units');
-  if (unitsDB && unitPageId) {
-    const units = await queryDB(unitsDB);
-    const u = units.find(p => p.id === unitPageId);
-    if (u) {
-      unitInfo = {
-        unit: getTitle(u),
-        owner: getText(u, 'Owner Name'),
-        balance: getNumber(u, 'Current Balance') || 0,
-        share: getNumber(u, 'Ownership Share (%)') || 0,
-      };
-    }
-  }
-
-  // Fetch all ledger entries
-  const ledgerDB = getDB('ledger');
-  let entries = [];
-  if (ledgerDB && unitPageId) {
-    const raw = await queryDB(ledgerDB,
-      { property: 'Unit', relation: { contains: unitPageId } },
-      [{ property: 'Date', direction: 'ascending' }]
-    );
-    let running = 0;
-    entries = raw.map(e => {
-      const debit = getNumber(e, 'Debit') || 0;
-      const credit = getNumber(e, 'Credit') || 0;
-      running = running - debit + credit;
-      return {
-        date: getDate(e, 'Date'),
-        type: getSelect(e, 'Type'),
-        description: getTitle(e),
-        debit: debit || null,
-        credit: credit || null,
-        balance: running,
-      };
-    });
-  }
-
   const fmt = (n) => {
-    const abs = Math.abs(n);
+    const abs = Math.abs(n || 0);
     const str = abs.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
     return (n < 0 ? '-' : '') + str;
   };
+
+  let unitInfo = { unit: session.unit, owner: '', balance: 0, share: 0 };
+  try {
+    const unitsDB = getDB('units');
+    if (unitsDB && unitPageId) {
+      const units = await queryDB(unitsDB);
+      const u = units.find(p => p.id === unitPageId);
+      if (u) {
+        unitInfo = {
+          unit: getTitle(u), owner: getText(u, 'Owner Name'),
+          balance: getNumber(u, 'Current Balance') || 0,
+          share: getNumber(u, 'Ownership Share (%)') || 0,
+        };
+      }
+    }
+  } catch(e) { console.error('Units error:', e.message); }
+
+  let entries = [];
+  try {
+    const ledgerDB = getDB('ledger');
+    if (ledgerDB && unitPageId) {
+      const raw = await queryDB(ledgerDB,
+        { property: 'Unit', relation: { contains: unitPageId } },
+        [{ property: 'Date', direction: 'ascending' }]
+      );
+      let running = 0;
+      entries = raw.map(e => {
+        const debit = getNumber(e, 'Debit') || 0;
+        const credit = getNumber(e, 'Credit') || 0;
+        running = running - debit + credit;
+        return { date: getDate(e, 'Date'), type: getSelect(e, 'Type'), description: getTitle(e),
+          debit: debit || null, credit: credit || null, balance: running };
+      });
+    }
+  } catch(e) { console.error('Ledger error:', e.message); }
 
   const totalDebit = entries.reduce((s, e) => s + (e.debit || 0), 0);
   const totalCredit = entries.reduce((s, e) => s + (e.credit || 0), 0);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header buildingName={branding.name} unit={session.unit} logo={branding.logo}
-        primaryColor={branding.primaryColor} />
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0f1a2e 0%, #141f35 100%)' }}>
+      <Header buildingName={branding.name} unit={session.unit} logo={branding.logo} primaryColor={branding.primaryColor} />
 
-      <main className="max-w-6xl mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Account Statement</h2>
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-white">Account Statement</h2>
+            <p className="text-sm mt-1" style={{ color: '#d4a853' }}>Unit {unitInfo.unit} · {unitInfo.owner}</p>
+          </div>
           <PrintButton />
         </div>
 
         {/* Statement Header */}
-        <div className="card mb-6 print:shadow-none print:border-2">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="rounded-xl p-6 mb-8" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
             <div>
-              <p className="text-sm text-gray-500">Building</p>
-              <p className="font-semibold">{branding.name}</p>
+              <p className="text-xs uppercase tracking-wide mb-1" style={{ color: '#64748b' }}>Building</p>
+              <p className="font-semibold text-white">{branding.name}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Generated</p>
-              <p className="font-semibold">{new Date().toLocaleDateString()}</p>
+              <p className="text-xs uppercase tracking-wide mb-1" style={{ color: '#64748b' }}>Generated</p>
+              <p className="font-semibold text-white">{new Date().toLocaleDateString()}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Unit</p>
-              <p className="font-semibold">{unitInfo.unit}</p>
+              <p className="text-xs uppercase tracking-wide mb-1" style={{ color: '#64748b' }}>Ownership</p>
+              <p className="font-semibold" style={{ color: '#d4a853' }}>{(unitInfo.share * 100).toFixed(2)}%</p>
             </div>
-            <div>
-              <p className="text-sm text-gray-500">Owner</p>
-              <p className="font-semibold">{unitInfo.owner}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Ownership Share</p>
-              <p className="font-semibold">{(unitInfo.share * 100).toFixed(2)}%</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Current Balance</p>
-              <p className={`font-bold text-lg ${unitInfo.balance < 0 ? 'text-red-600' : 'text-emerald-600'}`}>
-                {fmt(unitInfo.balance)} {branding.currency}
-              </p>
-            </div>
+          </div>
+          <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+            <p className="text-xs uppercase tracking-wide mb-1" style={{ color: '#64748b' }}>Current Balance</p>
+            <p className={`text-3xl font-bold ${unitInfo.balance < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+              {fmt(unitInfo.balance)} <span className="text-lg font-normal" style={{ color: '#64748b' }}>{branding.currency}</span>
+            </p>
           </div>
         </div>
 
-        {/* Transactions */}
-        <div className="card mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Transactions ({entries.length})
-          </h3>
-
+        {/* Transactions Table */}
+        <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <h3 className="text-lg font-semibold text-white">Transactions ({entries.length})</h3>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-2 px-3 text-gray-500 font-medium">Date</th>
-                  <th className="text-left py-2 px-3 text-gray-500 font-medium">Type</th>
-                  <th className="text-left py-2 px-3 text-gray-500 font-medium">Description</th>
-                  <th className="text-right py-2 px-3 text-gray-500 font-medium">Debit</th>
-                  <th className="text-right py-2 px-3 text-gray-500 font-medium">Credit</th>
-                  <th className="text-right py-2 px-3 text-gray-500 font-medium">Balance</th>
+                <tr style={{ background: 'rgba(255,255,255,0.03)' }}>
+                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider" style={{ color: '#64748b' }}>Date</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider" style={{ color: '#64748b' }}>Type</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider" style={{ color: '#64748b' }}>Description</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold uppercase tracking-wider" style={{ color: '#64748b' }}>Debit</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold uppercase tracking-wider" style={{ color: '#64748b' }}>Credit</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold uppercase tracking-wider" style={{ color: '#64748b' }}>Balance</th>
                 </tr>
               </thead>
               <tbody>
                 {entries.map((e, i) => (
-                  <tr key={i} className="border-b border-gray-50 hover:bg-gray-50">
-                    <td className="py-2 px-3 text-gray-600">{e.date || '—'}</td>
-                    <td className="py-2 px-3">
-                      <span className={`badge ${e.type?.includes('Payment') ? 'badge-green' : 'badge-blue'}`}>
-                        {e.type}
-                      </span>
+                  <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    <td className="py-3 px-4" style={{ color: '#94a3b8' }}>{e.date || '—'}</td>
+                    <td className="py-3 px-4">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                        style={{ background: e.type?.includes('Payment') ? 'rgba(52,211,153,0.1)' : 'rgba(212,168,83,0.1)',
+                          color: e.type?.includes('Payment') ? '#6ee7b7' : '#d4a853' }}>{e.type}</span>
                     </td>
-                    <td className="py-2 px-3 text-gray-700">{e.description}</td>
-                    <td className="py-2 px-3 text-right text-red-600 font-mono">{e.debit ? fmt(e.debit) : ''}</td>
-                    <td className="py-2 px-3 text-right text-emerald-600 font-mono">{e.credit ? fmt(e.credit) : ''}</td>
-                    <td className={`py-2 px-3 text-right font-mono font-medium ${e.balance < 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                    <td className="py-3 px-4 text-white">{e.description}</td>
+                    <td className="py-3 px-4 text-right text-red-400 font-mono">{e.debit ? fmt(e.debit) : ''}</td>
+                    <td className="py-3 px-4 text-right text-emerald-400 font-mono">{e.credit ? fmt(e.credit) : ''}</td>
+                    <td className={`py-3 px-4 text-right font-mono font-medium ${e.balance < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
                       {fmt(e.balance)}
                     </td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
-                <tr className="border-t-2 border-gray-300 font-semibold">
-                  <td colSpan={3} className="py-2 px-3 text-right">Totals</td>
-                  <td className="py-2 px-3 text-right text-red-600 font-mono">{fmt(totalDebit)}</td>
-                  <td className="py-2 px-3 text-right text-emerald-600 font-mono">{fmt(totalCredit)}</td>
-                  <td className={`py-2 px-3 text-right font-mono ${unitInfo.balance < 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                <tr className="font-semibold" style={{ background: 'rgba(212,168,83,0.05)', borderTop: '2px solid rgba(212,168,83,0.15)' }}>
+                  <td colSpan={3} className="py-3 px-4 text-right" style={{ color: '#d4a853' }}>Totals</td>
+                  <td className="py-3 px-4 text-right text-red-400 font-mono">{fmt(totalDebit)}</td>
+                  <td className="py-3 px-4 text-right text-emerald-400 font-mono">{fmt(totalCredit)}</td>
+                  <td className={`py-3 px-4 text-right font-mono ${unitInfo.balance < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
                     {fmt(unitInfo.balance)} {branding.currency}
                   </td>
                 </tr>
@@ -154,6 +140,10 @@ export default async function StatementPage({ searchParams }) {
           </div>
         </div>
       </main>
+
+      <footer className="mt-12 py-6 text-center text-xs" style={{ borderTop: '1px solid rgba(212,168,83,0.1)', color: '#64748b' }}>
+        Powered by <strong style={{ color: '#d4a853' }}>Condo Manager OS</strong>
+      </footer>
     </div>
   );
 }
