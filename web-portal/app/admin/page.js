@@ -18,7 +18,8 @@ export default async function AdminPage() {
 
   // Fetch all units
   const unitsDB = getDB('units');
-  const unitPages = unitsDB ? await queryDB(unitsDB, undefined, [{ property: 'Unit', direction: 'ascending' }]) : [];
+  let unitPages = [];
+  try { if (unitsDB) unitPages = await queryDB(unitsDB, undefined, [{ property: 'Unit', direction: 'ascending' }]); } catch(e) { console.error('Units fetch error:', e.message); }
   const units = unitPages.map(u => ({
     unit: getTitle(u),
     owner: getText(u, 'Owner Name'),
@@ -34,7 +35,8 @@ export default async function AdminPage() {
 
   // Fetch cash position
   const cashDB = getDB('cashPosition');
-  const cashPages = cashDB ? await queryDB(cashDB) : [];
+  let cashPages = [];
+  try { if (cashDB) cashPages = await queryDB(cashDB); } catch(e) { console.error('Cash fetch error:', e.message); }
   const cashAccounts = cashPages.map(c => ({
     name: getTitle(c),
     balance: getNumber(c, 'Current Balance') || getNumber(c, 'Balance') || 0,
@@ -44,42 +46,47 @@ export default async function AdminPage() {
 
   // Budget
   const budgetDB = getDB('budget');
-  const budgetPages = budgetDB ? await queryDB(budgetDB) : [];
+  let budgetPages = [];
+  try { if (budgetDB) budgetPages = await queryDB(budgetDB); } catch(e) { console.error('Budget fetch error:', e.message); }
   const totalBudget = config.building?.annualBudget || budgetPages.reduce((s, b) => s + (getNumber(b, 'Budgeted Amount') || 0), 0);
 
   // Recent ledger entries
   const ledgerDB = getDB('ledger');
   let recentEntries = [];
-  if (ledgerDB) {
-    const entries = await queryDB(ledgerDB, undefined, [{ property: 'Date', direction: 'descending' }]);
-    recentEntries = entries.slice(0, 12).map(e => ({
-      date: getDate(e, 'Date'),
-      type: getSelect(e, 'Type'),
-      description: getTitle(e),
-      debit: getNumber(e, 'Debit'),
-      credit: getNumber(e, 'Credit'),
-    }));
-  }
+  try {
+    if (ledgerDB) {
+      const entries = await queryDB(ledgerDB, undefined, [{ property: 'Date', direction: 'descending' }]);
+      recentEntries = entries.slice(0, 12).map(e => ({
+        date: getDate(e, 'Date'),
+        type: getSelect(e, 'Type'),
+        description: getTitle(e),
+        debit: getNumber(e, 'Debit'),
+        credit: getNumber(e, 'Credit'),
+      }));
+    }
+  } catch(e) { console.error('Ledger fetch error:', e.message); }
 
   // Open maintenance requests
   const maintDB = getDB('maintenance');
   let openRequests = [];
   let totalRequests = 0;
-  if (maintDB) {
-    const allReqs = await queryDB(maintDB, undefined, [{ property: 'Reported Date', direction: 'descending' }]);
-    totalRequests = allReqs.length;
-    openRequests = allReqs.filter(r => {
-      const st = getSelect(r, 'Status');
-      return st === 'Open' || st === 'In Progress';
-    }).map(r => ({
-      request: getTitle(r),
-      status: getSelect(r, 'Status'),
-      priority: getSelect(r, 'Priority'),
-      location: getText(r, 'Location'),
-      assignedTo: getText(r, 'Assigned To'),
-      date: getDate(r, 'Reported Date'),
-    }));
-  }
+  try {
+    if (maintDB) {
+      const allReqs = await queryDB(maintDB, undefined, [{ property: 'Reported Date', direction: 'descending' }]);
+      totalRequests = allReqs.length;
+      openRequests = allReqs.filter(r => {
+        const st = getSelect(r, 'Status');
+        return st === 'Open' || st === 'In Progress';
+      }).map(r => ({
+        request: getTitle(r),
+        status: getSelect(r, 'Status'),
+        priority: getSelect(r, 'Priority'),
+        location: getText(r, 'Location'),
+        assignedTo: getText(r, 'Assigned To'),
+        date: getDate(r, 'Reported Date'),
+      }));
+    }
+  } catch(e) { console.error('Maintenance fetch error:', e.message); }
 
   // Collection rate
   const collectionRate = units.length > 0 ? Math.round((currentCount / units.length) * 100) : 0;
