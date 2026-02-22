@@ -9,7 +9,7 @@
 > "Managing a condominium is a nightmare of spreadsheets, late payments, and angry owners. What if your AI could handle all of it?"
 
 ## Scene 2: The Problem (0:15 - 0:30)
-**Screen:** Show a messy Excel spreadsheet (use the Framboyant file as example, blurred)
+**Screen:** Show a messy Excel spreadsheet (use the Coral Breeze file as example, blurred)
 **Voiceover:**
 > "Most property managers spend 8+ hours a month on accounting alone — calculating shares, chasing payments, writing reminder letters. And one mistake means angry co-owners."
 
@@ -60,6 +60,6 @@
 - **Transitions:** Clean cuts, no fancy effects
 - **Terminal:** Use dark theme, increase font size to 16pt
 - **Notion:** Show actual Notion UI with the databases
-- **Telegram:** Real conversation screenshot (can use Framboyant data, anonymize names)
+- **Telegram:** Real conversation screenshot (can use Coral Breeze data, anonymize names)
 - **Record with:** OBS or Loom
 - **Upload to:** YouTube (unlisted or public) + embed on landing page

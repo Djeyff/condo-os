@@ -88,7 +88,7 @@ function classifyMovementCategory(desc) {
   if (d.includes('yile') || d.includes('jardinero')) return 'Cleaning';
   if (d.includes('luz') || d.includes('inapa') || d.includes('camion')) return 'Utilities';
   if (d.includes('recogida') || d.includes('basura') || d.includes('lora')) return 'Cleaning';
-  if (d.includes('frits') || d.includes('zorica') || d.includes('crismar') || d.includes('reparacion') || d.includes('cotizacion')) return 'Capital Works';
+  if (d.includes('caribbean') || d.includes('pacific') || d.includes('island') || d.includes('reparacion') || d.includes('cotizacion')) return 'Capital Works';
   if (d.includes('cargo ') || d.includes('impuesto') || d.includes('membresia')) return 'Bank Charges';
   if (d.includes('seguro') || d.includes('poliza')) return 'Insurance';
   if (d.includes('retiro para')) return 'Transfer';

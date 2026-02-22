@@ -1,144 +1,193 @@
 # 🏢 Condo Manager OS
 
-**Complete AI-powered condominium & property management system for OpenClaw.**
+> AI-powered condominium management for OpenClaw + Notion
 
-Turn your AI assistant into a full-time property manager — handles double-entry accounting, owner payments, quarterly fee calls, maintenance tracking, financial reporting, and owner communications through Notion databases.
+Turn your OpenClaw agent into a full-stack property management system. 11 interconnected Notion databases, 17 CLI commands, owner self-service portal, automation workflows, and live dashboards — all from one skill.
 
-Built from managing a real condominium — not theory. Every workflow, edge case, and template comes from actual property administration experience.
+## ⚡ Quick Start
 
-## ✨ Features
-
-- 🧮 **Double-entry owner accounting** — individual accounts with running balances per unit
-- 💰 **Fee calls** — automatic quarterly/monthly calculation based on ownership shares (tantièmes)
-- 📊 **Budget vs actual** — variance tracking by category with Q1-Q4 breakdown
-- 🏗️ **Works & projects** — voted works with staged contractor payments (advance/progress/final)
-- 💳 **Multi-account cash tracking** — bank accounts, petty cash, reserve funds with full transaction history
-- 📨 **Owner communications** — escalating delinquency notices (friendly → formal → legal), fee call letters, year-end statements
-- 📋 **Year-end closing** — automatic reconciliation of provisional vs actual charges
-- 📥 **Excel import** — migrate from spreadsheets with auto-detection of sheet types
-- 🌐 **Multilingual** — Spanish, English, and French support
-- 🔒 **Privacy guardrails** — never exposes one owner's data to another
-
-## 🚀 Quick Start
-
-### 1. Install the skill
 ```bash
-# From ClaHub
+# 1. Install the skill
 openclaw skill install condo-manager-os
 
-# Or manually
-git clone <repo> ~/.openclaw/skills/condo-manager-os
-cd ~/.openclaw/skills/condo-manager-os && npm install
+# 2. Create a parent page in Notion (share with your integration)
+
+# 3. Run setup — creates all 11 databases with relations, formulas, rollups
+node scripts/setup.js --parent-page=YOUR_NOTION_PAGE_ID
+
+# 4. Verify
+node scripts/condo-cli.js dashboard
 ```
 
-### 2. Set up Notion
-- Create a Notion integration at https://www.notion.so/my-integrations
-- Set `NOTION_API_KEY` in your OpenClaw environment
-- Create a parent page in Notion and share it with your integration
+## 📊 What You Get
 
-### 3. Run setup
-```bash
-node scripts/setup.js --parent-page=YOUR_PAGE_ID
-```
-
-This creates **10 databases** with full schemas, relations, formulas, rollups, and color-coded selects. Zero manual Notion steps.
-
-### 4. Import existing data (optional)
-```bash
-node scripts/import-excel.js your-financial-data.xlsx --dry-run  # Preview
-node scripts/import-excel.js your-financial-data.xlsx             # Import
-```
-
-### 5. Start managing
-Just talk to your assistant:
-- *"Generate fee call for Q1 2026"*
-- *"Unit A-3 paid 25,000 by bank transfer, ref #7821"*
-- *"Who owes money?"*
-- *"Monthly financial report for January"*
-- *"Prepare year-end closing for 2025"*
-
-## 📦 CLI Commands
-
-```bash
-# Fee management
-node scripts/condo-cli.js fee-call Q2 2026              # Issue quarterly charges
-node scripts/condo-cli.js payment A-3 25000 --ref=7821  # Record payment
-
-# Reporting
-node scripts/condo-cli.js statement A-1 --lang=fr       # Owner statement
-node scripts/condo-cli.js report monthly 2026-01         # Financial report
-node scripts/condo-cli.js delinquency --detail           # Delinquent units
-node scripts/condo-cli.js dashboard                      # Quick overview
-
-# Operations
-node scripts/condo-cli.js expense "INAPA" 3600 --category=Utilities --account=banco
-node scripts/condo-cli.js assessment "Roof Repair" 186000 --vote-type="Electronic Vote"
-node scripts/condo-cli.js close-year 2025 --total-expenses=955962 --confirm
-```
-
-## 🗄️ Database Schema
-
+### 11 Interconnected Databases
 | Database | Purpose |
 |----------|---------|
-| 🏠 Units Registry | Units, owners, shares, balances, fee status |
-| 💰 Owner Ledger | All financial transactions per owner |
-| 📋 Budget | Annual budget with Q1-Q4 actual tracking |
-| 💸 Expenses | Operating expenses by category |
-| 🔧 Maintenance | Work orders and repairs |
-| 🏗️ Works & Projects | Voted works with staged payments |
-| 🏦 Cash Position | Bank accounts, petty cash, reserves |
-| 💳 Account Movements | Full transaction history per account |
-| 📨 Communications Log | Owner/tenant communication audit trail |
-| 📅 Meetings | Board meetings, AGMs, assemblies |
+| 🏠 Units Registry | Units, owners, ownership shares, balances |
+| 💰 Owner Ledger | All financial transactions per unit |
+| 📋 Budget | Annual budget with quarterly breakdown |
+| 💸 Expenses | Building expenses linked to budget lines |
+| 🔧 Maintenance | Maintenance requests with priority & tracking |
+| 🏗️ Works & Projects | Capital works with payment tranches |
+| 🏦 Cash Position | Bank accounts & petty cash |
+| 💳 Account Movements | Full audit trail of account transactions |
+| 📨 Communications Log | Fee calls, reminders, legal notices |
+| 📅 Meetings | AGMs, board meetings, electronic votes |
+| 🗳️ Resolutions & Votes | Per-unit voting with auto-calculated results |
 
-All databases are **automatically cross-linked** with relations, rollups, and formulas.
+All databases are linked with **dual relations** — click any field to navigate between connected records.
 
-## 🔧 Configuration
+### 17 CLI Commands
 
-After setup, your `config.json` contains:
+```bash
+# Core Operations
+condo-cli.js fee-call Q2 2026          # Issue quarterly charges
+condo-cli.js payment A-3 25000         # Record a payment
+condo-cli.js statement A-1 --lang=fr   # Owner account statement
+condo-cli.js report monthly 2026-01    # Financial report
+condo-cli.js delinquency --detail      # Who owes what
+condo-cli.js dashboard                 # Quick overview
+condo-cli.js close-year 2025           # Year-end reconciliation
+condo-cli.js expense "INAPA" 3600      # Log an expense
+condo-cli.js assessment "Roof" 186000  # Distribute work cost
+
+# Premium
+condo-cli.js late-fees --rate=0.02     # Auto-calculate penalties
+condo-cli.js reminder --level=2        # Escalating payment notices
+condo-cli.js reserve-projection        # 5-year fund projection
+condo-cli.js agm-prep 2026             # Full AGM package
+condo-cli.js vote "Budget" --meeting="AGM"  # Record votes
+condo-cli.js meeting-report "AGM 2025" # Full meeting minutes
+condo-cli.js payment-plan A-1 187000 --installments=12  # Installment plans
+condo-cli.js export A-1 --lang=es      # Exportable statement
+```
+
+### 🤖 Owner Portal (Telegram Bot)
+
+Self-service portal for condo owners:
+- 💰 Check balance in real-time
+- 📊 View account statement
+- 🔧 Submit maintenance requests (→ creates Notion entry + notifies admin)
+- 📅 See upcoming meetings
+- 📢 Read building announcements
+- 📞 Contact administration
+- 🌐 Trilingual: Spanish, English, French
+
+```bash
+# Start the portal bot
+PORTAL_BOT_TOKEN=xxx node scripts/owner-portal.js
+
+# Or use the process manager
+scripts/portal-ctl.sh start
+```
+
+### ⚙️ Automation Workflows
+
+7 event-driven workflows that monitor your databases:
+
+| Workflow | Trigger | Action |
+|----------|---------|--------|
+| Payment Received | New payment in ledger | Notify admin + owner |
+| Maintenance Update | Status change | Notify owner |
+| Overdue Alert | Unit 30+ days past due | Alert admin |
+| Meeting Reminder | 48h before meeting | Notify all |
+| Budget Overrun | Expense hits 90% of line | Alert admin |
+| Cash Critical | Total below threshold | Alert admin |
+| Portal Submission | New maintenance request | Alert admin |
+
+```bash
+node scripts/automations.js run      # Run once (cron)
+node scripts/automations.js daemon   # Continuous (15min polls)
+node scripts/automations.js test     # Dry-run
+```
+
+### 📈 Live Dashboards
+
+5 auto-generated Notion dashboard pages with KPI cards, progress bars, and color-coded indicators:
+
+- 📈 **KPI Dashboard** — Financial health, operations, governance
+- 📊 **Financial Dashboard** — Cash, budget vs actual, income trends
+- 🔴 **Delinquency Tracker** — Per-unit aging, impact analysis
+- 🔧 **Maintenance Board** — Status/priority breakdown, open items
+- 🏗️ **Works & Projects** — Portfolio progress, payment tracking
+
+```bash
+node scripts/refresh-dashboards.js --setup   # Create pages (first time)
+node scripts/refresh-dashboards.js           # Refresh with live data
+```
+
+### 📥 Excel Import
+
+Migrate from spreadsheets in minutes:
+
+```bash
+node scripts/import-excel.js your-data.xlsx
+```
+
+Auto-detects sheet types (units, ledger, expenses, movements, budget) and imports everything with proper relations.
+
+## ⚙️ Configuration
+
+Copy `config.example.json` to `config.json` and fill in:
+
 ```json
 {
   "building": {
-    "name": "My Building",
-    "address": "123 Main St",
+    "name": "Your Building",
+    "units": 7,
     "currency": "DOP",
     "feeFrequency": "quarterly",
-    "annualBudget": 547840
+    "annualBudget": 524000
   },
-  "databases": {
-    "units": "notion-db-id",
-    "ledger": "notion-db-id",
-    ...
+  "notion": {
+    "parentPageId": "YOUR_PAGE_ID"
+  },
+  "portal": {
+    "botToken": "TELEGRAM_BOT_TOKEN",
+    "adminChatId": "YOUR_CHAT_ID",
+    "defaultLang": "es",
+    "pins": { "A-1": "1234" }
   }
 }
 ```
 
-## 📨 Communication Templates
+Database IDs are auto-populated by `setup.js`.
 
-The skill includes professional templates for:
-- Fee call letters (with individual amounts and balances)
-- Payment reminders (4 escalation levels)
-- Year-end owner statements
-- Financial situation reports
-- Meeting agendas and minutes
-- Delinquency notices (friendly → formal → pre-legal → legal)
+## 🔒 Security
 
-All templates support multiple languages and are generated with real data from your Notion databases.
-
-## 🛡️ Guardrails
-
-- **Privacy**: Never exposes one owner's financial details to another
-- **Accuracy**: All ledger entries require confirmation before writing
-- **Audit trail**: Corrections via adjustment entries, never deletions
-- **Safety**: Year-end closing is dry-run by default, requires `--confirm`
+- Bot token stored in `.env` (gitignored)
+- Owner authentication via unit + PIN
+- Portal sessions persisted locally
+- No data leaves Notion — all queries are direct API calls
+- Config with real IDs is gitignored
 
 ## 📋 Requirements
 
-- OpenClaw with Notion integration
+- [OpenClaw](https://openclaw.ai) agent
+- Notion workspace with an integration
 - Node.js 18+
-- `NOTION_API_KEY` environment variable
 - `xlsx` npm package (for Excel import)
+- `grammy` npm package (for portal bot)
+
+## 🌐 Languages
+
+All CLI commands and the portal bot support:
+- 🇪🇸 Spanish (default)
+- 🇬🇧 English
+- 🇫🇷 French
 
 ## 📄 License
 
-MIT — Built by [casedamare](https://clawhub.com/casedamare)
+MIT — free to use, modify, and distribute.
+
+## 🔗 Links
+
+- [Landing Page](https://casedamare.github.io/condo-os)
+- [ClawHub](https://clawhub.com)
+- [OpenClaw](https://openclaw.ai)
+- [Discord](https://discord.com/invite/clawd)
+
+---
+
+Built with 🏗️ by real property managers, for real property managers.

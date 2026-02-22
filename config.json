@@ -1,12 +1,12 @@
 {
   "building": {
-    "name": "Condominio El Framboyant",
+    "name": "Coral Breeze Residences",
     "address": "Calle 30 de Marzo, Las Terrenas, Samaná, RD 32200",
     "units": 7,
     "currency": "DOP",
     "fiscalYear": "calendar",
     "feeFrequency": "quarterly",
-    "annualBudget": 547840
+    "annualBudget": 524000
   },
   "notion": {
     "parentPageId": "30e00b56-b6fa-8154-b553-ccfa094a8fef"
