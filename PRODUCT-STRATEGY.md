@@ -2,14 +2,13 @@
 
 ## Pricing Tiers
 
-### 🆓 Free (ClawHub Discovery)
-**Goal:** Maximum installs → funnel to paid
-- SKILL.md (full AI instructions — this IS the product for OpenClaw)
-- 3 of 10 databases (Units Registry, Budget, Cash Position)
-- `setup.js --tier=free` (creates only free DBs)
-- `dashboard` command only
-- Landing page + demo video
-- "Upgrade to Pro → [link]" in every output footer
+### 🆓 Free (Notion Template Only)
+**Goal:** Lead generation + brand awareness
+- Static Notion template (duplicatable workspace with empty DBs)
+- 3 databases only: Units Registry, Budget, Cash Position
+- No CLI, no automations, no portal, no dashboards
+- README with feature comparison → upgrade CTA
+- Distributed via Notion Template Gallery + landing page
 
 ### 💰 Pro ($149 one-time — Gumroad/Lemon Squeezy)
 **Goal:** Sweet spot for small condos (5-20 units)
