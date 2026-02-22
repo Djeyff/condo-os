@@ -1,7 +1,7 @@
 ---
 name: condo-manager-os
-description: Complete AI condominium & property management operating system with double-entry accounting, owner individual accounts, fee calls, expense tracking, delinquency management, financial auditing, year-end closing, owner communications, and Notion-powered dashboards. Use when the user mentions rent, tenants, owners, maintenance, condo fees, HOA, expenses, payments, accounting, budget, financial report, delinquency, year-end closing, fee call, reserves, common charges, owner statement, building management, or AGM.
-version: 2.0.0
+description: Complete AI condominium & property management operating system with double-entry accounting, owner individual accounts, fee calls, expense tracking, delinquency management, financial auditing, year-end closing, owner communications, Excel import, and Notion-powered dashboards. Use when the user mentions rent, tenants, owners, maintenance, condo fees, HOA, expenses, payments, accounting, budget, financial report, delinquency, year-end closing, fee call, reserves, common charges, owner statement, building management, or AGM.
+version: 3.0.0
 author: casedamare
 metadata:
   openclaw:
@@ -10,12 +10,19 @@ metadata:
       env:
         - NOTION_API_KEY
       bins:
-        - curl
+        - node
+      npm:
+        - xlsx
     primaryEnv: NOTION_API_KEY
     install:
-      - id: notion-skill
+      - id: notion-key
         kind: note
-        label: "Requires the Notion skill. Set NOTION_API_KEY from https://www.notion.so/my-integrations"
+        label: "Set NOTION_API_KEY from https://www.notion.so/my-integrations"
+      - id: npm-deps
+        kind: run
+        label: "Install dependencies"
+        command: "cd ~/.openclaw/skills/condo-manager-os && npm install"
+    repo: https://github.com/casedamare/condo-os
 ---
 
 # Condo Manager OS — Complete Property & Condominium Management
@@ -23,6 +30,54 @@ metadata:
 Your AI-powered condominium administration operating system. Built from real-world condo management experience — not theory.
 
 This skill turns OpenClaw into a full-time property management assistant that handles accounting, maintenance, communications, and reporting through Notion databases.
+
+## CLI Tools (v3.0)
+
+All operations are backed by Node.js scripts that execute real Notion API calls. Never simulate or guess data.
+
+### Setup (one-time)
+```bash
+node scripts/setup.js --parent-page=NOTION_PAGE_ID
+```
+Creates all 10 databases with relations, formulas, rollups, and color-coded selects. Writes IDs to `config.json`.
+
+### Main CLI
+```bash
+node scripts/condo-cli.js <command> [args] [--flags]
+```
+
+| Command | Example | Description |
+|---------|---------|-------------|
+| `fee-call` | `fee-call Q2 2026` | Issue quarterly/monthly fee calls to all units |
+| `payment` / `pay` | `payment A-3 25000 --ref=7821` | Record owner payment, update balance |
+| `statement` / `stmt` | `statement A-1 --lang=fr` | Individual owner account statement |
+| `report` | `report monthly 2026-01` | Financial report: income, expenses, cash, delinquency |
+| `delinquency` / `delq` | `delinquency --detail` | Delinquent units sorted by amount owed |
+| `dashboard` / `dash` | `dashboard` | Quick overview: cash + all balances |
+| `close-year` | `close-year 2025 --confirm` | Year-end reconciliation (dry-run by default) |
+| `expense` / `exp` | `expense "INAPA" 3600 --account=banco` | Log expense + update cash position |
+| `assessment` / `assess` | `assessment "Roof" 186000` | Distribute work cost by ownership % |
+
+### Excel Import
+```bash
+node scripts/import-excel.js file.xlsx [--type=units|ledger|expenses|movements|budget] [--dry-run]
+```
+Auto-detects sheet types. Handles Excel serial dates, side-by-side accounts, section headers.
+
+### Configuration
+After setup, `config.json` stores building info and all database IDs:
+```json
+{
+  "building": { "name": "...", "currency": "DOP", "annualBudget": 547840 },
+  "databases": { "units": "id", "ledger": "id", ... }
+}
+```
+
+**IMPORTANT:** When the user asks to perform any accounting operation, ALWAYS use the CLI scripts via `exec` tool. Example:
+```
+exec: node ~/.openclaw/skills/condo-manager-os/scripts/condo-cli.js dashboard
+```
+Never simulate or calculate data yourself — always execute the real script.
 
 ## Core Capabilities
 

@@ -1,0 +1,15 @@
+{
+  "building": {
+    "name": "My Building Name",
+    "address": "123 Main Street, City, Country",
+    "units": 7,
+    "currency": "DOP",
+    "fiscalYear": "calendar",
+    "feeFrequency": "quarterly",
+    "annualBudget": 0
+  },
+  "notion": {
+    "parentPageId": "YOUR_NOTION_PAGE_ID"
+  },
+  "databases": {}
+}
