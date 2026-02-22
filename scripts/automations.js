@@ -285,10 +285,10 @@ function getOwnerChatId(unitPageId) {
 // Watches Owner Ledger for new Payment entries → notifies admin + owner
 
 async function checkPayments(state) {
-  if (!DB.ownerLedger) return;
+  if (!DB.ledger) return;
   console.log('  Checking payments...');
 
-  const recent = await queryAll(DB.ownerLedger, {
+  const recent = await queryAll(DB.ledger, {
     and: [
       { property: 'Type', select: { equals: 'Payment' } },
       { property: 'Date', date: { on_or_after: daysAgo(3) } },
@@ -341,10 +341,10 @@ async function checkPayments(state) {
 // Watches Maintenance for status changes → notifies owner
 
 async function checkMaintenanceUpdates(state) {
-  if (!DB.maintenanceRequests) return;
+  if (!DB.maintenance) return;
   console.log('  Checking maintenance updates...');
 
-  const all = await queryAll(DB.maintenanceRequests);
+  const all = await queryAll(DB.maintenance);
   let changes = 0;
 
   for (const req of all) {
@@ -549,10 +549,10 @@ async function checkCashPosition(state) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function checkNewMaintenance(state) {
-  if (!DB.maintenanceRequests) return;
+  if (!DB.maintenance) return;
   console.log('  Checking new maintenance requests...');
 
-  const recent = await queryAll(DB.maintenanceRequests, {
+  const recent = await queryAll(DB.maintenance, {
     and: [
       { property: 'Status', select: { equals: 'New' } },
       { property: 'Reported Date', date: { on_or_after: daysAgo(3) } },

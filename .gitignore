@@ -1,4 +1,7 @@
-node_modules/
-config.json
 *.log
 .DS_Store
+.env
+automations-state.json
+config.json
+node_modules/
+portal-sessions.json

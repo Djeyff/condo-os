@@ -24,6 +24,16 @@
 const fs   = require('fs');
 const path = require('path');
 const os   = require('os');
+
+// Load .env from skill root
+const envPath = path.join(__dirname, '..', '.env');
+if (fs.existsSync(envPath)) {
+  for (const line of fs.readFileSync(envPath, 'utf8').split('\n')) {
+    const m = line.match(/^([^#=]+)=(.*)$/);
+    if (m && !process.env[m[1].trim()]) process.env[m[1].trim()] = m[2].trim();
+  }
+}
+
 const { Bot, InlineKeyboard, InputFile } = require('grammy');
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -657,9 +667,9 @@ async function handleBalance(ctx, session) {
 async function handleStatement(ctx, session) {
   const lang = session.lang || LANG;
   try {
-    if (!DB.ownerLedger) return ctx.reply(t('noLedger', lang), { reply_markup: backKeyboard(lang) });
+    if (!DB.ledger) return ctx.reply(t('noLedger', lang), { reply_markup: backKeyboard(lang) });
 
-    const entries = await queryAll(DB.ownerLedger, {
+    const entries = await queryAll(DB.ledger, {
       property: 'Unit',
       relation: { contains: session.unitPageId },
     }, [{ property: 'Date', direction: 'descending' }]);
@@ -736,7 +746,7 @@ async function handleMaintenancePriority(ctx, session, priority) {
     }
 
     const page = await api(() => request('/pages', 'POST', JSON.stringify({
-      parent: { database_id: DB.maintenanceRequests },
+      parent: { database_id: DB.maintenance },
       properties,
     })));
 
@@ -772,22 +782,42 @@ async function handleMaintenancePriority(ctx, session, priority) {
 
 async function handleMeetings(ctx, session) {
   const lang = session.lang || LANG;
+  const labels = { es: { upcoming: '📅 *Próximas Reuniones*', past: '📋 *Reuniones Anteriores*', none: 'No hay reuniones programadas.' },
+                   en: { upcoming: '📅 *Upcoming Meetings*', past: '📋 *Past Meetings*', none: 'No meetings scheduled.' },
+                   fr: { upcoming: '📅 *Prochaines Réunions*', past: '📋 *Réunions Passées*', none: 'Aucune réunion prévue.' } };
+  const L = labels[lang] || labels.es;
   try {
     if (!DB.meetings) return ctx.reply(t('noMeetings', lang), { reply_markup: backKeyboard(lang) });
 
     const meetings = await queryAll(DB.meetings, null, [{ property: 'Date', direction: 'descending' }]);
+    if (!meetings.length) return ctx.reply(L.none, { reply_markup: backKeyboard(lang) });
 
-    if (!meetings.length) {
-      return ctx.reply(t('noMeetings', lang), { reply_markup: backKeyboard(lang) });
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const upcoming = meetings.filter(m => { const d = getDate(m, 'Date'); return d && d >= todayStr; });
+    const past = meetings.filter(m => { const d = getDate(m, 'Date'); return !d || d < todayStr; });
+
+    let msg = '';
+
+    if (upcoming.length) {
+      msg += L.upcoming + '\n\n';
+      for (const m of upcoming) {
+        const title = getTitle(m);
+        const date = getDate(m, 'Date');
+        const type = getSelect(m, 'Type');
+        msg += `🔔 *${fmtDate(date)}* — ${title}\nType: ${type}\n\n`;
+      }
+    } else {
+      msg += L.upcoming + '\n_' + L.none + '_\n\n';
     }
 
-    let msg = t('meetings', lang);
-    for (const m of meetings.slice(0, 5)) {
-      const title = getTitle(m);
-      const date = getDate(m, 'Date');
-      const type = getSelect(m, 'Type');
-      msg += `📌 *${fmtDate(date)}* — ${title}\n`;
-      msg += `Type: ${type}\n\n`;
+    if (past.length) {
+      msg += L.past + '\n\n';
+      for (const m of past.slice(0, 5)) {
+        const title = getTitle(m);
+        const date = getDate(m, 'Date');
+        const type = getSelect(m, 'Type');
+        msg += `📌 *${fmtDate(date)}* — ${title}\nType: ${type}\n\n`;
+      }
     }
 
     await ctx.reply(msg, { parse_mode: 'Markdown', reply_markup: backKeyboard(lang) });
@@ -799,10 +829,10 @@ async function handleMeetings(ctx, session) {
 async function handleAnnouncements(ctx, session) {
   const lang = session.lang || LANG;
   try {
-    if (!DB.communicationsLog) return ctx.reply(t('noAnnouncements', lang), { reply_markup: backKeyboard(lang) });
+    if (!DB.communications) return ctx.reply(t('noAnnouncements', lang), { reply_markup: backKeyboard(lang) });
 
     // Get communications for this unit or general (no unit)
-    const all = await queryAll(DB.communicationsLog, null, [{ property: 'Date', direction: 'descending' }]);
+    const all = await queryAll(DB.communications, null, [{ property: 'Date', direction: 'descending' }]);
 
     // Filter: sent communications that are either for this unit or for all (no unit relation)
     const relevant = all.filter(c => {
