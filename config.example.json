@@ -21,5 +21,14 @@
       "A-1": "1234",
       "A-2": "5678"
     }
+  },
+  "automations": {
+    "notifyMethod": "telegram",
+    "adminChatId": null,
+    "overdueDays": 30,
+    "cashCritical": 10000,
+    "expenseBudgetPct": 0.9,
+    "meetingReminderMs": 172800000,
+    "pollIntervalMs": 900000
   }
 }

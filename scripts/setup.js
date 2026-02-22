@@ -621,26 +621,58 @@ function schema_resolutions(ids) {
     { name: 'Abstain', color: 'yellow' },
     { name: 'Absent', color: 'default' },
   ];
+  const unitCount = config.building?.units || 7;
+  const prefix = config.building?.unitPrefix || 'A';
+
   const schema = {
     'Resolution':        prop.title(),
     'Meeting':           prop.relation(ids.meetings),
     'Resolution Number': prop.number('number'),
     'Description':       prop.text(),
-    'Passed':            { checkbox: {} },
     'Notes':             prop.text(),
-    'Votes For (%)':     prop.number('percent'),
-    'Votes Against (%)': prop.number('percent'),
-    'Abstentions (%)':   prop.number('percent'),
-    'Quorum Present (%)':prop.number('percent'),
-    'Quorum Met':        { checkbox: {} },
   };
-  // Per-unit vote selects — dynamically generated from building config
-  const unitCount = config.building?.units || 7;
-  const prefix = config.building?.unitPrefix || 'A';
+
+  // Per-unit vote selects
   for (let i = 1; i <= unitCount; i++) {
     schema[`${prefix}-${i} Vote`] = { select: { options: voteOpts } };
   }
+
+  // NOTE: Formula properties (Votes For %, Against %, Quorum, Passed, etc.)
+  // are added in Phase 2 after all DBs exist, because they need ownership
+  // shares from the Units Registry. See formulasForResolutions().
   return schema;
+}
+
+/**
+ * Build resolution formula properties using actual ownership shares.
+ * Called in Phase 2 after Units Registry is populated.
+ * @param {Object} unitShares - { 'A-1': 0.129, 'A-2': 0.1316, ... }
+ */
+function formulasForResolutions(unitShares) {
+  function voteFormula(voteValue) {
+    return Object.entries(unitShares).map(([unit, share]) =>
+      `if(prop("${unit} Vote") == "${voteValue}", ${share}, 0)`
+    ).join(' + ');
+  }
+  function presentFormula() {
+    return Object.entries(unitShares).map(([unit, share]) =>
+      `if(prop("${unit} Vote") != "Absent" and prop("${unit} Vote") != "", ${share}, 0)`
+    ).join(' + ');
+  }
+
+  const forExpr     = voteFormula('For');
+  const againstExpr = voteFormula('Against');
+  const abstainExpr = voteFormula('Abstain');
+  const quorumExpr  = presentFormula();
+
+  return {
+    'Votes For (%)':     prop.formula(forExpr),
+    'Votes Against (%)': prop.formula(againstExpr),
+    'Abstentions (%)':   prop.formula(abstainExpr),
+    'Quorum Present (%)':prop.formula(quorumExpr),
+    'Quorum Met':        prop.formula(`(${quorumExpr}) > 0.5`),
+    'Passed':            prop.formula(`(${quorumExpr}) > 0.5 and (${forExpr}) > (${quorumExpr}) / 2`),
+  };
 }
 
 // ---------------------------------------------------------------------------

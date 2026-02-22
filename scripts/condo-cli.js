@@ -2238,12 +2238,8 @@ async function cmdVote(pos, opts) {
   const properties = {
     'Resolution': prop.title(resTitle),
     'Meeting': prop.relation([meeting.id]),
-    'Votes For (%)': prop.number(forPct),
-    'Votes Against (%)': prop.number(againstPct),
-    'Abstentions (%)': prop.number(abstainPct),
-    'Quorum Present (%)': prop.number(presentPct),
-    'Quorum Met': prop.checkbox(quorumMet),
-    'Passed': prop.checkbox(passed),
+    // Votes For/Against/Abstentions/Quorum/Passed are all formulas now
+    // They auto-calculate from per-unit vote selects + ownership shares
   };
   if (opts.desc || opts.description) properties['Description'] = prop.text(opts.desc || opts.description);
   if (opts.num || opts.number) properties['Resolution Number'] = prop.number(parseInt(opts.num || opts.number));
@@ -2364,7 +2360,8 @@ async function cmdMeetingReport(pos, opts) {
     const num = getNumber(res, 'Resolution Number');
     const resTitle = getTitle(res);
     const desc = getText(res, 'Description');
-    const passed = res.properties['Passed']?.checkbox;
+    const passedProp = res.properties['Passed'];
+    const passed = passedProp?.type === 'formula' ? passedProp.formula?.boolean : passedProp?.checkbox;
     const forP = getNumber(res, 'Votes For (%)') || 0;
     const againstP = getNumber(res, 'Votes Against (%)') || 0;
     const abstainP = getNumber(res, 'Abstentions (%)') || 0;
