@@ -41,3 +41,11 @@ export function getBranding() {
 export function getDB(key) {
   return getConfig().databases?.[key] || null;
 }
+
+export function getConstructionDB(key) {
+  return getConfig().construction?.databases?.[key] || null;
+}
+
+export function getConstructionConfig() {
+  return getConfig().construction || {};
+}
