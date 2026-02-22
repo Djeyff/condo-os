@@ -12,5 +12,14 @@
   "notion": {
     "parentPageId": "YOUR_NOTION_PAGE_ID"
   },
-  "databases": {}
+  "databases": {},
+  "portal": {
+    "botToken": "YOUR_TELEGRAM_BOT_TOKEN",
+    "adminChatId": null,
+    "defaultLang": "es",
+    "pins": {
+      "A-1": "1234",
+      "A-2": "5678"
+    }
+  }
 }

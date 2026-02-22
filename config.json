@@ -23,5 +23,11 @@
     "meetings": "30e00b56-b6fa-8186-9932-d303f1b2e0fd",
     "movements": "30e00b56-b6fa-818f-8b0d-e9d6f7d7c0bf",
     "resolutions": "30f00b56-b6fa-81c5-851f-d6edc5e99b85"
+  },
+  "portal": {
+    "botToken": "",
+    "adminChatId": "7707300903",
+    "defaultLang": "es",
+    "pins": {}
   }
 }
