@@ -13,7 +13,7 @@
 //   node social-poster.js seed                     # Generate initial content bank
 //
 // X/Twitter posting requires API keys in .env:
-//   X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET
+//   
 //
 // LinkedIn/Reddit/Facebook: generates content for manual posting or
 // future API integration.
