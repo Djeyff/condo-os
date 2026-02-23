@@ -3,12 +3,12 @@ import { getBranding, getDB } from '@/lib/config';
 import { queryDB, getTitle, getNumber, getSelect, getDate, getText } from '@/lib/notion';
 import { redirect } from 'next/navigation';
 import Header from '@/components/Header';
+import { DEMO_MODE, demoBranding, demoCashAccounts, demoMovements } from '@/lib/demoData';
 
 export default async function MovementsPage({ searchParams }) {
   const session = await getSession();
   if (!session.isAdmin) redirect('/');
 
-  const branding = getBranding();
   const fmt = (n) => {
     const abs = Math.abs(n || 0);
     const str = abs.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -16,41 +16,45 @@ export default async function MovementsPage({ searchParams }) {
   };
 
   const selectedAccount = searchParams?.account || null;
+  const branding = DEMO_MODE ? demoBranding : getBranding();
 
-  // Fetch Cash Position accounts
-  const cashDB = getDB('cashPosition');
-  let cashPages = [];
-  try { if (cashDB) cashPages = await queryDB(cashDB); } catch(e) {}
-  const accounts = cashPages.map(c => ({
-    id: c.id,
-    name: getTitle(c),
-    balance: getNumber(c, 'Current Balance') || 0,
-    type: getSelect(c, 'Account Type') || '',
-  }));
-  // Build ID → account map
-  const accountMap = {};
-  accounts.forEach(a => { accountMap[a.id] = a; });
+  let accounts, movements;
+  if (DEMO_MODE) {
+    accounts = demoCashAccounts;
+    movements = demoMovements;
+  } else {
+    // Fetch Cash Position accounts
+    const cashDB = getDB('cashPosition');
+    let cashPages = [];
+    try { if (cashDB) cashPages = await queryDB(cashDB); } catch(e) {}
+    accounts = cashPages.map(c => ({
+      id: c.id,
+      name: getTitle(c),
+      balance: getNumber(c, 'Current Balance') || 0,
+      type: getSelect(c, 'Account Type') || '',
+    }));
+    const accountMap = {};
+    accounts.forEach(a => { accountMap[a.id] = a; });
 
-  // Fetch movements
-  const movDB = getDB('movements');
-  let movPages = [];
-  try { if (movDB) movPages = await queryDB(movDB, undefined, [{ property: 'Date', direction: 'descending' }]); } catch(e) {}
-
-  const movements = movPages.map(p => {
-    const accIds = p.properties?.Account?.relation?.map(r => r.id) || [];
-    const acc = accIds[0] ? accountMap[accIds[0]] : null;
-    return {
-      date: getDate(p, 'Date'),
-      description: getTitle(p),
-      category: getSelect(p, 'Category'),
-      type: getSelect(p, 'Movement'), // Debit / Credit
-      amount: getNumber(p, 'Amount') || 0,
-      balanceAfter: getNumber(p, 'Balance After') || 0,
-      reference: getText(p, 'Reference'),
-      accountName: acc?.name || 'Unknown',
-      accountType: acc?.type || '',
-    };
-  });
+    const movDB = getDB('movements');
+    let movPages = [];
+    try { if (movDB) movPages = await queryDB(movDB, undefined, [{ property: 'Date', direction: 'descending' }]); } catch(e) {}
+    movements = movPages.map(p => {
+      const accIds = p.properties?.Account?.relation?.map(r => r.id) || [];
+      const acc = accIds[0] ? accountMap[accIds[0]] : null;
+      return {
+        date: getDate(p, 'Date'),
+        description: getTitle(p),
+        category: getSelect(p, 'Category'),
+        type: getSelect(p, 'Movement'),
+        amount: getNumber(p, 'Amount') || 0,
+        balanceAfter: getNumber(p, 'Balance After') || 0,
+        reference: getText(p, 'Reference'),
+        accountName: acc?.name || 'Unknown',
+        accountType: acc?.type || '',
+      };
+    });
+  }
 
   // Filter by account
   const filtered = selectedAccount

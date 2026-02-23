@@ -30,6 +30,9 @@ export default function Header({ buildingName, unit, isAdmin, logo, primaryColor
             <>
               <NavLink href="/admin" label="Dashboard" icon="📊" />
               <NavLink href="/admin/unit" label="Units" icon="🏠" />
+              <NavLink href="/admin/expenses" label="Expenses" icon="💸" />
+              <NavLink href="/admin/movements" label="Accounts" icon="🏦" />
+              <NavLink href="/admin/archive" label="Archive" icon="📅" />
             </>
           )}
           {unit && !isAdmin && (
@@ -67,6 +70,9 @@ export default function Header({ buildingName, unit, isAdmin, logo, primaryColor
             <>
               <MobileLink href="/admin" label="Dashboard" />
               <MobileLink href="/admin/unit" label="Units" />
+              <MobileLink href="/admin/expenses" label="💸 Expenses" />
+              <MobileLink href="/admin/movements" label="🏦 Accounts" />
+              <MobileLink href="/admin/archive" label="📅 Archive" />
             </>
           )}
           {unit && !isAdmin && (

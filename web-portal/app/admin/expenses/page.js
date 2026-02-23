@@ -3,12 +3,13 @@ import { getBranding, getDB } from '@/lib/config';
 import { queryDB, getTitle, getNumber, getSelect, getDate, getText } from '@/lib/notion';
 import { redirect } from 'next/navigation';
 import Header from '@/components/Header';
+import { DEMO_MODE, demoBranding, demoExpenses, demoExpensesByYear } from '@/lib/demoData';
 
 export default async function ExpensesPage({ searchParams }) {
   const session = await getSession();
   if (!session.isAdmin) redirect('/');
 
-  const branding = getBranding();
+  const branding = DEMO_MODE ? demoBranding : getBranding();
   const selectedCat = searchParams?.category || null;
   const selectedYear = searchParams?.year ? parseInt(searchParams.year) : new Date().getFullYear();
 
@@ -17,23 +18,36 @@ export default async function ExpensesPage({ searchParams }) {
     return abs.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
-  const expDB = getDB('expenses');
-  let expPages = [];
-  try { if (expDB) expPages = await queryDB(expDB, undefined, [{ property: 'Date', direction: 'descending' }]); } catch(e) {}
+  // All years with data (for year tabs)
+  const availableYears = DEMO_MODE
+    ? [2026, 2025, 2024]
+    : null; // set dynamically below
 
-  const allExpenses = expPages.map(p => ({
-    date: getDate(p, 'Date'),
-    description: getTitle(p),
-    vendor: getText(p, 'Vendor'),
-    category: getSelect(p, 'Category') || 'Uncategorized',
-    amount: getNumber(p, 'Amount') || 0,
-    status: getSelect(p, 'Status') || '',
-    paymentMethod: getSelect(p, 'Payment Method') || '',
-    invoiceNum: getText(p, 'Invoice Number'),
-    fiscalYear: getNumber(p, 'Fiscal Year') || 0,
-    quarter: getSelect(p, 'Quarter') || '',
-    isExtraordinary: p.properties?.['Is Extraordinary']?.checkbox || false,
-  }));
+  let allExpenses;
+  if (DEMO_MODE) {
+    const yearData = demoExpensesByYear[selectedYear] || demoExpenses.filter(e => e.date?.startsWith(String(selectedYear)));
+    allExpenses = selectedYear === new Date().getFullYear() ? demoExpenses : (yearData || []);
+  } else {
+    const expDB = getDB('expenses');
+    let expPages = [];
+    try { if (expDB) expPages = await queryDB(expDB, undefined, [{ property: 'Date', direction: 'descending' }]); } catch(e) {}
+    allExpenses = expPages.map(p => ({
+      date: getDate(p, 'Date'),
+      description: getTitle(p),
+      vendor: getText(p, 'Vendor'),
+      category: getSelect(p, 'Category') || 'Uncategorized',
+      amount: getNumber(p, 'Amount') || 0,
+      status: getSelect(p, 'Status') || '',
+      paymentMethod: getSelect(p, 'Payment Method') || '',
+      invoiceNum: getText(p, 'Invoice Number'),
+      fiscalYear: getNumber(p, 'Fiscal Year') || 0,
+      quarter: getSelect(p, 'Quarter') || '',
+      isExtraordinary: p.properties?.['Is Extraordinary']?.checkbox || false,
+    }));
+  }
+
+  // Available years (from data)
+  const years = availableYears || [...new Set(allExpenses.map(e => e.date?.slice(0, 4)).filter(Boolean))].sort().reverse();
 
   // Filter by year
   const yearFiltered = allExpenses.filter(e => !selectedYear || e.date?.startsWith(selectedYear.toString()));
@@ -50,9 +64,6 @@ export default async function ExpensesPage({ searchParams }) {
   });
   const catSorted = Object.entries(catSummary).sort((a, b) => b[1].total - a[1].total);
   const grandTotal = yearFiltered.reduce((s, e) => s + e.amount, 0);
-
-  // Available years
-  const years = [...new Set(allExpenses.map(e => e.date?.slice(0, 4)).filter(Boolean))].sort().reverse();
 
   const GOLD = '#d4a853';
 
