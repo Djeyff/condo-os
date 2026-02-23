@@ -38,17 +38,25 @@ export default async function AdminPage() {
   let cashPages = [];
   try { if (cashDB) cashPages = await queryDB(cashDB); } catch(e) { console.error('Cash fetch error:', e.message); }
   const cashAccounts = cashPages.map(c => ({
+    id: c.id,
     name: getTitle(c),
     balance: getNumber(c, 'Current Balance') || getNumber(c, 'Balance') || 0,
     type: getSelect(c, 'Account Type') || getSelect(c, 'Type') || '',
   }));
-  const totalCash = cashAccounts.reduce((s, c) => s + c.balance, 0);
+  // Cash Position KPI = Operating + Petty Cash only (exclude Reserve Fund)
+  const totalCash = cashAccounts.filter(c => c.type !== 'Reserve Fund').reduce((s, c) => s + c.balance, 0);
 
-  // Budget
+  // Budget — current year only
+  const currentYear = new Date().getFullYear();
   const budgetDB = getDB('budget');
   let budgetPages = [];
   try { if (budgetDB) budgetPages = await queryDB(budgetDB); } catch(e) { console.error('Budget fetch error:', e.message); }
-  const totalBudget = config.building?.annualBudget || budgetPages.reduce((s, b) => s + (getNumber(b, 'Budgeted Amount') || 0), 0);
+  const currentYearBudget = budgetPages.filter(b => {
+    const yr = getNumber(b, 'Fiscal Year') || getNumber(b, 'Year');
+    return yr === currentYear || !yr; // include entries without year for backwards compat
+  });
+  const totalBudget = config.building?.annualBudget ||
+    currentYearBudget.reduce((s, b) => s + (getNumber(b, 'Annual Budget') || getNumber(b, 'Budgeted Amount') || 0), 0);
 
   // Recent ledger entries
   const ledgerDB = getDB('ledger');
@@ -139,14 +147,17 @@ export default async function AdminPage() {
           </div>
 
           {/* Cash Position */}
-          <div className="rounded-xl p-5" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-lg">🏦</span>
-              <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#94a3b8' }}>Cash Position</span>
+          <a href="/admin/movements" className="rounded-xl p-5 block transition-all hover:scale-[1.01]" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🏦</span>
+                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#94a3b8' }}>Cash Position</span>
+              </div>
+              <span className="text-xs" style={{ color: '#64748b' }}>View →</span>
             </div>
             <p className={`text-2xl font-bold ${totalCash >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>{fmt(totalCash)}</p>
-            <p className="text-xs mt-1" style={{ color: '#64748b' }}>{cashAccounts.length} account{cashAccounts.length !== 1 ? 's' : ''}</p>
-          </div>
+            <p className="text-xs mt-1" style={{ color: '#64748b' }}>Operating + Petty Cash</p>
+          </a>
 
           {/* Collection Rate */}
           <div className="rounded-xl p-5" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
@@ -162,14 +173,17 @@ export default async function AdminPage() {
           </div>
 
           {/* Annual Budget */}
-          <div className="rounded-xl p-5" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-lg">📋</span>
-              <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#94a3b8' }}>Annual Budget</span>
+          <a href="/admin/expenses" className="rounded-xl p-5 block transition-all hover:scale-[1.01]" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">📋</span>
+                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#94a3b8' }}>Annual Budget {new Date().getFullYear()}</span>
+              </div>
+              <span className="text-xs" style={{ color: '#64748b' }}>Gastos →</span>
             </div>
             <p className="text-2xl font-bold text-white">{fmt(totalBudget)}</p>
             <p className="text-xs mt-1" style={{ color: '#64748b' }}>{branding.currency}</p>
-          </div>
+          </a>
 
           {/* Maintenance */}
           <div className="rounded-xl p-5" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
@@ -186,11 +200,18 @@ export default async function AdminPage() {
         {cashAccounts.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
             {cashAccounts.map((acc, i) => (
-              <div key={i} className="rounded-xl p-4 text-white" style={{ background: 'linear-gradient(135deg, rgba(212,168,83,0.1), rgba(212,168,83,0.05))', border: '1px solid rgba(212,168,83,0.2)' }}>
-                <p className="text-xs font-medium uppercase tracking-wide" style={{ color: '#d4a853' }}>{acc.type || 'Account'}</p>
+              <a key={i} href={`/admin/movements?account=${encodeURIComponent(acc.name)}`}
+                className="rounded-xl p-4 text-white block transition-all hover:scale-[1.02]"
+                style={{ background: 'linear-gradient(135deg, rgba(212,168,83,0.1), rgba(212,168,83,0.05))', border: `1px solid ${acc.balance < 0 ? 'rgba(248,113,113,0.4)' : 'rgba(212,168,83,0.2)'}`, cursor: 'pointer' }}>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-medium uppercase tracking-wide" style={{ color: '#d4a853' }}>{acc.type || 'Account'}</p>
+                  <span className="text-xs" style={{ color: '#64748b' }}>View →</span>
+                </div>
                 <p className="text-sm font-semibold mt-1 text-white">{acc.name}</p>
-                <p className="text-xl font-bold mt-2 text-white">{fmt(acc.balance)} <span className="text-sm font-normal" style={{ color: '#94a3b8' }}>{branding.currency}</span></p>
-              </div>
+                <p className={`text-xl font-bold mt-2 ${acc.balance < 0 ? 'text-red-400' : 'text-white'}`}>
+                  {fmt(acc.balance)} <span className="text-sm font-normal" style={{ color: '#94a3b8' }}>{branding.currency}</span>
+                </p>
+              </a>
             ))}
           </div>
         )}
