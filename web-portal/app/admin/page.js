@@ -275,7 +275,7 @@ export default async function AdminPage() {
                       style={u.balance === 0 ? { color: '#64748b' } : {}}>
                       {fmt(u.balance)} <span className="text-xs" style={{ color: '#64748b' }}>{branding.currency}</span>
                     </td>
-                    <td className="py-3 px-4 text-right" style={{ color: '#94a3b8' }}>{u.share ? (u.share * 100).toFixed(1) + '%' : '—'}</td>
+                    <td className="py-3 px-4 text-right" style={{ color: '#94a3b8' }}>{u.share ? u.share.toFixed(1) + '%' : '—'}</td>
                   </tr>
                 ))}
               </tbody>

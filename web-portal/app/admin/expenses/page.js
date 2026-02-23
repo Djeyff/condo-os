@@ -3,7 +3,7 @@ import { getBranding, getDB } from '@/lib/config';
 import { queryDB, getTitle, getNumber, getSelect, getDate, getText } from '@/lib/notion';
 import { redirect } from 'next/navigation';
 import Header from '@/components/Header';
-import { DEMO_MODE, demoBranding, demoExpenses, demoExpensesByYear } from '@/lib/demoData';
+import { DEMO_MODE, demoBranding, demoExpenses, demoExpensesByYear, demoBudgetItems, demoBudgetMap } from '@/lib/demoData';
 
 export default async function ExpensesPage({ searchParams }) {
   const session = await getSession();
@@ -55,6 +55,32 @@ export default async function ExpensesPage({ searchParams }) {
   // Filter by category
   const expenses = selectedCat ? yearFiltered.filter(e => e.category === selectedCat) : yearFiltered;
 
+  // Budget map for selected year
+  let budgetMap = {};
+  let totalBudget = 0;
+  if (DEMO_MODE) {
+    demoBudgetItems.forEach(b => {
+      budgetMap[b.category] = b.annualBudget;
+      totalBudget += b.annualBudget;
+    });
+  } else {
+    const budgetDB = getDB('budget');
+    try {
+      if (budgetDB) {
+        const bPages = await queryDB(budgetDB);
+        bPages.filter(p => {
+          const yr = getNumber(p, 'Fiscal Year') || getNumber(p, 'Year');
+          return yr === selectedYear || !yr;
+        }).forEach(p => {
+          const cat = getTitle(p);
+          const amt = getNumber(p, 'Annual Budget') || getNumber(p, 'Budgeted Amount') || 0;
+          budgetMap[cat] = amt;
+          totalBudget += amt;
+        });
+      }
+    } catch(e) {}
+  }
+
   // Category summary
   const catSummary = {};
   yearFiltered.forEach(e => {
@@ -62,8 +88,13 @@ export default async function ExpensesPage({ searchParams }) {
     catSummary[e.category].total += e.amount;
     catSummary[e.category].count++;
   });
+  // Include budget categories even if no spending yet
+  Object.keys(budgetMap).forEach(cat => {
+    if (!catSummary[cat]) catSummary[cat] = { total: 0, count: 0 };
+  });
   const catSorted = Object.entries(catSummary).sort((a, b) => b[1].total - a[1].total);
   const grandTotal = yearFiltered.reduce((s, e) => s + e.amount, 0);
+  const overallVariance = totalBudget - grandTotal;
 
   const GOLD = '#d4a853';
 
@@ -71,7 +102,7 @@ export default async function ExpensesPage({ searchParams }) {
     'Cleaning': '#6ee7b7', 'Utilities': '#60a5fa', 'Maintenance': '#fbbf24',
     'Management Fee': '#a78bfa', 'Bank Charges': '#94a3b8', 'Security': '#fb923c',
     'Insurance': '#34d399', 'Legal & Compliance': '#f472b6', 'Repairs': '#facc15',
-    'Landscaping': '#4ade80', 'Uncategorized': '#64748b',
+    'Landscaping': '#4ade80', 'Extraordinary': '#f59e0b', 'Uncategorized': '#64748b',
   };
   const getCatColor = (c) => catColors[c] || '#94a3b8';
 
@@ -103,52 +134,75 @@ export default async function ExpensesPage({ searchParams }) {
         {/* KPI */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           <div className="rounded-xl p-4" style={{ background: 'rgba(248,113,113,0.06)', border: '1px solid rgba(248,113,113,0.2)' }}>
-            <p className="text-xs uppercase font-semibold" style={{ color: '#94a3b8' }}>Total {selectedYear}</p>
+            <p className="text-xs uppercase font-semibold" style={{ color: '#94a3b8' }}>Total Spent {selectedYear}</p>
             <p className="text-2xl font-bold text-red-400 font-mono mt-1">{fmt(grandTotal)}</p>
             <p className="text-xs" style={{ color: '#64748b' }}>{yearFiltered.length} expenses</p>
           </div>
-          <div className="rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <p className="text-xs uppercase font-semibold" style={{ color: '#94a3b8' }}>Categories</p>
-            <p className="text-2xl font-bold text-white font-mono mt-1">{catSorted.length}</p>
-            <p className="text-xs" style={{ color: '#64748b' }}>distinct categories</p>
+          <div className="rounded-xl p-4" style={{ background: 'rgba(212,168,83,0.06)', border: '1px solid rgba(212,168,83,0.2)' }}>
+            <p className="text-xs uppercase font-semibold" style={{ color: '#94a3b8' }}>Annual Budget</p>
+            <p className="text-2xl font-bold font-mono mt-1" style={{ color: GOLD }}>{fmt(totalBudget)}</p>
+            <div className="mt-1.5 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }}>
+              <div className={`h-1.5 rounded-full ${grandTotal > totalBudget ? 'bg-red-400' : 'bg-emerald-400'}`}
+                style={{ width: `${totalBudget > 0 ? Math.min(grandTotal / totalBudget * 100, 100) : 0}%` }}></div>
+            </div>
+            <p className="text-xs mt-1" style={{ color: '#64748b' }}>{totalBudget > 0 ? Math.round(grandTotal / totalBudget * 100) : 0}% used</p>
+          </div>
+          <div className="rounded-xl p-4" style={{ background: `rgba(${overallVariance >= 0 ? '110,231,183' : '248,113,113'},0.06)`, border: `1px solid rgba(${overallVariance >= 0 ? '110,231,183' : '248,113,113'},0.2)` }}>
+            <p className="text-xs uppercase font-semibold" style={{ color: '#94a3b8' }}>Variance</p>
+            <p className={`text-2xl font-bold font-mono mt-1 ${overallVariance >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+              {overallVariance >= 0 ? '+' : ''}{fmt(overallVariance)}
+            </p>
+            <p className="text-xs mt-1" style={{ color: '#64748b' }}>{overallVariance >= 0 ? '✓ Under budget' : '⚠ Over budget'}</p>
           </div>
           <div className="rounded-xl p-4" style={{ background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.15)' }}>
-            <p className="text-xs uppercase font-semibold" style={{ color: '#94a3b8' }}>Largest Category</p>
+            <p className="text-xs uppercase font-semibold" style={{ color: '#94a3b8' }}>Largest Expense</p>
             <p className="text-sm font-bold mt-1" style={{ color: GOLD }}>{catSorted[0]?.[0] || '—'}</p>
             <p className="text-xs" style={{ color: '#64748b' }}>{catSorted[0] ? fmt(catSorted[0][1].total) + ' DOP' : ''}</p>
           </div>
-          <div className="rounded-xl p-4" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
-            <p className="text-xs uppercase font-semibold" style={{ color: '#94a3b8' }}>Avg / Expense</p>
-            <p className="text-sm font-bold mt-1 text-white">{yearFiltered.length ? fmt(grandTotal / yearFiltered.length) : '0'}</p>
-            <p className="text-xs" style={{ color: '#64748b' }}>DOP</p>
-          </div>
         </div>
 
-        {/* Category breakdown */}
+        {/* Category breakdown — budget vs actual */}
         <div className="rounded-xl p-5 mb-8" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
           <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-semibold text-white">By Category</p>
-            {selectedCat && <a href={`/admin/expenses?year=${selectedYear}`} className="text-xs px-3 py-1 rounded-lg" style={{ color: GOLD, background: 'rgba(212,168,83,0.1)' }}>Clear filter</a>}
+            <div>
+              <p className="text-sm font-semibold text-white">By Category — Budget vs. Actual</p>
+              <p className="text-xs mt-0.5" style={{ color: '#64748b' }}>Click a category to filter expenses below</p>
+            </div>
+            {selectedCat && <a href={`/admin/expenses?year=${selectedYear}`} className="text-xs px-3 py-1 rounded-lg" style={{ color: GOLD, background: 'rgba(212,168,83,0.1)' }}>Clear filter ✕</a>}
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {catSorted.map(([cat, data], i) => {
-              const pct = grandTotal > 0 ? (data.total / grandTotal * 100).toFixed(1) : 0;
+              const budget = budgetMap[cat] || 0;
+              const budgetPct = budget > 0 ? data.total / budget * 100 : null;
+              const over = budget > 0 && data.total > budget;
+              const shareOfTotal = grandTotal > 0 ? (data.total / grandTotal * 100).toFixed(1) : 0;
               return (
                 <a key={i} href={`/admin/expenses?year=${selectedYear}&category=${encodeURIComponent(cat)}`}
                   className="rounded-lg p-3 cursor-pointer transition-all hover:scale-[1.02]"
                   style={{
-                    background: selectedCat === cat ? 'rgba(212,168,83,0.1)' : 'rgba(255,255,255,0.03)',
-                    border: `1px solid ${selectedCat === cat ? 'rgba(212,168,83,0.3)' : 'rgba(255,255,255,0.06)'}`,
+                    background: selectedCat === cat ? 'rgba(212,168,83,0.1)' : over ? 'rgba(248,113,113,0.04)' : 'rgba(255,255,255,0.03)',
+                    border: `1px solid ${selectedCat === cat ? 'rgba(212,168,83,0.3)' : over ? 'rgba(248,113,113,0.25)' : 'rgba(255,255,255,0.06)'}`,
                   }}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-semibold" style={{ color: getCatColor(cat) }}>{cat}</span>
-                    <span className="text-xs" style={{ color: '#64748b' }}>{pct}%</span>
+                    <span className="text-xs font-semibold" style={{ color: getCatColor(cat) }}>
+                      {cat === 'Extraordinary' ? '★ ' : ''}{cat}
+                    </span>
+                    <span className="text-xs font-mono" style={{ color: over ? '#f87171' : '#64748b' }}>
+                      {budgetPct !== null ? Math.round(budgetPct) + '%' : shareOfTotal + '%'}
+                    </span>
                   </div>
-                  <p className="text-sm font-bold font-mono text-white">{fmt(data.total)}</p>
-                  <div className="mt-1 rounded-full h-1" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                    <div className="h-1 rounded-full" style={{ width: `${Math.min(pct, 100)}%`, background: getCatColor(cat) }}></div>
-                  </div>
-                  <p className="text-xs mt-1" style={{ color: '#64748b' }}>{data.count} entries</p>
+                  <p className={`text-sm font-bold font-mono ${over ? 'text-red-400' : 'text-white'}`}>{fmt(data.total)}</p>
+                  {budget > 0 && (
+                    <>
+                      <div className="mt-1.5 rounded-full h-1" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                        <div className="h-1 rounded-full transition-all" style={{ width: `${Math.min(budgetPct, 100)}%`, background: over ? '#f87171' : getCatColor(cat) }}></div>
+                      </div>
+                      <p className="text-xs mt-1" style={{ color: '#64748b' }}>
+                        Budget: {fmt(budget)} {over && <span style={{ color: '#f87171' }}>⚠ over</span>}
+                      </p>
+                    </>
+                  )}
+                  {!budget && <p className="text-xs mt-1" style={{ color: '#64748b' }}>{data.count} entries · no budget</p>}
                 </a>
               );
             })}

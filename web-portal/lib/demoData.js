@@ -31,30 +31,35 @@ export const demoCashAccounts = [
 ];
 
 export const demoBudgetItems = [
-  { category: 'Limpieza y Aseo',             annualBudget: 180000, actual: 148500, fiscalYear: 2026 },
-  { category: 'Mantenimiento General',        annualBudget: 120000, actual:  74800, fiscalYear: 2026 },
-  { category: 'Seguro Incendio y R.C.',        annualBudget:  96000, actual:  48000, fiscalYear: 2026 },
-  { category: 'INAPA / Agua',                  annualBudget:  48000, actual:  19200, fiscalYear: 2026 },
-  { category: 'Honorario Administrador',       annualBudget:  72000, actual:  54000, fiscalYear: 2026 },
-  { category: 'Gastos Bancarios',              annualBudget:   8000, actual:   2940, fiscalYear: 2026 },
+  { category: 'Cleaning',         annualBudget: 150000, actual: 148500, fiscalYear: 2026 },
+  { category: 'Maintenance',      annualBudget: 120000, actual:  74800, fiscalYear: 2026 },
+  { category: 'Insurance',        annualBudget:  96000, actual:  48000, fiscalYear: 2026 },
+  { category: 'Utilities',        annualBudget:  48000, actual:  19200, fiscalYear: 2026 },
+  { category: 'Management Fee',   annualBudget:  72000, actual:  54000, fiscalYear: 2026 },
+  { category: 'Bank Charges',     annualBudget:   8000, actual:   2940, fiscalYear: 2026 },
+  { category: 'Landscaping',      annualBudget:  30000, actual:      0, fiscalYear: 2026 },
+  // Extraordinary — voted separately by assembly
+  { category: 'Extraordinary',    annualBudget: 350000, actual: 333000, fiscalYear: 2026, isExtraordinary: true },
 ];
 
+// Budget map by category for quick lookup
+export const demoBudgetMap = {};
+demoBudgetItems.forEach(b => { demoBudgetMap[b.category] = b; });
+
 export const demoExpenses = [
-  { date:'2026-02-18', description:'Limpieza mensual - Feb',          vendor:'LimpiMax S.R.L.',    category:'Cleaning',         amount:12500, status:'Paid',    quarter:'Q1' },
-  { date:'2026-02-15', description:'Reparación bomba de agua',        vendor:'AguaTec Servicios',  category:'Maintenance',      amount:15600, status:'Paid',    quarter:'Q1' },
-  { date:'2026-02-10', description:'Cargo mensual cuenta corriente',  vendor:'Banco Nacional',     category:'Bank Charges',     amount:   450, status:'Paid',   quarter:'Q1' },
-  { date:'2026-02-05', description:'INAPA consumo Enero',             vendor:'INAPA',              category:'Utilities',        amount: 3200, status:'Paid',    quarter:'Q1' },
-  { date:'2026-01-28', description:'Limpieza mensual - Ene',          vendor:'LimpiMax S.R.L.',    category:'Cleaning',         amount:12500, status:'Paid',    quarter:'Q1' },
-  { date:'2026-01-20', description:'Revisión eléctrica áreas comunes',vendor:'TecnoFix S.R.L.',   category:'Maintenance',      amount: 8700, status:'Paid',    quarter:'Q1' },
-  { date:'2026-01-15', description:'Prima Seguro Incendio Q1',        vendor:'Seguros Caribe',     category:'Insurance',        amount:24000, status:'Paid',    quarter:'Q1' },
-  { date:'2026-01-10', description:'Honorario Administrador - Ene',   vendor:'Admin Pro RD',       category:'Management Fee',   amount:18000, status:'Paid',    quarter:'Q1' },
-  { date:'2026-01-08', description:'Impuesto 0.15% DGII',             vendor:'DGII',               category:'Bank Charges',     amount:  310, status:'Paid',    quarter:'Q1' },
-  { date:'2025-12-20', description:'Limpieza mensual - Dic',          vendor:'LimpiMax S.R.L.',    category:'Cleaning',         amount:12500, status:'Paid',    quarter:'Q4' },
-  { date:'2025-12-15', description:'Jardinero - corte mensual',       vendor:'Jardines & Verde',   category:'Landscaping',      amount: 4500, status:'Paid',    quarter:'Q4' },
-  { date:'2025-12-10', description:'Honorario Administrador - Dic',   vendor:'Admin Pro RD',       category:'Management Fee',   amount:18000, status:'Paid',    quarter:'Q4' },
-  { date:'2025-12-05', description:'Pintura fachada este',            vendor:'PintoPro S.R.L.',    category:'Maintenance',      amount:32000, status:'Paid',    quarter:'Q4', isExtraordinary: true },
-  { date:'2025-11-25', description:'INAPA consumo Oct',               vendor:'INAPA',              category:'Utilities',        amount: 2900, status:'Paid',    quarter:'Q4' },
-  { date:'2025-11-20', description:'Limpieza mensual - Nov',          vendor:'LimpiMax S.R.L.',    category:'Cleaning',         amount:12500, status:'Paid',    quarter:'Q4' },
+  // Q1 2026 - recurring
+  { date:'2026-02-18', description:'Limpieza mensual - Feb',           vendor:'LimpiMax S.R.L.',    category:'Cleaning',         amount: 12500, status:'Paid',    quarter:'Q1' },
+  { date:'2026-02-15', description:'Reparación bomba de agua',         vendor:'AguaTec Servicios',  category:'Maintenance',      amount: 15600, status:'Paid',    quarter:'Q1' },
+  { date:'2026-02-10', description:'Cargo mensual cuenta corriente',   vendor:'Banco Nacional',     category:'Bank Charges',     amount:   450, status:'Paid',    quarter:'Q1' },
+  { date:'2026-02-05', description:'INAPA consumo Enero',              vendor:'INAPA',              category:'Utilities',        amount:  3200, status:'Paid',    quarter:'Q1' },
+  { date:'2026-01-28', description:'Limpieza mensual - Ene',           vendor:'LimpiMax S.R.L.',    category:'Cleaning',         amount: 12500, status:'Paid',    quarter:'Q1' },
+  { date:'2026-01-20', description:'Revisión eléctrica áreas comunes', vendor:'TecnoFix S.R.L.',   category:'Maintenance',      amount:  8700, status:'Paid',    quarter:'Q1' },
+  { date:'2026-01-15', description:'Prima Seguro Incendio Q1',         vendor:'Seguros Caribe',     category:'Insurance',        amount: 24000, status:'Paid',    quarter:'Q1' },
+  { date:'2026-01-10', description:'Honorario Administrador - Ene',    vendor:'Admin Pro RD',       category:'Management Fee',   amount: 18000, status:'Paid',    quarter:'Q1' },
+  { date:'2026-01-08', description:'Impuesto 0.15% DGII',              vendor:'DGII',               category:'Bank Charges',     amount:   310, status:'Paid',    quarter:'Q1' },
+  // Q1 2026 - extraordinary
+  { date:'2026-02-12', description:'Pintura completa edificio',        vendor:'PintoPro S.R.L.',    category:'Extraordinary',    amount:285000, status:'Paid',    quarter:'Q1', isExtraordinary:true },
+  { date:'2026-01-25', description:'Impermeabilización terraza acceso',vendor:'ImpermeTech RD',     category:'Extraordinary',    amount: 48000, status:'Paid',    quarter:'Q1', isExtraordinary:true },
 ];
 
 export const demoMovements = [
@@ -100,9 +105,9 @@ export const demoOpeningBalances = {
 
 // Per-year budget totals (for archive)
 export const demoBudgetByYear = {
-  2024: 480000,
-  2025: 510000,
-  2026: 524000,
+  2024: 710000, // 480k ordinary + 230k extraordinary (ascensor + pintura + piscina)
+  2025: 715000, // 510k ordinary + 205k extraordinary (jardines + bomba + impermeabilización)
+  2026: 874000, // 524k ordinary + 350k extraordinary (pintura completa + impermeabilización)
 };
 
 // Demo ledger entries (recent owner payments)
@@ -120,33 +125,41 @@ export const demoLedgerEntries = [
 // Demo expenses by year (2025 summary for archive)
 export const demoExpensesByYear = {
   2025: [
-    { date:'2025-12-20', description:'Limpieza mensual - Dic',         vendor:'LimpiMax S.R.L.',   category:'Cleaning',       amount:12500, status:'Paid', quarter:'Q4' },
-    { date:'2025-12-15', description:'Jardinero - corte dic',          vendor:'Jardines & Verde',  category:'Landscaping',    amount: 4500, status:'Paid', quarter:'Q4' },
-    { date:'2025-12-10', description:'Honorario Administrador - Dic',  vendor:'Admin Pro RD',      category:'Management Fee', amount:18000, status:'Paid', quarter:'Q4' },
-    { date:'2025-11-28', description:'Reparación bomba agua',          vendor:'AguaTec Servicios', category:'Maintenance',    amount:15600, status:'Paid', quarter:'Q4' },
-    { date:'2025-11-20', description:'Limpieza mensual - Nov',         vendor:'LimpiMax S.R.L.',   category:'Cleaning',       amount:12500, status:'Paid', quarter:'Q4' },
-    { date:'2025-11-05', description:'Cargo mensual banco',            vendor:'Banco Nacional',    category:'Bank Charges',   amount:  450, status:'Paid', quarter:'Q4' },
-    { date:'2025-10-20', description:'Limpieza mensual - Oct',         vendor:'LimpiMax S.R.L.',   category:'Cleaning',       amount:12500, status:'Paid', quarter:'Q4' },
-    { date:'2025-10-01', description:'Prima Seguro Q4',                vendor:'Seguros Caribe',    category:'Insurance',      amount:24000, status:'Paid', quarter:'Q4' },
-    { date:'2025-09-20', description:'Limpieza mensual - Sep',         vendor:'LimpiMax S.R.L.',   category:'Cleaning',       amount:12500, status:'Paid', quarter:'Q3' },
-    { date:'2025-09-15', description:'Revisión eléctrica',             vendor:'TecnoFix S.R.L.',   category:'Maintenance',    amount: 8700, status:'Paid', quarter:'Q3' },
-    { date:'2025-09-01', description:'Honorario Admin Q3',             vendor:'Admin Pro RD',      category:'Management Fee', amount:54000, status:'Paid', quarter:'Q3' },
-    { date:'2025-07-01', description:'Prima Seguro Q3',                vendor:'Seguros Caribe',    category:'Insurance',      amount:24000, status:'Paid', quarter:'Q3' },
-    { date:'2025-06-20', description:'Pintura fachada principal',      vendor:'PintoPro S.R.L.',   category:'Maintenance',    amount:48000, status:'Paid', quarter:'Q2', isExtraordinary:true },
-    { date:'2025-06-01', description:'INAPA H1',                       vendor:'INAPA',             category:'Utilities',      amount:12600, status:'Paid', quarter:'Q2' },
-    { date:'2025-04-01', description:'Prima Seguro Q2',                vendor:'Seguros Caribe',    category:'Insurance',      amount:24000, status:'Paid', quarter:'Q2' },
-    { date:'2025-01-01', description:'Prima Seguro Q1',                vendor:'Seguros Caribe',    category:'Insurance',      amount:24000, status:'Paid', quarter:'Q1' },
-    { date:'2025-01-05', description:'Honorario Admin Q1',             vendor:'Admin Pro RD',      category:'Management Fee', amount:54000, status:'Paid', quarter:'Q1' },
-    { date:'2025-01-10', description:'Limpieza mensual - Ene',         vendor:'LimpiMax S.R.L.',   category:'Cleaning',       amount:12500, status:'Paid', quarter:'Q1' },
+    // Recurring
+    { date:'2025-12-20', description:'Limpieza mensual - Dic',          vendor:'LimpiMax S.R.L.',   category:'Cleaning',       amount: 12500, status:'Paid', quarter:'Q4' },
+    { date:'2025-12-15', description:'Jardinero - corte dic',           vendor:'Jardines & Verde',  category:'Landscaping',    amount:  4500, status:'Paid', quarter:'Q4' },
+    { date:'2025-12-10', description:'Honorario Administrador - Dic',   vendor:'Admin Pro RD',      category:'Management Fee', amount: 18000, status:'Paid', quarter:'Q4' },
+    { date:'2025-11-28', description:'Reparación bomba agua',           vendor:'AguaTec Servicios', category:'Maintenance',    amount: 15600, status:'Paid', quarter:'Q4' },
+    { date:'2025-11-20', description:'Limpieza mensual - Nov',          vendor:'LimpiMax S.R.L.',   category:'Cleaning',       amount: 12500, status:'Paid', quarter:'Q4' },
+    { date:'2025-11-05', description:'Cargo mensual banco',             vendor:'Banco Nacional',    category:'Bank Charges',   amount:   450, status:'Paid', quarter:'Q4' },
+    { date:'2025-10-20', description:'Limpieza mensual - Oct',          vendor:'LimpiMax S.R.L.',   category:'Cleaning',       amount: 12500, status:'Paid', quarter:'Q4' },
+    { date:'2025-10-01', description:'Prima Seguro Q4',                 vendor:'Seguros Caribe',    category:'Insurance',      amount: 24000, status:'Paid', quarter:'Q4' },
+    { date:'2025-09-20', description:'Limpieza mensual - Sep',          vendor:'LimpiMax S.R.L.',   category:'Cleaning',       amount: 12500, status:'Paid', quarter:'Q3' },
+    { date:'2025-09-15', description:'Revisión eléctrica',              vendor:'TecnoFix S.R.L.',   category:'Maintenance',    amount:  8700, status:'Paid', quarter:'Q3' },
+    { date:'2025-09-01', description:'Honorario Admin Q3',              vendor:'Admin Pro RD',      category:'Management Fee', amount: 54000, status:'Paid', quarter:'Q3' },
+    { date:'2025-07-01', description:'Prima Seguro Q3',                 vendor:'Seguros Caribe',    category:'Insurance',      amount: 24000, status:'Paid', quarter:'Q3' },
+    { date:'2025-06-01', description:'INAPA H1',                        vendor:'INAPA',             category:'Utilities',      amount: 12600, status:'Paid', quarter:'Q2' },
+    { date:'2025-04-01', description:'Prima Seguro Q2',                 vendor:'Seguros Caribe',    category:'Insurance',      amount: 24000, status:'Paid', quarter:'Q2' },
+    { date:'2025-01-01', description:'Prima Seguro Q1',                 vendor:'Seguros Caribe',    category:'Insurance',      amount: 24000, status:'Paid', quarter:'Q1' },
+    { date:'2025-01-05', description:'Honorario Admin Q1',              vendor:'Admin Pro RD',      category:'Management Fee', amount: 54000, status:'Paid', quarter:'Q1' },
+    { date:'2025-01-10', description:'Limpieza mensual - Ene',          vendor:'LimpiMax S.R.L.',   category:'Cleaning',       amount: 12500, status:'Paid', quarter:'Q1' },
+    // Extraordinary 2025
+    { date:'2025-08-10', description:'Renovación jardines y accesos',   vendor:'Jardines & Verde',  category:'Extraordinary',  amount: 95000, status:'Paid', quarter:'Q3', isExtraordinary:true },
+    { date:'2025-03-22', description:'Sustitución bomba principal',     vendor:'AguaTec Servicios', category:'Extraordinary',  amount: 32000, status:'Paid', quarter:'Q1', isExtraordinary:true },
+    { date:'2025-06-15', description:'Impermeabilización cubierta',     vendor:'ImpermeTech RD',    category:'Extraordinary',  amount: 78000, status:'Paid', quarter:'Q2', isExtraordinary:true },
   ],
   2024: [
-    { date:'2024-12-15', description:'Cierre anual - varios servicios',vendor:'Varios',            category:'Maintenance',    amount:32000, status:'Paid', quarter:'Q4' },
-    { date:'2024-10-01', description:'Prima Seguro H2',                vendor:'Seguros Caribe',    category:'Insurance',      amount:48000, status:'Paid', quarter:'Q4' },
-    { date:'2024-09-05', description:'Honorario Admin H2',             vendor:'Admin Pro RD',      category:'Management Fee', amount:54000, status:'Paid', quarter:'Q3' },
-    { date:'2024-06-01', description:'Prima Seguro H1',                vendor:'Seguros Caribe',    category:'Insurance',      amount:48000, status:'Paid', quarter:'Q2' },
-    { date:'2024-05-20', description:'Reparación ascensor',            vendor:'LiftTech RD',       category:'Maintenance',    amount:68000, status:'Paid', quarter:'Q2', isExtraordinary:true },
-    { date:'2024-04-01', description:'Honorario Admin H1',             vendor:'Admin Pro RD',      category:'Management Fee', amount:54000, status:'Paid', quarter:'Q1' },
-    { date:'2024-01-15', description:'Limpieza anual contrato',        vendor:'LimpiMax S.R.L.',   category:'Cleaning',       amount:96000, status:'Paid', quarter:'Q1' },
-    { date:'2024-01-05', description:'INAPA 2024',                     vendor:'INAPA',             category:'Utilities',      amount:28800, status:'Paid', quarter:'Q1' },
+    // Recurring
+    { date:'2024-12-15', description:'Cierre anual - servicios varios', vendor:'Varios',            category:'Maintenance',    amount: 32000, status:'Paid', quarter:'Q4' },
+    { date:'2024-10-01', description:'Prima Seguro H2',                 vendor:'Seguros Caribe',    category:'Insurance',      amount: 48000, status:'Paid', quarter:'Q4' },
+    { date:'2024-09-05', description:'Honorario Admin H2',              vendor:'Admin Pro RD',      category:'Management Fee', amount: 54000, status:'Paid', quarter:'Q3' },
+    { date:'2024-06-01', description:'Prima Seguro H1',                 vendor:'Seguros Caribe',    category:'Insurance',      amount: 48000, status:'Paid', quarter:'Q2' },
+    { date:'2024-04-01', description:'Honorario Admin H1',              vendor:'Admin Pro RD',      category:'Management Fee', amount: 54000, status:'Paid', quarter:'Q1' },
+    { date:'2024-01-15', description:'Limpieza anual contrato',         vendor:'LimpiMax S.R.L.',   category:'Cleaning',       amount: 96000, status:'Paid', quarter:'Q1' },
+    { date:'2024-01-05', description:'INAPA 2024',                      vendor:'INAPA',             category:'Utilities',      amount: 28800, status:'Paid', quarter:'Q1' },
+    // Extraordinary 2024
+    { date:'2024-05-20', description:'Reparación completa ascensor',    vendor:'LiftTech RD',       category:'Extraordinary',  amount:168000, status:'Paid', quarter:'Q2', isExtraordinary:true },
+    { date:'2024-09-12', description:'Pintura fachada norte y sur',     vendor:'PintoPro S.R.L.',   category:'Extraordinary',  amount:142000, status:'Paid', quarter:'Q3', isExtraordinary:true },
+    { date:'2024-11-08', description:'Impermeabilización piscina',      vendor:'AquaSeal RD',       category:'Extraordinary',  amount: 48000, status:'Paid', quarter:'Q4', isExtraordinary:true },
   ],
 };
