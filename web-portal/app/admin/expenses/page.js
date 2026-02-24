@@ -3,7 +3,7 @@ import { getBranding, getDB } from '@/lib/config';
 import { queryDB, getTitle, getNumber, getSelect, getDate, getText } from '@/lib/notion';
 import { redirect } from 'next/navigation';
 import Header from '@/components/Header';
-import { DEMO_MODE, demoBranding, demoExpenses, demoExpensesByYear, demoBudgetItems, demoBudgetMap } from '@/lib/demoData';
+import { DEMO_MODE, demoBranding, demoExpenses, demoExpensesByYear, demoBudgetItemsByYear, demoBudgetMapByYear } from '@/lib/demoData';
 
 export default async function ExpensesPage({ searchParams }) {
   const session = await getSession();
@@ -59,7 +59,8 @@ export default async function ExpensesPage({ searchParams }) {
   let budgetMap = {};
   let totalBudget = 0;
   if (DEMO_MODE) {
-    demoBudgetItems.forEach(b => {
+    const yearItems = demoBudgetItemsByYear[selectedYear] || demoBudgetItemsByYear[new Date().getFullYear()] || [];
+    yearItems.forEach(b => {
       budgetMap[b.category] = b.annualBudget;
       totalBudget += b.annualBudget;
     });

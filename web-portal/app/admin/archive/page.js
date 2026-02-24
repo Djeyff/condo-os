@@ -3,7 +3,7 @@ import { getBranding, getDB } from '@/lib/config';
 import { queryDB, getTitle, getNumber, getSelect, getDate, getText } from '@/lib/notion';
 import { redirect } from 'next/navigation';
 import Header from '@/components/Header';
-import { DEMO_MODE, demoBranding, demoExpensesByYear, demoExpenses, demoBudgetByYear, demoBudgetItems, demoUnits, demoOpeningBalances } from '@/lib/demoData';
+import { DEMO_MODE, demoBranding, demoExpensesByYear, demoExpenses, demoBudgetByYear, demoBudgetItemsByYear, demoOpeningBalances } from '@/lib/demoData';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -59,14 +59,11 @@ export default async function ArchivePage({ searchParams }) {
   let annualBudget = 0;
   let budgetByCategory = {};
   if (DEMO_MODE) {
-    annualBudget = demoBudgetByYear[selectedYear] || 0;
-    if (selectedYear === CURRENT_YEAR) {
-      demoBudgetItems.forEach(b => { budgetByCategory[b.category] = b.annualBudget; });
-    } else {
-      // Proportionally scale from current year for demo
-      const ratio = (demoBudgetByYear[selectedYear] || 0) / (demoBudgetByYear[CURRENT_YEAR] || 1);
-      demoBudgetItems.forEach(b => { budgetByCategory[b.category] = Math.round(b.annualBudget * ratio); });
-    }
+    const yearItems = demoBudgetItemsByYear[selectedYear] || [];
+    yearItems.forEach(b => {
+      budgetByCategory[b.category] = b.annualBudget;
+      annualBudget += b.annualBudget;
+    });
   } else {
     const budgetDB = getDB('budget');
     try {
@@ -105,8 +102,12 @@ export default async function ArchivePage({ searchParams }) {
     if (byQuarter[q] !== undefined) byQuarter[q] += e.amount;
   });
 
-  // Opening balance note
-  const openingLabel = `Saldo balance al 31/12/${selectedYear - 1}`;
+  // Opening balance + year status
+  const isRunningYear = selectedYear === CURRENT_YEAR;
+  const openingLabel = DEMO_MODE && demoOpeningBalances[selectedYear]
+    ? demoOpeningBalances[selectedYear].label
+    : `Saldo balance al 31/12/${selectedYear - 1}`;
+  const yearStatus = isRunningYear ? `Running Year ${selectedYear} — YTD through ${new Date().toLocaleString('en-US',{month:'long'})} ${new Date().getFullYear()}` : `Closed ${selectedYear} · ${openingLabel}`;
 
   const GOLD = '#d4a853';
   const catColors = {
@@ -126,7 +127,7 @@ export default async function ArchivePage({ searchParams }) {
           <div>
             <div className="mb-1"><a href="/admin" className="text-sm" style={{ color: GOLD }}>← Dashboard</a></div>
             <h2 className="text-2xl font-bold text-white">📅 Annual Accounting</h2>
-            <p className="text-sm mt-1" style={{ color: '#64748b' }}>Fiscal year {selectedYear} · {openingLabel}</p>
+            <p className="text-sm mt-1" style={{ color: isRunningYear ? '#d4a853' : '#64748b' }}>{yearStatus}</p>
           </div>
           <div className="flex items-center gap-2">
             {archiveYears.map(y => (
@@ -135,7 +136,7 @@ export default async function ArchivePage({ searchParams }) {
                 style={y === selectedYear
                   ? { background: GOLD, color: '#0a1628' }
                   : { background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>
-                {y}{y === CURRENT_YEAR ? ' ↗' : ''}
+                {y}{y === CURRENT_YEAR ? ' · YTD' : ' · Closed'}
               </a>
             ))}
           </div>
