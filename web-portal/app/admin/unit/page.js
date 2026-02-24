@@ -4,11 +4,12 @@ import { queryDB, getTitle, getText, getNumber, getSelect, getDate } from '@/lib
 import { redirect } from 'next/navigation';
 import Header from '@/components/Header';
 import PrintButton from '@/components/PrintButton';
+import { DEMO_MODE, demoBranding, demoUnits, demoUnitLedger, demoMaintenanceRequests } from '@/lib/demoData';
 
 export default async function AdminUnitPage({ searchParams }) {
   const session = await getSession();
   if (!session.isAdmin) redirect('/');
-  const branding = getBranding();
+  const branding = DEMO_MODE ? demoBranding : getBranding();
   const params = await searchParams;
   const selectedId = params?.id || null;
 
@@ -20,20 +21,24 @@ export default async function AdminUnitPage({ searchParams }) {
 
   // Fetch all units for selector
   let allUnits = [];
-  try {
-    const unitsDB = getDB('units');
-    if (unitsDB) {
-      const pages = await queryDB(unitsDB, undefined, [{ property: 'Unit', direction: 'ascending' }]);
-      allUnits = pages.map(p => ({
-        id: p.id,
-        unit: getTitle(p),
-        owner: getText(p, 'Owner Name'),
-        balance: getNumber(p, 'Current Balance') || 0,
-        share: getNumber(p, 'Ownership Share (%)') || 0,
-        status: getSelect(p, 'Fee Status') || 'Unknown',
-      }));
-    }
-  } catch(e) { console.error('Units error:', e.message); }
+  if (DEMO_MODE) {
+    allUnits = demoUnits.map((u, i) => ({ ...u, id: u.unit }));
+  } else {
+    try {
+      const unitsDB = getDB('units');
+      if (unitsDB) {
+        const pages = await queryDB(unitsDB, undefined, [{ property: 'Unit', direction: 'ascending' }]);
+        allUnits = pages.map(p => ({
+          id: p.id,
+          unit: getTitle(p),
+          owner: getText(p, 'Owner Name'),
+          balance: getNumber(p, 'Current Balance') || 0,
+          share: getNumber(p, 'Ownership Share (%)') || 0,
+          status: getSelect(p, 'Fee Status') || 'Unknown',
+        }));
+      }
+    } catch(e) { console.error('Units error:', e.message); }
+  }
 
   // Selected unit data
   const unitInfo = allUnits.find(u => u.id === selectedId) || null;
@@ -41,40 +46,56 @@ export default async function AdminUnitPage({ searchParams }) {
   // Fetch ledger for selected unit
   let entries = [];
   let recentEntries = [];
-  try {
-    const ledgerDB = getDB('ledger');
-    if (ledgerDB && selectedId) {
-      const raw = await queryDB(ledgerDB,
-        { property: 'Unit', relation: { contains: selectedId } },
-        [{ property: 'Date', direction: 'ascending' }]
-      );
-      let running = 0;
-      entries = raw.map(e => {
-        const debit = getNumber(e, 'Debit') || 0;
-        const credit = getNumber(e, 'Credit') || 0;
-        running = running - debit + credit;
-        return { date: getDate(e, 'Date'), type: getSelect(e, 'Type'), description: getTitle(e),
-          debit: debit || null, credit: credit || null, balance: running };
-      });
-      recentEntries = [...entries].reverse().slice(0, 10);
-    }
-  } catch(e) { console.error('Ledger error:', e.message); }
+  if (DEMO_MODE && selectedId) {
+    const raw = demoUnitLedger[selectedId] || [];
+    let running = 0;
+    entries = raw.map(e => {
+      running = running - (e.debit || 0) + (e.credit || 0);
+      return { ...e, debit: e.debit || null, credit: e.credit || null, balance: running };
+    });
+    recentEntries = [...entries].reverse().slice(0, 10);
+  } else {
+    try {
+      const ledgerDB = getDB('ledger');
+      if (ledgerDB && selectedId) {
+        const raw = await queryDB(ledgerDB,
+          { property: 'Unit', relation: { contains: selectedId } },
+          [{ property: 'Date', direction: 'ascending' }]
+        );
+        let running = 0;
+        entries = raw.map(e => {
+          const debit = getNumber(e, 'Debit') || 0;
+          const credit = getNumber(e, 'Credit') || 0;
+          running = running - debit + credit;
+          return { date: getDate(e, 'Date'), type: getSelect(e, 'Type'), description: getTitle(e),
+            debit: debit || null, credit: credit || null, balance: running };
+        });
+        recentEntries = [...entries].reverse().slice(0, 10);
+      }
+    } catch(e) { console.error('Ledger error:', e.message); }
+  }
 
   // Fetch maintenance for selected unit
   let maintenanceReqs = [];
-  try {
-    const maintDB = getDB('maintenance');
-    if (maintDB && selectedId) {
-      const reqs = await queryDB(maintDB,
-        { property: 'Unit', relation: { contains: selectedId } },
-        [{ property: 'Reported Date', direction: 'descending' }]
-      );
-      maintenanceReqs = reqs.map(r => ({
-        request: getTitle(r), status: getSelect(r, 'Status'), priority: getSelect(r, 'Priority'),
-        location: getText(r, 'Location'), date: getDate(r, 'Reported Date'),
-      }));
-    }
-  } catch(e) { console.error('Maintenance error:', e.message); }
+  if (DEMO_MODE && selectedId) {
+    maintenanceReqs = demoMaintenanceRequests
+      .filter(r => r.unit === selectedId)
+      .map(r => ({ request: r.title, status: r.status, priority: r.priority, location: '', date: r.date }));
+  } else {
+    try {
+      const maintDB = getDB('maintenance');
+      if (maintDB && selectedId) {
+        const reqs = await queryDB(maintDB,
+          { property: 'Unit', relation: { contains: selectedId } },
+          [{ property: 'Reported Date', direction: 'descending' }]
+        );
+        maintenanceReqs = reqs.map(r => ({
+          request: getTitle(r), status: getSelect(r, 'Status'), priority: getSelect(r, 'Priority'),
+          location: getText(r, 'Location'), date: getDate(r, 'Reported Date'),
+        }));
+      }
+    } catch(e) { console.error('Maintenance error:', e.message); }
+  }
 
   const totalDebit = entries.reduce((s, e) => s + (e.debit || 0), 0);
   const totalCredit = entries.reduce((s, e) => s + (e.credit || 0), 0);
@@ -151,7 +172,7 @@ export default async function AdminUnitPage({ searchParams }) {
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-wide" style={{ color: '#64748b' }}>Ownership Share</p>
-                  <p className="text-2xl font-bold" style={{ color: '#d4a853' }}>{(unitInfo.share * 100).toFixed(1)}%</p>
+                  <p className="text-2xl font-bold" style={{ color: '#d4a853' }}>{unitInfo.share.toFixed(1)}%</p>
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-wide" style={{ color: '#64748b' }}>Open Requests</p>
