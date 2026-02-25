@@ -211,7 +211,33 @@ export default async function ArchivePage({ searchParams }) {
           <div className="px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-sm font-semibold text-white">All Expenses — {selectedYear}</p>
           </div>
-          <div className="overflow-x-auto">
+          {/* Mobile Cards */}
+          <div className="sm:hidden space-y-2 p-3">
+            {expenses.map((e, i) => (
+              <div key={i} className="rounded-lg p-3" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <p className="text-sm font-medium text-white flex-1 min-w-0">
+                    {e.description}{e.isExtraordinary && <span className="ml-1 text-yellow-400 text-xs">★</span>}
+                  </p>
+                  <span className="text-sm font-bold font-mono shrink-0 text-white">{fmt(e.amount)}</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {e.date && <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>{e.date}</span>}
+                  {e.category && <span className="text-xs px-2 py-0.5 rounded" style={{ color: getCatColor(e.category), background: 'rgba(255,255,255,0.04)' }}>{e.category}</span>}
+                  {e.vendor && <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>{e.vendor}</span>}
+                  {e.quarter && <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#64748b' }}>{e.quarter}</span>}
+                </div>
+              </div>
+            ))}
+            <div className="rounded-lg p-3" style={{ background: 'rgba(212,168,83,0.05)', border: '1px solid rgba(212,168,83,0.15)' }}>
+              <div className="flex justify-between text-sm">
+                <span className="font-bold" style={{ color: '#d4a853' }}>Total {selectedYear}</span>
+                <span className="font-mono font-bold text-red-400">{fmt(totalSpent)}</span>
+              </div>
+            </div>
+          </div>
+          {/* Desktop Table */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ background: 'rgba(255,255,255,0.03)' }}>

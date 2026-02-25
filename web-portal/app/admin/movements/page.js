@@ -121,7 +121,33 @@ export default async function MovementsPage({ searchParams }) {
           <div className="px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-sm font-semibold text-white">{filtered.length} movements{selectedAccount ? ` — ${selectedAccount}` : ''}</p>
           </div>
-          <div className="overflow-x-auto">
+          {/* Mobile Cards */}
+          <div className="sm:hidden space-y-2 p-3">
+            {filtered.map((m, i) => (
+              <div key={i} className="rounded-lg p-3" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <p className="text-sm font-medium text-white flex-1 min-w-0">{m.description}</p>
+                  <span className={`text-sm font-bold font-mono shrink-0 ${m.type === 'Credit' ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {m.type === 'Credit' ? '+' : '-'}{fmt(m.amount)}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {m.date && <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>{m.date}</span>}
+                  {m.accountName && <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(212,168,83,0.08)', color: '#d4a853' }}>{m.accountName}</span>}
+                  {m.category && <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>{m.category}</span>}
+                  <span className={`text-xs px-2 py-0.5 rounded font-semibold ${m.type === 'Credit' ? 'bg-emerald-900/40 text-emerald-400' : 'bg-red-900/40 text-red-400'}`}>
+                    {m.type === 'Credit' ? '↑ Credit' : '↓ Debit'}
+                  </span>
+                  {m.balanceAfter > 0 && <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#64748b' }}>Bal: {fmt(m.balanceAfter)}</span>}
+                </div>
+              </div>
+            ))}
+            {filtered.length === 0 && (
+              <p className="px-3 py-8 text-center text-sm" style={{ color: '#64748b' }}>No movements found.</p>
+            )}
+          </div>
+          {/* Desktop Table */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ background: 'rgba(255,255,255,0.03)' }}>

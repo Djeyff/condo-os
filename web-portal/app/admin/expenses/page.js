@@ -218,7 +218,36 @@ export default async function ExpensesPage({ searchParams }) {
               {selectedCat && <span className="ml-2 font-mono text-red-400">{fmt(expenses.reduce((s,e)=>s+e.amount,0))} DOP</span>}
             </p>
           </div>
-          <div className="overflow-x-auto">
+          {/* Mobile Cards */}
+          <div className="sm:hidden space-y-2 p-3">
+            {expenses.map((e, i) => (
+              <div key={i} className="rounded-lg p-3" style={{ background: e.isExtraordinary ? 'rgba(251,191,36,0.05)' : 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <p className="text-sm font-medium text-white flex-1 min-w-0">
+                    {e.description}{e.isExtraordinary && <span className="ml-1 text-xs text-yellow-400">★</span>}
+                  </p>
+                  <span className="text-sm font-bold font-mono shrink-0 text-white">{fmt(e.amount)}</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {e.date && <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>{e.date}</span>}
+                  {e.category && <span className="text-xs px-2 py-0.5 rounded font-medium" style={{ color: getCatColor(e.category), background: 'rgba(255,255,255,0.04)' }}>{e.category}</span>}
+                  {e.vendor && <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>{e.vendor}</span>}
+                  {e.quarter && <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#64748b' }}>{e.quarter}</span>}
+                  {e.status && <span className={`text-xs px-2 py-0.5 rounded ${e.status === 'Paid' ? 'bg-emerald-900/40 text-emerald-400' : 'bg-yellow-900/40 text-yellow-400'}`}>{e.status}</span>}
+                </div>
+              </div>
+            ))}
+            {expenses.length > 0 && (
+              <div className="rounded-lg p-3" style={{ background: 'rgba(212,168,83,0.05)', border: '1px solid rgba(212,168,83,0.15)' }}>
+                <div className="flex justify-between text-sm">
+                  <span className="font-bold" style={{ color: '#d4a853' }}>Total</span>
+                  <span className="font-mono font-bold text-red-400">{fmt(expenses.reduce((s,e)=>s+e.amount,0))}</span>
+                </div>
+              </div>
+            )}
+          </div>
+          {/* Desktop Table */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ background: 'rgba(255,255,255,0.03)' }}>

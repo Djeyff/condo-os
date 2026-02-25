@@ -247,7 +247,38 @@ export default async function AdminPage() {
             <h3 className="text-lg font-semibold text-white">All Units</h3>
             <span className="text-xs" style={{ color: '#64748b' }}>{units.length} units</span>
           </div>
-          <div className="overflow-x-auto">
+          {/* Mobile Cards */}
+          <div className="sm:hidden space-y-2 p-3">
+            {units.map((u, i) => (
+              <div key={i} className="rounded-lg p-3" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-xs font-bold shrink-0"
+                      style={{ background: 'rgba(212,168,83,0.15)', color: '#d4a853' }}>{u.unit}</span>
+                    <p className="text-sm font-semibold text-white">{u.owner}</p>
+                  </div>
+                  <span className={`text-sm font-bold font-mono shrink-0 ${u.balance < 0 ? 'text-red-400' : u.balance > 0 ? 'text-emerald-400' : ''}`}
+                    style={u.balance === 0 ? { color: '#64748b' } : {}}>
+                    {fmt(u.balance)}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${statusColor(u.status)}`}>{u.status}</span>
+                  {u.share > 0 && <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>{u.share.toFixed(1)}%</span>}
+                </div>
+              </div>
+            ))}
+            <div className="rounded-lg p-3" style={{ background: 'rgba(212,168,83,0.05)', border: '1px solid rgba(212,168,83,0.15)' }}>
+              <div className="flex justify-between text-xs mb-1">
+                <span style={{ color: '#94a3b8' }}>{currentCount} current · {delinquentCount} overdue</span>
+                <span className={`font-mono font-bold ${totalOutstanding + totalPositive < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                  {fmt(totalOutstanding + totalPositive)} {branding.currency}
+                </span>
+              </div>
+            </div>
+          </div>
+          {/* Desktop Table */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ background: 'rgba(255,255,255,0.03)' }}>

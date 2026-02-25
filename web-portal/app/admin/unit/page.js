@@ -186,7 +186,43 @@ export default async function AdminUnitPage({ searchParams }) {
               <div className="px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                 <h3 className="text-lg font-semibold text-white">Full Statement ({entries.length} transactions)</h3>
               </div>
-              <div className="overflow-x-auto">
+              {/* Mobile Cards */}
+              <div className="sm:hidden space-y-2 p-3">
+                {entries.map((e, i) => (
+                  <div key={i} className="rounded-lg p-3" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <p className="text-sm font-medium text-white flex-1 min-w-0">{e.description}</p>
+                      <span className={`text-sm font-bold font-mono shrink-0 ${e.balance < 0 ? 'text-red-400' : 'text-emerald-400'}`}>{fmt(e.balance)}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 mb-2">
+                      {e.date && <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>{e.date}</span>}
+                      {e.type && <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                        style={{ background: e.type?.includes('Payment') ? 'rgba(52,211,153,0.1)' : 'rgba(212,168,83,0.1)',
+                          color: e.type?.includes('Payment') ? '#6ee7b7' : '#d4a853' }}>{e.type}</span>}
+                    </div>
+                    <div className="flex gap-3 text-xs">
+                      {e.debit > 0 && <span className="text-red-400 font-mono">↑ {fmt(e.debit)}</span>}
+                      {e.credit > 0 && <span className="text-emerald-400 font-mono">↓ {fmt(e.credit)}</span>}
+                    </div>
+                  </div>
+                ))}
+                <div className="rounded-lg p-3" style={{ background: 'rgba(212,168,83,0.05)', border: '1px solid rgba(212,168,83,0.15)' }}>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span style={{ color: '#d4a853' }}>Total Debit</span>
+                    <span className="font-mono text-red-400 font-bold">{fmt(totalDebit)}</span>
+                  </div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span style={{ color: '#d4a853' }}>Total Credit</span>
+                    <span className="font-mono text-emerald-400 font-bold">{fmt(totalCredit)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm mt-2 pt-2" style={{ borderTop: '1px solid rgba(212,168,83,0.1)' }}>
+                    <span className="font-bold" style={{ color: '#d4a853' }}>Balance</span>
+                    <span className={`font-mono font-bold ${unitInfo.balance < 0 ? 'text-red-400' : 'text-emerald-400'}`}>{fmt(unitInfo.balance)} {branding.currency}</span>
+                  </div>
+                </div>
+              </div>
+              {/* Desktop Table */}
+              <div className="hidden sm:block overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr style={{ background: 'rgba(255,255,255,0.03)' }}>
