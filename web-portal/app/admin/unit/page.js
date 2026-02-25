@@ -163,20 +163,20 @@ export default async function AdminUnitPage({ searchParams }) {
                 </div>
                 <PrintButton />
               </div>
-              <div className="grid grid-cols-3 gap-6 mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="grid grid-cols-3 gap-2 sm:gap-6 mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <div>
-                  <p className="text-xs uppercase tracking-wide" style={{ color: '#64748b' }}>Current Balance</p>
-                  <p className={`text-2xl font-bold ${unitInfo.balance < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
-                    {fmt(unitInfo.balance)} <span className="text-sm" style={{ color: '#64748b' }}>{branding.currency}</span>
+                  <p className="text-xs uppercase tracking-wide" style={{ color: '#64748b' }}>Balance</p>
+                  <p className={`text-lg sm:text-2xl font-bold ${unitInfo.balance < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                    {fmt(unitInfo.balance)} <span className="text-xs sm:text-sm" style={{ color: '#64748b' }}>{branding.currency}</span>
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-wide" style={{ color: '#64748b' }}>Ownership Share</p>
-                  <p className="text-2xl font-bold" style={{ color: '#d4a853' }}>{unitInfo.share.toFixed(1)}%</p>
+                  <p className="text-xs uppercase tracking-wide" style={{ color: '#64748b' }}>Share</p>
+                  <p className="text-lg sm:text-2xl font-bold" style={{ color: '#d4a853' }}>{unitInfo.share.toFixed(1)}%</p>
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-wide" style={{ color: '#64748b' }}>Open Requests</p>
-                  <p className={`text-2xl font-bold ${openReqs > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>{openReqs}</p>
+                  <p className="text-xs uppercase tracking-wide" style={{ color: '#64748b' }}>Open Reqs</p>
+                  <p className={`text-lg sm:text-2xl font-bold ${openReqs > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>{openReqs}</p>
                 </div>
               </div>
             </div>

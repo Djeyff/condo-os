@@ -112,13 +112,13 @@ export default async function ExpensesPage({ searchParams }) {
       <Header session={session} branding={branding} />
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
             <div className="mb-1"><a href="/admin" className="text-sm" style={{ color: GOLD }}>← Dashboard</a></div>
             <h2 className="text-2xl font-bold text-white">💸 Gastos Detallados</h2>
             <p className="text-sm mt-1" style={{ color: '#64748b' }}>{expenses.length} entries · {selectedYear}</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {/* Year filter */}
             {years.map(y => (
               <a key={y} href={`/admin/expenses?year=${y}${selectedCat ? `&category=${encodeURIComponent(selectedCat)}` : ''}`}

@@ -76,7 +76,7 @@ export default async function MovementsPage({ searchParams }) {
       <Header session={session} branding={branding} />
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <a href="/admin" className="text-sm" style={{ color: GOLD }}>← Dashboard</a>
@@ -87,7 +87,7 @@ export default async function MovementsPage({ searchParams }) {
             </p>
           </div>
           {selectedAccount && (
-            <a href="/admin/movements" className="px-4 py-2 rounded-lg text-sm" style={{ background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>
+            <a href="/admin/movements" className="px-4 py-2 rounded-lg text-sm self-start sm:self-auto" style={{ background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>
               Show All
             </a>
           )}

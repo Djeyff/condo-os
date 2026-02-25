@@ -123,20 +123,20 @@ export default async function ArchivePage({ searchParams }) {
       <main className="max-w-7xl mx-auto px-4 py-8">
 
         {/* Header + year tabs */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
             <div className="mb-1"><a href="/admin" className="text-sm" style={{ color: GOLD }}>← Dashboard</a></div>
             <h2 className="text-2xl font-bold text-white">📅 Annual Accounting</h2>
             <p className="text-sm mt-1" style={{ color: isRunningYear ? '#d4a853' : '#64748b' }}>{yearStatus}</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {archiveYears.map(y => (
               <a key={y} href={`/admin/archive?year=${y}`}
                 className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
                 style={y === selectedYear
                   ? { background: GOLD, color: '#0a1628' }
                   : { background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>
-                {y}{y === CURRENT_YEAR ? ' · YTD' : ' · Closed'}
+                {y}{y === CURRENT_YEAR ? ' · YTD' : ''}
               </a>
             ))}
           </div>
@@ -170,11 +170,11 @@ export default async function ArchivePage({ searchParams }) {
         </div>
 
         {/* Quarterly breakdown */}
-        <div className="grid grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-8">
           {['Q1','Q2','Q3','Q4'].map(q => (
-            <div key={q} className="rounded-xl p-4 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div key={q} className="rounded-xl p-2 sm:p-4 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
               <p className="text-xs font-semibold uppercase" style={{ color: GOLD }}>{q}</p>
-              <p className="text-lg font-bold font-mono text-white mt-1">{fmt(byQuarter[q])}</p>
+              <p className="text-sm sm:text-lg font-bold font-mono text-white mt-1">{fmt(byQuarter[q])}</p>
             </div>
           ))}
         </div>
